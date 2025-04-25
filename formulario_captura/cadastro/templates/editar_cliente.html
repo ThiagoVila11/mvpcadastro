@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Editar Cliente</h2>
+                <a href="{% url 'detalhes_cliente' cliente.id %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Informações Pessoais</h4>
+                        <div class="mb-3">
+                            <label for="id_nome" class="form-label">Nome</label>
+                            {{ form.nome }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_cpf" class="form-label">CPF</label>
+                            {{ form.cpf }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_data_nascimento" class="form-label">Data de Nascimento</label>
+                            {{ form.data_nascimento }}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h4>Contato</h4>
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Email</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_telefone" class="form-label">Telefone</label>
+                            {{ form.telefone }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <h4>Informações da Unidade</h4>
+                        <div class="mb-3">
+                            <label for="id_unidade" class="form-label">Unidade</label>
+                            {{ form.unidade }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_apto" class="form-label">Apto</label>
+                            {{ form.apto }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_score" class="form-label">Score</label>
+                            {{ form.score }}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h4>Status e Documentos</h4>
+                        <div class="mb-3 form-check">
+                            {{ form.visitarealizada }}
+                            <label class="form-check-label" for="id_visitarealizada">Visita Realizada</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_imagem" class="form-label">Foto do Cliente</label>
+                            {{ form.imagem }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_documentacaoenviada" class="form-label">Documentação</label>
+                            {{ form.documentacaoenviada }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <h4>Observações</h4>
+                    {{ form.observacoes }}
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                <a href="{% url 'detalhes_cliente' cliente.id %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

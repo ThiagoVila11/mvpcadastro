@@ -1,0 +1,34 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Cadastro Realizado{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0"><i class="fas fa-check-circle me-2"></i>Cadastro Realizado</h3>
+                </div>
+                <div class="card-body text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+                    </div>
+                    <h2 class="mb-4">Cadastro realizado com sucesso!</h2>
+                    <p class="lead">Obrigado por se cadastrar.</p>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                        <a href="{% url 'cadastro' %}" class="btn btn-primary me-md-2">
+                            <i class="fas fa-arrow-left me-2"></i>Voltar ao formulário
+                        </a>
+                        <a href="{% url 'consulta_clientes' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-list me-2"></i>Ver todos os clientes
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
