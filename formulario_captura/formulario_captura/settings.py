@@ -93,8 +93,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cadastro',
-        'USER': 'postgres',
-        'PASSWORD': '123',
+        'USER': 'vila11',
+        'PASSWORD': 'vila11',
         'HOST': 'localhost',
         'PORT': '5432',
     }
