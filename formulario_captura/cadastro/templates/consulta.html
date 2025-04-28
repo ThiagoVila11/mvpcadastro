@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Consulta CPF</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+</head>
+<body>
+    <h1>Consulta de CPF</h1>
+    
+    <form id="consultaForm">
+        {% csrf_token %}
+        <label for="cpf">CPF:</label>
+        <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" required>
+        <button type="submit">Consultar</button>
+    </form>
+    
+    <div id="resultado" style="margin-top: 20px;"></div>
+    
+    <script>
+        $(document).ready(function() {
+            $('#cpf').mask('000.000.000-00');
+            
+            $('#consultaForm').submit(function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: '/consulta-cpf/',
+                    type: 'POST',
+                    data: {
+                        'cpf': $('#cpf').val(),
+                        'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+                    },
+                    success: function(data) {
+                        $('#resultado').html('<pre>' + JSON.stringify(data, null, 2) + '</pre>');
+                    },
+                    error: function(xhr) {
+                        try {
+                            var error = JSON.parse(xhr.responseText);
+                            $('#resultado').html('<p style="color:red;">Erro: ' + error.error + '</p>');
+                        } catch(e) {
+                            $('#resultado').html('<p style="color:red;">Erro desconhecido</p>');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

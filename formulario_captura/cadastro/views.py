@@ -3,6 +3,9 @@ from .forms import ClienteForm
 from .models import Cliente
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from .services.api_service import APIDataBuscaService
+import json
 
 def cadastro_cliente(request):
     if request.method == 'POST':
@@ -73,3 +76,21 @@ def editar_cliente(request, id):
         'form': form,
         'cliente': cliente
     })
+
+def consulta_cpf(request):
+    if request.method == 'POST':
+        cpf = request.POST.get('cpf', '').replace('.', '').replace('-', '')
+        
+        if not cpf.isdigit() or len(cpf) != 11:
+            return JsonResponse({'error': 'CPF inválido'}, status=400)
+        
+        try:
+            data = APIDataBuscaService.get_api_data(cpf)
+            return JsonResponse(data)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Método não permitido'}, status=405)
+
+def consulta_view(request):
+    return render(request, 'consulta.html')

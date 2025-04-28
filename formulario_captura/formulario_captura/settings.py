@@ -35,6 +35,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['3.142.98.253', '*']
 
+API_DATABUSCA_USER = "dev@reda.one"
+API_DATABUSCA_PASS = "REDA@#$%Summer22"
+
 
 # Application definition
 

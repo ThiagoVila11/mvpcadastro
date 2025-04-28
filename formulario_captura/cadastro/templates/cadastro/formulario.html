@@ -1,6 +1,5 @@
-
 {% extends 'base.html' %}
-{% load widget_tweaks %}  {# Para estilização avançada dos campos do formulário #}
+{% load widget_tweaks %}
 
 {% block title %}Formulário de Cadastro{% endblock %}
 
@@ -24,28 +23,67 @@
                         </div>
                         {% endif %}
                         
-                        {% for field in form %}
+                        <!-- Campo CPF com botão de consulta -->
                         <div class="mb-3">
-                            <label for="{{ field.id_for_label }}" class="form-label">
-                                {{ field.label }}
-                                {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                            <label for="id_cpf" class="form-label">
+                                CPF <span class="text-danger">*</span>
                             </label>
-                            
-                            {% if field.errors %}
-                                {% render_field field class="form-control is-invalid" %}    
-                                <div class="invalid-feedback">
-                                    {% for error in field.errors %}
-                                        {{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                {% render_field field class="form-control" %}
-                            {% endif %}
-                            
-                            {% if field.help_text %}
-                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                            <div class="input-group">
+                                {% if form.cpf.errors %}
+                                    {% render_field form.cpf class="form-control is-invalid" %}
+                                    <button class="btn btn-outline-secondary" type="button" id="consultarCpf">
+                                        <i class="fas fa-search me-1"></i> Consultar
+                                    </button>
+                                    <div class="invalid-feedback">
+                                        {% for error in form.cpf.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {% render_field form.cpf class="form-control" %}
+                                    <button class="btn btn-outline-secondary" type="button" id="consultarCpf">
+                                        <i class="fas fa-search me-1"></i> Consultar
+                                    </button>
+                                {% endif %}
+                            </div>
+                            {% if form.cpf.help_text %}
+                            <small class="form-text text-muted">{{ form.cpf.help_text }}</small>
                             {% endif %}
                         </div>
+                        
+                        <!-- Resultado da consulta -->
+                        <div id="resultadoConsulta" class="mb-3 d-none">
+                            <div class="alert alert-info">
+                                <h5 class="alert-heading">Dados encontrados:</h5>
+                                <div id="dadosConsulta"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Demais campos do formulário -->
+                        {% for field in form %}
+                            {% if field.name != 'cpf' %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">
+                                    {{ field.label }}
+                                    {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                </label>
+                                
+                                {% if field.errors %}
+                                    {% render_field field class="form-control is-invalid" %}    
+                                    <div class="invalid-feedback">
+                                        {% for error in field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {% render_field field class="form-control" %}
+                                {% endif %}
+                                
+                                {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                            </div>
+                            {% endif %}
                         {% endfor %}
                         
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
@@ -66,7 +104,6 @@
 
 {% block extra_css %}
 <style>
-    /* Estilos específicos para este formulário */
     .card {
         border-radius: 10px;
     }
@@ -79,14 +116,19 @@
     .is-invalid:focus {
         box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
     }
+    #consultarCpf {
+        transition: all 0.3s;
+    }
+    #consultarCpf:hover {
+        background-color: #f8f9fa;
+    }
 </style>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // Scripts específicos para este formulário
     $(document).ready(function() {
-        // Adiciona máscara para campos específicos
+        // Máscara para campos
         $('#id_cpf').mask('000.000.000-00', {reverse: true});
         $('#id_telefone').mask('(00) 00000-0000');
         
@@ -97,6 +139,65 @@
                 $(this).addClass('is-invalid');
                 $(this).next('.invalid-feedback').text('Este campo é obrigatório.');
             }
+        });
+        
+        // Consulta de CPF
+        $('#consultarCpf').click(function() {
+            const cpf = $('#id_cpf').val().replace(/\D/g, '');
+            
+            if(cpf.length !== 11) {
+                $('#id_cpf').addClass('is-invalid');
+                $('#id_cpf').next('.invalid-feedback').text('CPF inválido. Digite 11 números.');
+                return;
+            }
+            
+            // Mostra loading no botão
+            $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Consultando...');
+            $(this).prop('disabled', true);
+            
+            $.ajax({
+                url: '/consulta-cpf/',
+                type: 'POST',
+                data: {
+                    'cpf': cpf,
+                    'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+                },
+                success: function(data) {
+                    $('#resultadoConsulta').removeClass('d-none');
+                    
+                    // Formata os dados para exibição
+                    let html = '<ul class="mb-0">';
+                    if(data.data && data.data.Name) {
+                        html += `<li><strong>Nome:</strong> ${data.data.Name}</li>`;
+                        // Preenche automaticamente o campo nome se existir no formulário
+                        if($('#id_nome').length) {
+                            $('#id_nome').val(data.data.Name);
+                        }
+                    }
+                    if(data.data && data.data.Phones) {
+                        html += '<li><strong>Telefones:</strong><ul>';
+                        data.data.Phones.forEach(phone => {
+                            html += `<li>(${phone.AreaCode}) ${phone.Number}</li>`;
+                        });
+                        html += '</ul></li>';
+                    }
+                    html += '</ul>';
+                    
+                    $('#dadosConsulta').html(html);
+                },
+                error: function(xhr) {
+                    let errorMsg = 'Erro na consulta';
+                    if(xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMsg = xhr.responseJSON.error;
+                    }
+                    $('#resultadoConsulta').removeClass('d-none');
+                    $('#dadosConsulta').html(`<p class="text-danger mb-0">${errorMsg}</p>`);
+                },
+                complete: function() {
+                    $('#consultarCpf').html('<i class="fas fa-search me-1"></i> Consultar');
+                    $('#consultarCpf').prop('disabled', false);
+                }
+            });
         });
     });
 </script>
