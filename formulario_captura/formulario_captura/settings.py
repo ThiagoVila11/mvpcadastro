@@ -33,7 +33,7 @@ SECRET_KEY = 'django-insecure-mm6xs&%0av^$$zoepp0)i^5t3xfyg2%5lb@fcod^3@i(^idid7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['3.142.98.253']
+ALLOWED_HOSTS = ['3.142.98.253', '*']
 
 
 # Application definition
@@ -93,8 +93,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cadastro',
-        'USER': 'vila11',
-        'PASSWORD': 'vila11',
+        'USER': 'postgres',
+        'PASSWORD': '123',
         'HOST': 'localhost',
         'PORT': '5432',
     }
