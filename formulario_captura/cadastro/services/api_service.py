@@ -28,6 +28,7 @@ class APIDataBuscaService:
         if response.status_code == 200:
             response_data = response.json()
             if response_data.get("success"):
+                print(response_data["data"]["Token"])
                 return response_data["data"]["Token"]
         raise Exception("Falha ao obter token de autenticação")
 
@@ -37,31 +38,18 @@ class APIDataBuscaService:
         data_url = "https://api.ph3a.com.br/DataBusca/data"
         
         request_body = {
-            "Document": cpf,
-            "Type": 0,
-            "HashType": 0,
-            "Rules": {
-                "Phones.Limit": 3,
-                "Phones.History": False,
-                "Phones.Rank": 90
-            },
-            "Except": {
-                "Phones": [
-                    {
-                        "AreaCode": 11,
-                        "Number": 37216930
-                    }
-                ]
+            "Document": cpf
             }
-        }
         
         headers = {
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json"
         }
-        
+        print(headers)
+        print(f"Enviando requisição para {data_url} com headers: {headers}")
+              
         response = requests.post(data_url, json=request_body, headers=headers)
-        
+        print(f"Resposta: {response.status_code} - {response.text}")      
         if response.status_code == 200:
             return response.json()
         raise Exception(f"Erro na requisição: {response.status_code} - {response.text}")
