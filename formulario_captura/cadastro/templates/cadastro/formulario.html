@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% load static %}
+
+
 {% load widget_tweaks %}
 
 {% block title %}Formulário de Cadastro{% endblock %}
@@ -52,7 +55,7 @@
                         </div>
                         
                         <!-- Resultado da consulta -->
-                        <div id="resultadoConsulta" class="mb-3 d-none">
+                        <div id="resultadoConsulta" class="mb-3 d-none" visible="false">
                             <div class="alert alert-info">
                                 <h5 class="alert-heading">Dados encontrados:</h5>
                                 <div id="dadosConsulta"></div>
@@ -126,9 +129,13 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 <script>
+    console.log('inicio');
     $(document).ready(function() {
         // Máscara para campos
+        console.log('1');
         $('#id_cpf').mask('000.000.000-00', {reverse: true});
         $('#id_telefone').mask('(00) 00000-0000');
         
@@ -142,6 +149,7 @@
         });
         
         // Consulta de CPF
+        console.log('2');
         $('#consultarCpf').click(function() {
             const cpf = $('#id_cpf').val().replace(/\D/g, '');
             
@@ -150,7 +158,7 @@
                 $('#id_cpf').next('.invalid-feedback').text('CPF inválido. Digite 11 números.');
                 return;
             }
-            
+            console.log('3');
             // Mostra loading no botão
             $(this).html('<i class="fas fa-spinner fa-spin me-1"></i> Consultando...');
             $(this).prop('disabled', true);
@@ -164,23 +172,39 @@
                 },
                 success: function(data) {
                     $('#resultadoConsulta').removeClass('d-none');
-                    
-                    // Formata os dados para exibição
-                    let html = '<ul class="mb-0">';
-                    if(data.data && data.data.Name) {
-                        html += `<li><strong>Nome:</strong> ${data.data.Name}</li>`;
-                        // Preenche automaticamente o campo nome se existir no formulário
+                    var dados = data
+                    console.log(data.Data);
+                    // Preenche o campo NOME se existir no formulário
+                    if(dados["Data"]["Name"]) {
+                        // Opção 1: Se o campo se chama "nome" (padrão)
                         if($('#id_nome').length) {
-                            $('#id_nome').val(data.data.Name);
+                            $('#id_nome').val(data.Data.NameBrasil).trigger('change');
+                        }
+
+                    }
+                    // Formata os dados para exibição (adaptado para o JSON da DataBusca)
+                    let html = '<ul class="mb-0">';
+                    //html += `<li><strong>Nome encontrado:</strong> ${dados["Data"]["Name"]}</li>`;
+                    // Nome
+                    if(dados["Data"]["Name"]) {
+                        //html += `<li><strong>Nome:</strong> ${data.Data.NameBrasil}</li>`;
+                        
+                        // Preenche automaticamente o campo "nome" no formulário (se existir)
+                        if($('#id_nome').length) {
+                            $('#id_nome').val(dados["Data"]["Name"]);
                         }
                     }
-                    if(data.data && data.data.Phones) {
-                        html += '<li><strong>Telefones:</strong><ul>';
-                        data.data.Phones.forEach(phone => {
-                            html += `<li>(${phone.AreaCode}) ${phone.Number}</li>`;
-                        });
-                        html += '</ul></li>';
+
+                    // Score
+                    if(dados["Data"]["CreditScore"]["D00"]) {
+                        //html += `<li><strong>Nome:</strong> ${data.Data.CreditScore.D00}</li>`;
+                        
+                        // Preenche automaticamente o campo "nome" no formulário (se existir)
+                        if($('#id_score').length) {
+                            $('#id_score').val(dados["Data"]["CreditScore"]["D00"]);
+                        }
                     }
+
                     html += '</ul>';
                     
                     $('#dadosConsulta').html(html);

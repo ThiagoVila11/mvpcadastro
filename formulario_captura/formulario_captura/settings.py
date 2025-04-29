@@ -35,7 +35,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['3.142.98.253', '*']
 
-API_DATABUSCA_USER = "dev@reda.one"
+API_DATABUSCA_USER = "b94ad788-8a3e-deb5-1677-ed1ee11351cd"
 API_DATABUSCA_PASS = "REDA@#$%Summer22"
 
 
@@ -156,6 +156,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+DEBUG = True  # Para desenvolvimento
 
 # No final do arquivo, adicione:
 STATIC_URL = '/static/'
@@ -165,9 +166,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Para produção, você precisará também de:
-#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

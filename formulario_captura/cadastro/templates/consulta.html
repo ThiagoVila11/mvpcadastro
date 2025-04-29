@@ -32,7 +32,9 @@
                         'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
                     },
                     success: function(data) {
-                        $('#resultado').html('<pre>' + JSON.stringify(data, null, 2) + '</pre>');
+                        var dados = data
+                        //$('#resultado').html('<pre>' + JSON.stringify(data, null, 2) + '</pre>');
+                        $('#resultado').html('<pre>' + dados["Data"]["Name"] + ' - ' + + dados["Data"]["CreditScore"]["D00"] + '</pre>');
                     },
                     error: function(xhr) {
                         try {

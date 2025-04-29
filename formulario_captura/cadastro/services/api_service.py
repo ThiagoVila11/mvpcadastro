@@ -8,14 +8,14 @@ class APIDataBuscaService:
     def get_auth_token():
         login_url = "https://api.ph3a.com.br/DataBusca/api/Account/Login"
         username = settings.API_DATABUSCA_USER
-        password = settings.API_DATABUSCA_PASS
+        #password = settings.API_DATABUSCA_PASS
         
         payload = {
-            "UserName": username,
-            "Password": password
+            "UserName": username
+            #"Password": password
         }
         
-        auth_string = f"{username}:{password}"
+        auth_string = f"{username}"
         auth_bytes = auth_string.encode('ascii')
         base64_auth = base64.b64encode(auth_bytes).decode('ascii')
         headers = {
@@ -42,8 +42,8 @@ class APIDataBuscaService:
             }
         
         headers = {
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Token": f"{token}"            
         }
         print(headers)
         print(f"Enviando requisição para {data_url} com headers: {headers}")
