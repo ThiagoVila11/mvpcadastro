@@ -52,6 +52,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Nome</th>
                             <th>CPF</th>
                             <th>Email</th>
@@ -61,11 +62,13 @@
                             <th>Score</th>
                             <th>Cadastro</th>
                             <th>Ações</th>
+                            <th>Visita Realizada</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for cliente in clientes %}
                         <tr>
+                            <td>{{ cliente.id }}</td>
                             <td>{{ cliente.nome }}</td>
                             <td>{{ cliente.cpf }}</td>
                             <td>{{ cliente.email }}</td>
@@ -74,10 +77,12 @@
                             <td>{{ cliente.apto }}</td>
                             <td>{{ cliente.score }}</td>
                             <td>{{ cliente.data_cadastro|date:"d/m/Y H:i" }}</td>
+                            <td><input type="checkbox" {% if cliente.visitarealizada %}checked{% endif %} disabled></td>
                             <td>
                                 
                                 <a href="{% url 'editar_cliente' cliente.id %}" class="btn btn-sm btn-primary">Editar</a>
                                 <a href="{% url 'detalhes_cliente' cliente.id %}" class="btn btn-sm btn-info">Detalhes</a>
+                                <a href="{% url 'preencher_pdf' cliente.id %}" class="btn btn-sm btn-info">Gerar Documento</a>
                             
                             </td>
                         </tr>

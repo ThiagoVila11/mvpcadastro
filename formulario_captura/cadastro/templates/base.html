@@ -42,9 +42,10 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-plus-circle me-1"></i>Novo Cliente
-                        </a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'cadastro_cliente' %}active{% endif %}" 
+                           href="{% url 'cadastro_cliente' %}">
+                           <i class="fas fa-plus-circle me-1"></i>Novo Cliente
+                        </a>                        
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">

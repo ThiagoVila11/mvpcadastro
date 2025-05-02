@@ -6,6 +6,17 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from .services.api_service import APIDataBuscaService
 import json
+from django.template.loader import render_to_string
+from docxtpl import DocxTemplate
+import pdfkit
+from PyPDF2 import PdfReader, PdfWriter
+import os
+from django.conf import settings 
+from django.http import HttpResponse, FileResponse
+import re
+from datetime import datetime
+from io import BytesIO
+
 
 def cadastro_cliente(request):
     if request.method == 'POST':
@@ -94,3 +105,117 @@ def consulta_cpf(request):
 
 def consulta_view(request):
     return render(request, 'consulta.html')
+
+def preencher_pdf(request, cliente_id):
+    # Obtenha o template do banco de dados
+    cliente = Cliente.objects.get(id=cliente_id)
+
+    # Dados dinâmicos - pode vir de um formulário ou banco de dados
+    nome = f"{cliente.nome}".replace("{", "").replace("}", "").replace("'", "")
+    profissao = f"{cliente.profissao}".replace("{", "").replace("}", "").replace("'", "")
+    estadocivil = f"{cliente.estcivil}".replace("{", "").replace("}", "").replace("'", "")
+    rg = f"{cliente.rgrne}".replace("{", "").replace("}", "").replace("'", "")
+    cpf = f"{cliente.cpf}".replace("{", "").replace("}", "").replace("'", "")
+    email = f"{cliente.email}".replace("{", "").replace("}", "").replace("'", "")
+    celular = f"{cliente.telefone}".replace("{", "").replace("}", "").replace("'", "")
+    endereco = f"{cliente.endereco}".replace("{", "").replace("}", "").replace("'", "")
+    nomeresidente = f"{cliente.nomeresidente}".replace("{", "").replace("}", "").replace("'", "")
+    numerorg = f"{cliente.rgresidente}".replace("{", "").replace("}", "").replace("'", "")
+    cpfresidente = f"{cliente.cpfresidente}".replace("{", "").replace("}", "").replace("'", "")
+    apto = f"{cliente.apto}".replace("{", "").replace("}", "").replace("'", "")
+    vaga = f"{cliente.vaga}".replace("{", "").replace("}", "").replace("'", "")
+    matricula = f"{cliente.matriculaunidade}".replace("{", "").replace("}", "").replace("'", "")
+    condominio =f"{cliente.nomeunidade}".replace("{", "").replace("}", "").replace("'", "")
+    cnpjcondominio = f"{cliente.cnpjunidade}".replace("{", "").replace("}", "").replace("'", "")
+    enderecocondominio = f"{cliente.enderecounidade}".replace("{", "").replace("}", "").replace("'", "")
+    nriptu = f"{cliente.nriptuunidade}".replace("{", "").replace("}", "").replace("'", "")
+    datainicio = f"{cliente.data_cadastro}".replace("{", "").replace("}", "").replace("'", "")
+    valor = f"{cliente.vrunidade}".replace("{", "").replace("}", "").replace("'", "")
+    dia = datetime.now().day
+    mes = datetime.now().month
+    ano = datetime.now().year
+
+    context = {
+        'nome': nome,
+        'profissão': profissao,
+        'estadocivil': estadocivil,
+        'rg': rg,
+        'cpf': cpf,
+        'email': email,
+        'celular': celular,
+        'endereco': endereco,
+        'nomeresidente': nomeresidente,
+        'numerorg': numerorg,
+        'cpfresidente': cpfresidente,
+        'nomeadministradora': 'Vila11',
+        'cnpjadministradora': '37.232.210/0001-15',
+        'contatoadministradora': 'Contato Vila11',
+        'apto': apto,
+        'vaga': vaga,
+        'matricula': matricula,
+        'condominio': condominio,
+        'cnpjcondominio': cnpjcondominio,
+        'Contato': 'Contato Vila11',
+        'enderecocondominio': enderecocondominio,
+        'nriptu': nriptu,
+        'datainicio': datainicio,
+        'valor': valor,
+        'mesano': datetime.now().strftime("%m/%Y"),
+        'dia': dia,
+        'mes': mes,
+        'ano': ano,
+    }    
+
+    try:
+        # Caminho completo para o template
+        template_path = "template.docx" #template.template_file.path
+        
+        # Carrega o template
+        buffer = BytesIO()
+        doc = DocxTemplate(template_path)
+        
+        # Substitui os placeholders
+        doc.render(context)
+        
+        # Caminho para salvar o documento gerado
+        output_filename = f'documento_gerado_{cliente_id}.docx'
+        output_path = os.path.join(settings.MEDIA_ROOT, 'generated', output_filename)
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        
+        # Salva o documento
+        doc.save(output_path)
+        buffer.seek(0)
+        # Salva o arquivo no campo documentacaoenviada
+        cliente.documentacaoenviada.save(output_filename, buffer)
+        cliente.save()
+        buffer.seek(0)
+        # Retorna o arquivo para download
+        return FileResponse(open(output_path, 'rb'), 
+                         as_attachment=True, 
+                         filename=output_filename)
+    
+    except Exception as e:
+        return HttpResponse(f"Erro ao gerar documento: {str(e)}", status=500)
+    
+def outro_pdf(request):
+    # Caminho para o wkhtmltopdf (ajuste para seu sistema)
+    path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'  # Windows
+    # path_wkhtmltopdf = '/usr/bin/wkhtmltopdf'  # Linux
+
+    config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+
+    options = {
+        'encoding': 'UTF-8',
+        'quiet': '',  # Suprime logs desnecessários
+    }
+
+    try:
+        pdfkit.from_string(
+            '<h1>PDF Gerado com Sucesso!</h1>',
+            'output.pdf',
+            configuration=config,
+            options=options
+        )
+        print("PDF gerado!")
+    except Exception as e:
+        print(f"Erro ao gerar PDF: {e}")

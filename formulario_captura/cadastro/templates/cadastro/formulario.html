@@ -195,6 +195,26 @@
                         }
                     }
 
+                    //data de nascimento
+                    //alert(dados["Data"]["BirthDate"])
+                    const dataISO = dados["Data"]["BirthDate"] //"1977-09-03T03:00:00.000Z";
+                    //alert(dataISO)
+                    var data = new Date(dataISO);
+                    //alert(data)
+                    var dia = String(data.getDate()).padStart(2, '0');
+                    var mes = String(data.getMonth() + 1).padStart(2, '0'); // Mês é 0-indexed
+                    var ano = data.getFullYear();
+
+                    var dataFormatada = `${dia}/${mes}/${ano}`;
+                    
+                    //alert(dataFormatada)
+                    if(dados["Data"]["BirthDate"]) {
+                        //alert('dentro')
+                        if($('#id_data_nascimento').length) {
+                            //alert('mais dentro')
+                            $('#id_data_nascimento').val(dataFormatada)//val(dados["Data"]["BirthDate"]);
+                        }
+                    }
                     // Score
                     if(dados["Data"]["CreditScore"]["D00"]) {
                         //html += `<li><strong>Nome:</strong> ${data.Data.CreditScore.D00}</li>`;
