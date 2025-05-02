@@ -12,7 +12,7 @@ import pdfkit
 from PyPDF2 import PdfReader, PdfWriter
 import os
 from django.conf import settings 
-from django.http import HttpResponse, FileResponse
+from django.http import HttpResponse, FileResponse, Http404
 import re
 from datetime import datetime
 from io import BytesIO
@@ -197,25 +197,51 @@ def preencher_pdf(request, cliente_id):
     except Exception as e:
         return HttpResponse(f"Erro ao gerar documento: {str(e)}", status=500)
     
-def outro_pdf(request):
-    # Caminho para o wkhtmltopdf (ajuste para seu sistema)
-    path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'  # Windows
-    # path_wkhtmltopdf = '/usr/bin/wkhtmltopdf'  # Linux
-
-    config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
-
-    options = {
-        'encoding': 'UTF-8',
-        'quiet': '',  # Suprime logs desnecessários
-    }
-
-    try:
-        pdfkit.from_string(
-            '<h1>PDF Gerado com Sucesso!</h1>',
-            'output.pdf',
-            configuration=config,
-            options=options
-        )
-        print("PDF gerado!")
-    except Exception as e:
-        print(f"Erro ao gerar PDF: {e}")
+def visualizar_documento(request, cliente_id):
+    cliente = get_object_or_404(Cliente, pk=cliente_id)
+    
+    # Verifica se o arquivo existe
+    if not cliente.documentacaoenviada:
+        raise Http404("Documento não encontrado")
+    
+    # Pega a extensão do arquivo
+    _, ext = os.path.splitext(cliente.documentacaoenviada.name)
+    ext = ext.lower()
+    
+    # Verifica se é um arquivo Word
+    if ext not in ['.doc', '.docx']:
+        return render(request, 'erro.html', {
+            'mensagem': 'O arquivo não é um documento Word válido'
+        })
+    
+    # Se for DOCX, podemos tentar converter para HTML para visualização
+    print(ext)
+    print(cliente.documentacaoenviada.path)
+    if ext == '.docx':
+        print('dentro')
+        try:
+            print('try')
+            import docx2txt
+            texto = docx2txt.process(cliente.documentacaoenviada.path)
+            print('texto: ' + texto)
+            return render(request, 'visualizar_word.html', {
+                'cliente': cliente,
+                'conteudo': texto,
+                'tipo': 'docx'
+            })
+        except ImportError:
+            print('except')
+            # Se docx2txt não estiver instalado, faz download
+            pass
+        except Exception as e:
+            print(Exception)
+            print('exception')
+            return render(request, 'erro.html', {
+                'mensagem': f'Erro ao processar documento: {str(e)}'
+            })
+    
+    # Para arquivos .doc ou se a conversão falhar
+    return render(request, 'visualizar_word.html', {
+        'cliente': cliente,
+        'tipo': 'download'
+    })
