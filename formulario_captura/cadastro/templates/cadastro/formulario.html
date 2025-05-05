@@ -205,7 +205,7 @@
                     var mes = String(data.getMonth() + 1).padStart(2, '0'); // Mês é 0-indexed
                     var ano = data.getFullYear();
 
-                    var dataFormatada = `${dia}/${mes}/${ano}`;
+                    var dataFormatada = `${ano}-${mes}-${dia}`;
                     
                     //alert(dataFormatada)
                     if(dados["Data"]["BirthDate"]) {
@@ -224,6 +224,63 @@
                             $('#id_score').val(dados["Data"]["CreditScore"]["D00"]);
                         }
                     }
+                    //endereço
+                    const primeiroEndereco = dados.Data.Addresses[0];
+                    // Acessando propriedades específicas do primeiro endereço
+                    const street = primeiroEndereco.Street; // "PRAIA DE PITANGUI"
+                    const number = primeiroEndereco.Number; // "25"
+                    const district = primeiroEndereco.District; // "VILAS DO ATLANTICO"
+                    const zipCode = primeiroEndereco.ZipCode; // 42708410
+                    const city = primeiroEndereco.City; // "LAURO DE FREITAS"
+                    const state = primeiroEndereco.State; // "BA"
+                    const alias = primeiroEndereco.Alias;
+                    const ender = street + ', ' + number + ' - ' + district + ' - ' + zipCode + ' - ' + city + ' - ' + state
+                    console.log(ender)
+                    if(ender) {
+
+                        if($('#id_endereco').length) {
+                            $('#id_endereco').val(ender);
+                        }
+                    }  
+                    
+                    //email
+                    const primeiroemail = dados.Data.Emails[0];
+                    // Acessando propriedades específicas do primeiro endereço
+                    const meuemail = primeiroemail.Email
+                    console.log(meuemail)
+                    if(meuemail) {
+
+                        if($('#id_email').length) {
+                            $('#id_email').val(meuemail);
+                        }
+                    } 
+                    
+                    //telefone
+                    const primeirotelefone = dados.Data.Phones[0];
+                    // Acessando propriedades específicas do primeiro endereço
+                    const nrfone = primeirotelefone.FormattedNumber
+                    console.log(nrfone)
+                    if(nrfone) {
+
+                        if($('#id_telefone').length) {
+                            $('#id_telefone').val(nrfone);
+                        }
+                    } 
+
+                    //Observações
+                    const observa = dados.Data.ActiveDebts[0];
+                    // Acessando propriedades específicas do primeiro endereço
+                    const categoria = observa.CategoryName
+                    const descr = observa.Description
+                    const valores = observa.EntryValue
+                    const obs = categoria + ' / ' + descr + ' / ' + valores
+                    console.log(obs)
+                    if(obs) {
+
+                        if($('#id_observacoes').length) {
+                            $('#id_observacoes').val(obs);
+                        }
+                    } 
 
                     html += '</ul>';
                     
