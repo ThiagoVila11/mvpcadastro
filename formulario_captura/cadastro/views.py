@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import ClienteForm, CondominioForm, ApartamentoForm
 from .models import Cliente, Condominio, Apartamento
 from django.db.models import Q
+from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from .services.api_service import APIDataBuscaService
@@ -270,7 +271,48 @@ def visualizar_documento(request, cliente_id):
         'tipo': 'download'
     })
 
+def get_dados_condominio(request):
+    condominio_id = request.GET.get('condominio_id')
+    
+    try:
+        condominio = Condominio.objects.get(id=condominio_id)
+        apartamentos = Apartamento.objects.filter(Condominio_id=condominio_id).values('id', 'apartamentonro')
+        
+        data = {
+            'condominionome': condominio.condominionome,
+            'condominiocnpj': condominio.condominiocnpj,
+            'condominiomatricula': condominio.condominiomatricula,
+            'condominioendereco': condominio.condominioendereco,
+            'apartamentos': list(apartamentos)
+        }
+        return JsonResponse(data)
+    
+    except Condominio.DoesNotExist:
+        return JsonResponse({'error': 'Condomínio não encontrado'}, status=404)
+
+def get_condominio_completo(request):
+    condominio_id = request.GET.get('condominio_id')
+    
+    try:
+        condominio = Condominio.objects.get(id=condominio_id)
+        apartamentos = Apartamento.objects.filter(Condominio_id=condominio_id).values(
+            'id', 
+            'apartamentonro',
+            'apartamentovagas',
+            'apartamentoiptu',
+            'apartamentovrunidade'
+        )
+        
+        response_data = {
+            'condominio': model_to_dict(condominio),
+            'apartamentos': list(apartamentos)
+        }
+        return JsonResponse(response_data)
+    
+    except Condominio.DoesNotExist:
+        return JsonResponse({'error': 'Condomínio não encontrado'}, status=404)
+
 def get_apartamentos(request):
     condominio_id = request.GET.get('condominio_id')
-    apartamentos = Apartamento.objects.filter(Condominio_id=condominio_id).values('id', 'apartamentonro')
+    apartamentos = Apartamento.objects.filter(Condominio_id=condominio_id).values('id', 'apartamentonro', 'apartamentovagas', 'apartamentoiptu', 'apartamentovrunidade')
     return JsonResponse(list(apartamentos), safe=False)
