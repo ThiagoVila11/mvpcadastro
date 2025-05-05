@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .forms import ClienteForm
-from .models import Cliente
+from .forms import ClienteForm, CondominioForm, ApartamentoForm
+from .models import Cliente, Condominio, Apartamento
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
@@ -87,6 +87,18 @@ def editar_cliente(request, id):
         'form': form,
         'cliente': cliente
     })
+
+def cadastro_condominio(request):
+    if request.method == 'POST':
+        form = CondominioForm(request.POST, request.FILES)
+        print(form)
+        if form.is_valid():
+            form.save()
+            return redirect('sucesso')
+    else:
+        form = CondominioForm()
+    
+    return render(request, 'cadastro/formulario.html', {'form': form})
 
 def consulta_cpf(request):
     if request.method == 'POST':

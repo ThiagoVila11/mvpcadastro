@@ -12,4 +12,6 @@ urlpatterns = [
     path('consulta-cpf/', views.consulta_cpf, name='consulta_cpf'),
     path('preencher_pdf/<int:cliente_id>/', views.preencher_pdf, name='preencher_pdf'),
     path('documentos/<int:cliente_id>/', views.visualizar_documento, name='visualizar_documento'),
+    #condominio
+    path('cadastro_condominio/', views.cadastro_condominio, name='cadastro_condominio'),
 ]

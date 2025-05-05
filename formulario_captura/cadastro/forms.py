@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cliente
+from .models import Cliente, Condominio, Apartamento
 
 class ClienteForm(forms.ModelForm):
     class Meta:
@@ -13,3 +13,13 @@ class ClienteForm(forms.ModelForm):
             'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
             'observacoes': forms.Textarea(attrs={'rows': 3}),
         }
+
+class CondominioForm(forms.ModelForm):
+    class Meta:
+        model = Condominio
+        fields = '__all__' 
+
+class ApartamentoForm(forms.ModelForm):
+    class Meta:
+        model = Apartamento
+        fields = '__all__' 

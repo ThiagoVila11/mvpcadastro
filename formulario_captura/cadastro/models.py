@@ -59,3 +59,31 @@ class Cliente(models.Model):
 
     def __str__(self):
         return self.nome
+    
+class Condominio(models.Model):
+
+    condominionome = models.CharField(verbose_name="Condominio",  max_length=100, blank=True)
+    condominiocnpj = models.CharField(verbose_name="CNPJ", max_length=14, null=True, default='')
+    condominiomatricula = models.CharField(verbose_name="Número da matrícula", max_length=30, null=True, default='')
+    condominioendereco = models.CharField(verbose_name="Endereço", max_length=120, null=True, default='')
+
+    def __str__(self):
+        return self.condominionome
+
+class Apartamento(models.Model):
+    vaga = (
+        ('0', 'Nenhuma'),
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4')
+    )
+
+    Condominio = models.ForeignKey(Condominio, on_delete=models.CASCADE)
+    apartamentonro = models.CharField(verbose_name="Apto", null=True, blank=True)
+    apartamentovagas =  models.CharField(verbose_name="Vaga(s)", max_length=1, choices=vaga, null=True, default='0')
+    apartamentoiptu = models.CharField(verbose_name="Número IPTU", max_length=20, null=True, default='')
+    apartamentovrunidade = models.DecimalField(verbose_name="Valor", max_digits=10, decimal_places=2, null=True, blank=True)
+    
+    def __str__(self):
+        return self.apartamentonro
