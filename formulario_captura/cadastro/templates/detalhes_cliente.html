@@ -37,11 +37,13 @@
                             <p><strong>Nome:</strong> {{ cliente.nome }}</p>
                             <p><strong>CPF:</strong> {{ cliente.cpf }}</p>
                             <p><strong>Data Nascimento:</strong> {{ cliente.data_nascimento|date:"d/m/Y"|default:"---" }}</p>
+                            <p><strong>Score:</strong> {{ cliente.score }}</p>
                         </div>
                         <div class="col-md-6">
                             <h5>Contato</h5>
                             <p><strong>Email:</strong> {{ cliente.email }}</p>
                             <p><strong>Telefone:</strong> {{ cliente.telefone }}</p>
+                            <p><strong>Endereço:</strong> {{ cliente.endereco }}</p>
                         </div>
                     </div>
                     
@@ -50,7 +52,7 @@
                             <h5>Informações da Unidade</h5>
                             <p><strong>Unidade:</strong> {{ cliente.get_unidade_display }}</p>
                             <p><strong>Apto:</strong> {{ cliente.apto }}</p>
-                            <p><strong>Score:</strong> {{ cliente.score }}</p>
+                            
                         </div>
                         <div class="col-md-6">
                             <h5>Status</h5>

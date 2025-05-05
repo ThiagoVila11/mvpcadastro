@@ -52,7 +52,6 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Nome</th>
                             <th>CPF</th>
                             <th>Email</th>
@@ -61,14 +60,13 @@
                             <th>Apto</th>
                             <th>Score</th>
                             <th>Cadastro</th>
-                            <th>Ações</th>
-                            <th>Visita Realizada</th>
+                            <th>Visitado</th>
+                            <th>Ações</th>                            
                         </tr>
                     </thead>
                     <tbody>
                         {% for cliente in clientes %}
                         <tr>
-                            <td>{{ cliente.id }}</td>
                             <td>{{ cliente.nome }}</td>
                             <td>{{ cliente.cpf }}</td>
                             <td>{{ cliente.email }}</td>
