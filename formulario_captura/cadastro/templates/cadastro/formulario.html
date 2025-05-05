@@ -64,7 +64,8 @@
                         
                         <!-- Demais campos do formulário -->
                         {% for field in form %}
-                            {% if field.name != 'cpf' %}
+                            {% if field.name != 'cpf' and field.name != Condominio and field.name != Apartamento and field.name != 'score' %}
+                                                    
                             <div class="mb-3">
                                 <label for="{{ field.id_for_label }}" class="form-label">
                                     {{ field.label }}
@@ -86,6 +87,43 @@
                                 <small class="form-text text-muted">{{ field.help_text }}</small>
                                 {% endif %}
                             </div>
+                            {% endif %}
+                            
+                            {% if field.name == Condominio %}
+                                <select id="id_Condominio" name="Condominio">
+                                    <option value="">Selecione um condomínio</option>
+                                    {% for condominio in condominios %}
+                                        <option value="{{ condominio.id }}">{{ condominio.condominionome }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                            {% if field.name == Apartamento %}
+                                <select id="id_Apartamento" name="Apartamento" disabled>
+                                    <option value="">Selecione um apartamento</option>
+                                </select>
+                            {% endif %}
+                            {% if field.name == 'score' %}
+                                <div class="mb-3" {% if field.name == 'score' %}style="display: none;"{% endif %}>
+                                    <label for="{{ field.id_for_label }}" class="form-label">
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                    </label>
+                                    
+                                    {% if field.errors %}
+                                        {% render_field field class="form-control is-invalid" %}    
+                                        <div class="invalid-feedback">
+                                            {% for error in field.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {% render_field field class="form-control" %}
+                                    {% endif %}
+                                    
+                                    {% if field.help_text %}
+                                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                                    {% endif %}
+                                </div>
                             {% endif %}
                         {% endfor %}
                         
@@ -302,4 +340,34 @@
         });
     });
 </script>
+<script>
+    $(document).ready(function() {
+        // Quando o campo Condominio for alterado
+        $('#id_Condominio').change(function() {
+            var condominioId = $(this).val();
+            var apartamentoSelect = $('#id_Apartamento');
+
+            if (condominioId) {
+                // Requisição AJAX para buscar apartamentos do condomínio selecionado
+                $.ajax({
+                    url: '/get_apartamentos/',  // URL da view que retorna os apartamentos
+                    data: {
+                        'condominio_id': condominioId
+                    },
+                    success: function(data) {
+                        apartamentoSelect.empty().append('<option value="">Selecione um apartamento</option>');
+                        $.each(data, function(key, value) {
+                            apartamentoSelect.append('<option value="' + value.id + '">' + value.apartamentonro + '</option>');
+                        });
+                        apartamentoSelect.prop('disabled', false);
+                    }
+                });
+            } else {
+                apartamentoSelect.empty().append('<option value="">Selecione um apartamento</option>').prop('disabled', true);
+            }
+        });
+    });
+
+</script>
+
 {% endblock %}

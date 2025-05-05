@@ -14,4 +14,7 @@ urlpatterns = [
     path('documentos/<int:cliente_id>/', views.visualizar_documento, name='visualizar_documento'),
     #condominio
     path('cadastro_condominio/', views.cadastro_condominio, name='cadastro_condominio'),
+    #apartamento
+    path('cadastro_apartamento/', views.cadastro_apartamento, name='cadastro_apartamento'),  
+    path('get_apartamentos/', views.get_apartamentos, name='get_apartamentos'), 
 ]

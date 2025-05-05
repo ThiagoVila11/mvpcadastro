@@ -98,7 +98,19 @@ def cadastro_condominio(request):
     else:
         form = CondominioForm()
     
-    return render(request, 'cadastro/formulario.html', {'form': form})
+    return render(request, 'cadastro/formulariocondominio.html', {'form': form})
+
+def cadastro_apartamento(request):
+    if request.method == 'POST':
+        form = ApartamentoForm(request.POST, request.FILES)
+        print(form)
+        if form.is_valid():
+            form.save()
+            return redirect('sucesso')
+    else:
+        form = ApartamentoForm()
+    
+    return render(request, 'cadastro/formularioapartamento.html', {'form': form})
 
 def consulta_cpf(request):
     if request.method == 'POST':
@@ -257,3 +269,8 @@ def visualizar_documento(request, cliente_id):
         'cliente': cliente,
         'tipo': 'download'
     })
+
+def get_apartamentos(request):
+    condominio_id = request.GET.get('condominio_id')
+    apartamentos = Apartamento.objects.filter(Condominio_id=condominio_id).values('id', 'apartamentonro')
+    return JsonResponse(list(apartamentos), safe=False)
