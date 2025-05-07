@@ -3,7 +3,7 @@ from .forms import ClienteForm, CondominioForm, ApartamentoForm, ConsultorForm, 
 from .models import Cliente, Condominio, Apartamento, Consultor, PreCliente
 from django.db.models import Q
 from django.forms.models import model_to_dict
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
 from .services.api_service import APIDataBuscaService
 import json
@@ -17,6 +17,8 @@ from django.http import HttpResponse, FileResponse, Http404
 import re
 from datetime import datetime
 from io import BytesIO
+from django.contrib import messages
+from django.urls import reverse
 
 
 def cadastro_cliente(request):
@@ -48,10 +50,6 @@ def consulta_clientes(request):
         clientes = clientes.filter(Q(nome__icontains=nome))
     if cpf:
         clientes = clientes.filter(Q(cpf__icontains=cpf))
-    #if unidade:
-    #    clientes = clientes.filter(unidade=unidade)
-    #if apto:
-    #    clientes = clientes.filter(apto=apto)
     
     # Obter opções para os selects
     unidades = Cliente.unidades
@@ -62,8 +60,6 @@ def consulta_clientes(request):
         'filtros': {
             'nome': nome or '',
             'cpf': cpf or '',
-            #'unidade': unidade or '',
-            #'apto': apto or '',
         }
     }
     
@@ -89,6 +85,21 @@ def editar_cliente(request, id):
         'cliente': cliente
     })
 
+def excluir_cliente(request, id):
+    cliente = get_object_or_404(Cliente, id=id)
+    
+    if request.method == 'POST':
+        try:
+            cliente.delete()
+            messages.success(request, 'Cliente excluído com sucesso!')
+            return redirect('consulta_clientes')
+        except Exception as e:
+            messages.error(request, f'Erro ao excluir cliente: {str(e)}')
+            return redirect('detalhes_cliente', id=id)
+    
+    # Se não for POST, mostra página de confirmação
+    return render(request, 'confirmar_exclusao.html', {'cliente': cliente})
+
 def cadastro_condominio(request):
     if request.method == 'POST':
         form = CondominioForm(request.POST, request.FILES)
@@ -100,6 +111,62 @@ def cadastro_condominio(request):
         form = CondominioForm()
     
     return render(request, 'cadastro/formulariocondominio.html', {'form': form})
+
+def consulta_condominios(request):
+    # Obtém todos os clientes inicialmente
+    condominios = Condominio.objects.all().order_by('condominionome')
+    print(condominios)
+    
+    # Filtros
+    nome = request.GET.get('nome')
+    print('Nome:')
+    print(nome)
+    if nome:
+        condominios = condominios.filter(Q(condominionome__icontains=nome))
+    
+    context = {
+        'condominios': condominios,
+        'filtros': {
+            'condominionome': nome or ''
+        }
+    }
+    print(context)
+    return render(request, 'consulta_condominios.html', context)
+
+def detalhes_condominio(request, id):
+    condominio = get_object_or_404(Condominio, id=id)
+    return render(request, 'detalhes_condominio.html', {'condominio': condominio})
+
+def editar_condominio(request, id):
+    condominio = get_object_or_404(Condominio, id=id)
+    
+    if request.method == 'POST':
+        form = CondominioForm(request.POST, request.FILES, instance=condominio)
+        if form.is_valid():
+            form.save()
+            return redirect('detalhes_condominio', id=condominio.id)
+    else:
+        form = CondominioForm(instance=condominio)
+    
+    return render(request, 'editar_condominio.html', {
+        'form': form,
+        'condominio': condominio
+    })
+
+def excluir_condominio(request, id):
+    condominio = get_object_or_404(Condominio, id=id)
+    
+    if request.method == 'POST':
+        try:
+            condominio.delete()
+            messages.success(request, 'Condominio excluído com sucesso!')
+            return redirect('consulta_condominios')
+        except Exception as e:
+            messages.error(request, f'Erro ao excluir condominio: {str(e)}')
+            return redirect('detalhes_cliente', id=id)
+    
+    # Se não for POST, mostra página de confirmação
+    return render(request, 'confirmarexclusaocondominio.html', {'condominio': condominio})
 
 def cadastro_apartamento(request):
     if request.method == 'POST':

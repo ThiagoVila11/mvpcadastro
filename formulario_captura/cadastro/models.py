@@ -3,9 +3,11 @@ from django.core.validators import EmailValidator
 
 class Condominio(models.Model):
 
-    condominionome = models.CharField(verbose_name="Condominio",  max_length=100, blank=True)
+    condominionome = models.CharField(verbose_name="Nome do Condominio",  max_length=100, blank=True)
+    condominionomecomercial = models.CharField(verbose_name="Nome Comercial do Condominio",  max_length=100, null=True, blank=True)
+    condominionomepropriedade = models.CharField(verbose_name="Nome da Propriedade",  max_length=100, null=True, blank=True)
     condominiocnpj = models.CharField(verbose_name="CNPJ", max_length=14, null=True, default='')
-    condominiomatricula = models.CharField(verbose_name="Número da matrícula", max_length=30, null=True, default='')
+    condominiomatricula = models.CharField(verbose_name="IPTU", max_length=30, null=True, default='')
     condominioendereco = models.CharField(verbose_name="Endereço", max_length=120, null=True, default='')
 
     def __str__(self):

@@ -8,12 +8,17 @@ urlpatterns = [
     path('clientes/consulta/', views.consulta_clientes, name='consulta_clientes'),
     path('clientes/<int:id>/detalhes/', views.detalhes_cliente, name='detalhes_cliente'),
     path('clientes/<int:id>/editar/', views.editar_cliente, name='editar_cliente'),
+    path('clientes/excluir/<int:id>/', views.excluir_cliente, name='excluir_cliente'),
     path('consulta/', views.consulta_view, name='consulta'),
     path('consulta-cpf/', views.consulta_cpf, name='consulta_cpf'),
     path('preencher_pdf/<int:cliente_id>/', views.preencher_pdf, name='preencher_pdf'),
     path('documentos/<int:cliente_id>/', views.visualizar_documento, name='visualizar_documento'),
     #condominio
     path('cadastro_condominio/', views.cadastro_condominio, name='cadastro_condominio'),
+    path('consulta_condominios/', views.consulta_condominios, name='consulta_condominios'),
+    path('condominio/<int:id>/detalhes/', views.detalhes_condominio, name='detalhes_condominio'),
+    path('condominio/<int:id>/editar/', views.editar_condominio, name='editar_condominio'),
+    path('condominio/excluir/<int:id>/', views.excluir_condominio, name='excluir_condominio'),
     path('get_dados_condominio/', views.get_dados_condominio, name='get_dados_condominio'),
     path('get_condominio_completo/', views.get_condominio_completo, name='get_condominio_completo'),
     #apartamento

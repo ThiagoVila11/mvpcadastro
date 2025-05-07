@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Editar Condominio</h2>
+                <a href="{% url 'detalhes_condominio' condominio.id %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                    <div class="mb-3">
+                        <label for="id_condominionome" class="form-label">Nome do Condominio</label>
+                        {{ form.condominionome }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_condominionomecomercial" class="form-label">Nome Comercial do Condominio</label>
+                        {{ form.condominionomecomercial }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_condominionomepropriedade" class="form-label">Nome da Propriedade</label>
+                        {{ form.condominionomepropriedade }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_condominiocnpj" class="form-label">CNPJ</label>
+                        {{ form.condominiocnpj }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_condominiomatricula" class="form-label">IPTU</label>
+                        {{ form.condominiomatricula }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_condominioendereco" class="form-label">Endereço</label>
+                        {{ form.condominioendereco }}
+                    </div>
+                
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                <a href="{% url 'detalhes_condominio' condominio.id %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
