@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .forms import ClienteForm, CondominioForm, ApartamentoForm, ConsultorForm
-from .models import Cliente, Condominio, Apartamento, Consultor
+from .forms import ClienteForm, CondominioForm, ApartamentoForm, ConsultorForm, PreClienteForm
+from .models import Cliente, Condominio, Apartamento, Consultor, PreCliente
 from django.db.models import Q
 from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404
@@ -41,17 +41,17 @@ def consulta_clientes(request):
     # Filtros
     nome = request.GET.get('nome')
     cpf = request.GET.get('cpf')
-    unidade = request.GET.get('unidade')
-    apto = request.GET.get('apto')
+    #unidade = request.GET.get('unidade')
+    #apto = request.GET.get('apto')
     
     if nome:
         clientes = clientes.filter(Q(nome__icontains=nome))
     if cpf:
         clientes = clientes.filter(Q(cpf__icontains=cpf))
-    if unidade:
-        clientes = clientes.filter(unidade=unidade)
-    if apto:
-        clientes = clientes.filter(apto=apto)
+    #if unidade:
+    #    clientes = clientes.filter(unidade=unidade)
+    #if apto:
+    #    clientes = clientes.filter(apto=apto)
     
     # Obter opções para os selects
     unidades = Cliente.unidades
@@ -62,8 +62,8 @@ def consulta_clientes(request):
         'filtros': {
             'nome': nome or '',
             'cpf': cpf or '',
-            'unidade': unidade or '',
-            'apto': apto or '',
+            #'unidade': unidade or '',
+            #'apto': apto or '',
         }
     }
     
@@ -124,6 +124,43 @@ def cadastro_consultor(request):
         form = ConsultorForm()
     
     return render(request, 'cadastro/formularioconsultor.html', {'form': form})
+
+def cadastro_precliente(request):
+    if request.method == 'POST':
+        form = PreClienteForm(request.POST, request.FILES)
+        print(form)
+        if form.is_valid():
+            form.save()
+            return redirect('sucesso')
+    else:
+        form = PreClienteForm()
+    
+    return render(request, 'cadastro/formularioprecliente.html', {'form': form})
+
+def consulta_preclientes(request):
+    # Obtém todos os clientes inicialmente
+    preclientes = PreCliente.objects.all().order_by('preclienteNome')
+    
+    # Filtros
+    nome = request.GET.get('nome')
+    cpf = request.GET.get('cpf')
+    
+    if nome:
+        preclientes = preclientes.filter(Q(preclienteNome__icontains=nome))
+    if cpf:
+        preclientes = preclientes.filter(Q(preclienteCpf__icontains=cpf))
+
+    
+    context = {
+        'preclientes': preclientes,
+        'filtros': {
+            'preclienteNome': nome or '',
+            'preclienteCpf': cpf or '',
+        }
+    }
+    
+    return render(request, 'consulta_precliente.html', context)
+
 
 def consulta_cpf(request):
     if request.method == 'POST':

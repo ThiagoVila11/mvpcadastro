@@ -21,4 +21,7 @@ urlpatterns = [
     path('get_apartamentos/', views.get_apartamentos, name='get_apartamentos'), 
     #consultores
     path('cadastro_consultor/', views.cadastro_consultor, name='cadastro_consultor'),
+    #pré-cliente
+    path('cadastro_precliente/', views.cadastro_precliente, name='cadastro_precliente'),
+    path('consulta_preclientes', views.consulta_preclientes, name='consulta_preclientes')
 ]

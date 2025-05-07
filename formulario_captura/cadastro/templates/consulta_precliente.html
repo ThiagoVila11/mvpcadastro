@@ -2,8 +2,8 @@
 {% load static %}
 {% block content %}
 <div class="container mt-4">
-    <h2>Consulta de Clientes     
-        <a href="{% url 'cadastro_cliente' %}" class="btn btn-success"><i class="fas fa-plus"></i> Adicionar</a> 
+    <h2>Consulta de Pré-Clientes     
+        <a href="{% url 'cadastro_precliente' %}" class="btn btn-success"><i class="fas fa-plus"></i> Adicionar</a> 
     </h2>
 
     <!-- Formulário de Filtros -->
@@ -26,7 +26,7 @@
 
                 </div>
                 <button type="submit" class="btn btn-primary">Filtrar</button>
-                <a href="{% url 'consulta_clientes' %}" class="btn btn-secondary">Limpar</a>
+                <a href="{% url 'consulta_preclientes' %}" class="btn btn-secondary">Limpar</a>
             </form>
         </div>
     </div>
@@ -41,38 +41,27 @@
                             <th>Nome</th>
                             <th>CPF</th>
                             <th>Email</th>
-                            <th>Telefone</th>
-                            <th>Unidade</th>
-                            <th>Apto</th>
-                            <th>Score</th>
-                            <th>Consultor</th>
-                            <th>Visitado</th>
-                            <th>Ações</th>                            
+                            <th>Data do cadastro</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for cliente in clientes %}
+                        {% for precliente in preclientes %}
                         <tr>
-                            <td>{{ cliente.nome }}</td>
-                            <td>{{ cliente.cpf }}</td>
-                            <td>{{ cliente.email }}</td>
-                            <td>{{ cliente.telefone }}</td>
-                            <td>{{ cliente.get_unidade_display }}</td>
-                            <td>{{ cliente.apto }}</td>
-                            <td>{{ cliente.score }}</td>
-                            <td>{{ cliente.Consultor}}</td>
-                            <td><input type="checkbox" {% if cliente.visitarealizada %}checked{% endif %} disabled></td>
+                            <td>{{ precliente.preclienteNome }}</td>
+                            <td>{{ precliente.preclienteCpf }}</td>
+                            <td>{{ precliente.precoclienteEmail }}</td>
+                            <td>{{ precliente.preclienteDataCadastro }}</td>
                             <td>
                                 
-                                <a href="{% url 'editar_cliente' cliente.id %}" class="btn btn-sm btn-primary">Editar</a>
-                                <a href="{% url 'detalhes_cliente' cliente.id %}" class="btn btn-sm btn-info">Detalhes</a>
-                                <a href="{% url 'preencher_pdf' cliente.id %}" class="btn btn-sm btn-info">Gerar Documento</a>
+                                <a href="{% url 'editar_cliente' precliente.id %}" class="btn btn-sm btn-primary">Editar</a>
+                                <a href="{% url 'detalhes_cliente' precliente.id %}" class="btn btn-sm btn-info">Detalhes</a>
+                                <a href="{% url 'preencher_pdf' precliente.id %}" class="btn btn-sm btn-info">Criar Cliente</a>
                             
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="9" class="text-center">Nenhum cliente encontrado</td>
+                            <td colspan="9" class="text-center">Nenhum pré-cliente encontrado</td>
                         </tr>
                         {% endfor %}
                     </tbody>

@@ -47,6 +47,29 @@ class Apartamento(models.Model):
     def __str__(self):
         return self.apartamentonro
     
+class PreCliente(models.Model):
+    AvaliacaoAutomatica = (('A', 'Apto'),('N', 'Não Apto'))
+
+    preclienteNome = models.CharField(verbose_name="Nome",  max_length=100)
+    preclienteCpf = models.CharField(verbose_name="CPF", max_length=14, unique=True)
+    precoclienteEmail = models.EmailField(verbose_name="E-mail",
+                                    max_length=255,
+                                    unique=True,  # Opcional: para garantir emails únicos
+                                    validators=[EmailValidator(message="Digite um e-mail válido")],
+                                    help_text="Exemplo: usuario@provedor.com")
+    preclienteDataCadastro = models.DateTimeField(verbose_name="Data de cadastro", auto_now_add=True)
+    preclienteScore = models.CharField(verbose_name='Score', null=True, blank=True, default='0')
+    preclienteApontamentos = models.CharField(verbose_name='Apontamentos', null=True, blank=True)
+    preclienteRendaPresumida = models.DecimalField(verbose_name="Renda Presumida", max_digits=10, decimal_places=2, null=True, blank=True)
+    preclienteAvalAuto = models.CharField(verbose_name='Avaliação Automática', max_length=1, null=True, blank=True)
+    preclienteAvaliacao = models.CharField(verbose_name='Avaliação', max_length=1, null=True, blank=True)
+    preclienteJson = models.TextField(verbose_name='Json', null=True, blank=True)
+
+
+    def __str__(self):
+        return self.preclienteNome
+    
+    
 class Cliente(models.Model):
     unidades = (
         ("VMD", "Vila Madalena"), 

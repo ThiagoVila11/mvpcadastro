@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cliente, Condominio, Apartamento, Consultor
+from .models import Cliente, Condominio, Apartamento, Consultor, PreCliente
 
 class ClienteForm(forms.ModelForm):
     class Meta:
@@ -41,4 +41,13 @@ class ConsultorForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'consultorDataInicio': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+class PreClienteForm(forms.ModelForm):
+    class Meta:
+        model = PreCliente
+        fields = '__all__'
+        widgets = {
+            'preclienteDataCadastro': forms.DateInput(attrs={'type': 'date'}),
+            'preclienteJson': forms.Textarea(attrs={'rows': 10}),
         }
