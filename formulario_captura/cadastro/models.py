@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import EmailValidator
 
 class Condominio(models.Model):
 
@@ -9,6 +10,24 @@ class Condominio(models.Model):
 
     def __str__(self):
         return self.condominionome
+    
+class Consultor(models.Model):
+    AtivoInativoConsultor = (
+        ('A', 'Ativo(a)'),
+        ('I', 'Inativo(a)')
+    )
+    consultorNome = models.CharField(verbose_name='Nome', max_length=120, blank=True)
+    consultorEmail = models.EmailField(verbose_name="E-mail",
+                                    max_length=255,
+                                    unique=True,  # Opcional: para garantir emails únicos
+                                    validators=[EmailValidator(message="Digite um e-mail válido")],
+                                    help_text="Exemplo: usuario@provedor.com")
+    consultorTelefone = models.CharField(verbose_name='Telefone', null=True, blank=True)
+    consultorDataInicio = models.DateField(verbose_name='Data de Início', null=True, blank=True)
+    consultorAtivoInativo = models.CharField(verbose_name='Ativo/Inativo', max_length=1,choices=AtivoInativoConsultor, null=True, default='A')
+
+    def __str__(self):
+        return self.consultorNome
 
 class Apartamento(models.Model):
     vaga = (
@@ -86,6 +105,7 @@ class Cliente(models.Model):
     documentacaoenviada = models.FileField(verbose_name="Pré-Contrato", default=None, null=True)
     Condominio = models.ForeignKey(Condominio, on_delete=models.CASCADE, null=True, blank=True)
     Apartamento = models.ForeignKey(Apartamento, on_delete=models.CASCADE, null=True, blank=True)
+    Consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.nome

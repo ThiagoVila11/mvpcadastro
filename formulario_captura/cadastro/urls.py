@@ -19,4 +19,6 @@ urlpatterns = [
     #apartamento
     path('cadastro_apartamento/', views.cadastro_apartamento, name='cadastro_apartamento'),  
     path('get_apartamentos/', views.get_apartamentos, name='get_apartamentos'), 
+    #consultores
+    path('cadastro_consultor/', views.cadastro_consultor, name='cadastro_consultor'),
 ]

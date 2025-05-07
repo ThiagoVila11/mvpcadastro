@@ -59,7 +59,7 @@
                             <th>Unidade</th>
                             <th>Apto</th>
                             <th>Score</th>
-                            <th>Cadastro</th>
+                            <th>Consultor</th>
                             <th>Visitado</th>
                             <th>Ações</th>                            
                         </tr>
@@ -74,7 +74,7 @@
                             <td>{{ cliente.get_unidade_display }}</td>
                             <td>{{ cliente.apto }}</td>
                             <td>{{ cliente.score }}</td>
-                            <td>{{ cliente.data_cadastro|date:"d/m/Y H:i" }}</td>
+                            <td>{{ cliente.Consultor}}</td>
                             <td><input type="checkbox" {% if cliente.visitarealizada %}checked{% endif %} disabled></td>
                             <td>
                                 

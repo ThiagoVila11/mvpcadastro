@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .forms import ClienteForm, CondominioForm, ApartamentoForm
-from .models import Cliente, Condominio, Apartamento
+from .forms import ClienteForm, CondominioForm, ApartamentoForm, ConsultorForm
+from .models import Cliente, Condominio, Apartamento, Consultor
 from django.db.models import Q
 from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404
@@ -112,6 +112,18 @@ def cadastro_apartamento(request):
         form = ApartamentoForm()
     
     return render(request, 'cadastro/formularioapartamento.html', {'form': form})
+
+def cadastro_consultor(request):
+    if request.method == 'POST':
+        form = ConsultorForm(request.POST, request.FILES)
+        print(form)
+        if form.is_valid():
+            form.save()
+            return redirect('sucesso')
+    else:
+        form = ConsultorForm()
+    
+    return render(request, 'cadastro/formularioconsultor.html', {'form': form})
 
 def consulta_cpf(request):
     if request.method == 'POST':

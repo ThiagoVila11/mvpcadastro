@@ -1,12 +1,12 @@
 from django import forms
-from .models import Cliente, Condominio, Apartamento
+from .models import Cliente, Condominio, Apartamento, Consultor
 
 class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
         fields = ['cpf', 'nome', 'score','profissao', 'estcivil', 'rgrne', 'email', 'telefone', 
                   'endereco', 'data_nascimento', 'nomeresidente', 'cpfresidente', 'rgresidente', 
-                  'Condominio', 'Apartamento',
+                  'Consultor', 'Condominio', 'Apartamento',
                   'cnpjunidade', 'matriculaunidade', 'vagaunidade',
                   'enderecounidade', 'nriptuunidade', 'vrunidade', 
                   'iniciocontrato', 'prazocontrato',
@@ -23,6 +23,7 @@ class ClienteForm(forms.ModelForm):
             # Adiciona classe JS para manipulação
             self.fields['Condominio'].widget.attrs.update({'class': 'condominio-select'})
             self.fields['Apartamento'].widget.attrs.update({'class': 'apartamento-select'})
+            self.fields['Consultor'].widget.attrs.update({'class': 'consultor-select'})
 
 class CondominioForm(forms.ModelForm):
     class Meta:
@@ -33,3 +34,11 @@ class ApartamentoForm(forms.ModelForm):
     class Meta:
         model = Apartamento
         fields = '__all__' 
+
+class ConsultorForm(forms.ModelForm):
+    class Meta:
+        model = Consultor
+        fields = '__all__'
+        widgets = {
+            'consultorDataInicio': forms.DateInput(attrs={'type': 'date'}),
+        }
