@@ -19,8 +19,16 @@ from datetime import datetime
 from io import BytesIO
 from django.contrib import messages
 from django.urls import reverse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from rest_framework.authtoken.models import Token
+import requests
+from django.contrib.auth import get_user_model
+import logging
+from requests.exceptions import RequestException
 
 
+@login_required 
 def cadastro_cliente(request):
     if request.method == 'POST':
         form = ClienteForm(request.POST, request.FILES)
@@ -36,6 +44,7 @@ def cadastro_cliente(request):
 def sucesso(request):
     return render(request, 'cadastro/sucesso.html')
 
+@login_required 
 def consulta_clientes(request):
     # Obtém todos os clientes inicialmente
     clientes = Cliente.objects.all().order_by('-data_cadastro')
@@ -65,10 +74,12 @@ def consulta_clientes(request):
     
     return render(request, 'consulta_clientes.html', context)
 
+@login_required 
 def detalhes_cliente(request, id):
     cliente = get_object_or_404(Cliente, id=id)
     return render(request, 'detalhes_cliente.html', {'cliente': cliente})
 
+@login_required 
 def editar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id=id)
     
@@ -85,6 +96,7 @@ def editar_cliente(request, id):
         'cliente': cliente
     })
 
+@login_required 
 def excluir_cliente(request, id):
     cliente = get_object_or_404(Cliente, id=id)
     
@@ -100,6 +112,7 @@ def excluir_cliente(request, id):
     # Se não for POST, mostra página de confirmação
     return render(request, 'confirmar_exclusao.html', {'cliente': cliente})
 
+@login_required 
 def cadastro_condominio(request):
     if request.method == 'POST':
         form = CondominioForm(request.POST, request.FILES)
@@ -112,6 +125,7 @@ def cadastro_condominio(request):
     
     return render(request, 'cadastro/formulariocondominio.html', {'form': form})
 
+@login_required 
 def consulta_condominios(request):
     # Obtém todos os clientes inicialmente
     condominios = Condominio.objects.all().order_by('condominionome')
@@ -133,10 +147,12 @@ def consulta_condominios(request):
     print(context)
     return render(request, 'consulta_condominios.html', context)
 
+@login_required 
 def detalhes_condominio(request, id):
     condominio = get_object_or_404(Condominio, id=id)
     return render(request, 'detalhes_condominio.html', {'condominio': condominio})
 
+@login_required 
 def editar_condominio(request, id):
     condominio = get_object_or_404(Condominio, id=id)
     
@@ -153,6 +169,7 @@ def editar_condominio(request, id):
         'condominio': condominio
     })
 
+@login_required 
 def excluir_condominio(request, id):
     condominio = get_object_or_404(Condominio, id=id)
     
@@ -168,6 +185,7 @@ def excluir_condominio(request, id):
     # Se não for POST, mostra página de confirmação
     return render(request, 'confirmarexclusaocondominio.html', {'condominio': condominio})
 
+@login_required 
 def cadastro_apartamento(request):
     if request.method == 'POST':
         form = ApartamentoForm(request.POST, request.FILES)
@@ -180,6 +198,7 @@ def cadastro_apartamento(request):
     
     return render(request, 'cadastro/formularioapartamento.html', {'form': form})
 
+@login_required 
 def cadastro_consultor(request):
     if request.method == 'POST':
         form = ConsultorForm(request.POST, request.FILES)
@@ -192,6 +211,7 @@ def cadastro_consultor(request):
     
     return render(request, 'cadastro/formularioconsultor.html', {'form': form})
 
+@login_required 
 def cadastro_precliente(request):
     if request.method == 'POST':
         form = PreClienteForm(request.POST, request.FILES)
@@ -204,6 +224,7 @@ def cadastro_precliente(request):
     
     return render(request, 'cadastro/formularioprecliente.html', {'form': form})
 
+@login_required 
 def consulta_preclientes(request):
     # Obtém todos os clientes inicialmente
     preclientes = PreCliente.objects.all().order_by('preclienteNome')
@@ -432,3 +453,68 @@ def get_apartamentos(request):
     condominio_id = request.GET.get('condominio_id')
     apartamentos = Apartamento.objects.filter(Condominio_id=condominio_id).values('id', 'apartamentonro', 'apartamentovagas', 'apartamentoiptu', 'apartamentovrunidade')
     return JsonResponse(list(apartamentos), safe=False)
+
+
+User = get_user_model()
+logger = logging.getLogger(__name__)
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('consulta_clientes')
+        
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        if not username or not password:
+            messages.error(request, 'Usuário e senha são obrigatórios')
+            return render(request, 'registration/login.html')
+
+        try:
+            # 1. Primeiro valida com a API externa
+            response = requests.post(
+                'http://localhost:8001/api/login/',
+                json={'username': username, 'password': password},
+                headers={'Content-Type': 'application/json'},
+                timeout=10
+            )
+            
+            if response.status_code != 200:
+                messages.error(request, 'Credenciais inválidas')
+                return render(request, 'registration/login.html')
+                
+            token_data = response.json()
+            
+            # 2. Verifica/Cria usuário local
+            user, created = User.objects.get_or_create(
+                username=username,
+                defaults={
+                    'is_active': True,
+                    'is_staff': False,  # Ajuste conforme necessário
+                    'is_superuser': False
+                }
+            )
+            
+            if created:
+                logger.info(f'Novo usuário criado: {username}')
+                user.set_unusable_password()  # Não usaremos senha local
+                user.save()
+            
+            # 3. Autentica o usuário (sem verificar senha local)
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            login(request, user)
+            
+            # 4. Armazena o token na sessão
+            request.session['api_token'] = token_data.get('token')
+            
+            return redirect(request.GET.get('next', 'consulta_clientes'))
+            
+        except RequestException as e:
+            logger.error(f'Erro na API de autenticação: {str(e)}')
+            messages.error(request, 'Erro ao conectar com o servidor de autenticação')
+    
+    return render(request, 'registration/login.html')
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'Você foi desconectado com sucesso')
+    return redirect('login')

@@ -29,4 +29,5 @@ urlpatterns = [
     #pré-cliente
     path('cadastro_precliente/', views.cadastro_precliente, name='cadastro_precliente'),
     path('consulta_preclientes', views.consulta_preclientes, name='consulta_preclientes')
+
 ]
