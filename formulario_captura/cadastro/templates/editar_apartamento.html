@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Editar Apartamento</h2>
+                <a href="{% url 'detalhes_apartamento' apartamento.id %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                    <div class="mb-3">
+                        <label for="id_condominionome" class="form-label">Nome do Condominio</label>
+                        {{ form..Condominio.condominioNome }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_apartamentonro" class="form-label">Número</label>
+                        {{ form.apartamentonro }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_apartamentovagas" class="form-label">Vagas</label>
+                        {{ form.apartamentovagas }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_apartamentoiptu" class="form-label">IPTU</label>
+                        {{ form.apartamentoiptu }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_apartamentovrunidade" class="form-label">Valor</label>
+                        {{ form.apartamentovrunidade }}
+                    </div>
+
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                <a href="{% url 'detalhes_apartamento' apartamento.id %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

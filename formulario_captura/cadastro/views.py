@@ -180,7 +180,7 @@ def excluir_condominio(request, id):
             return redirect('consulta_condominios')
         except Exception as e:
             messages.error(request, f'Erro ao excluir condominio: {str(e)}')
-            return redirect('detalhes_cliente', id=id)
+            return redirect('detalhes_condominio', id=id)
     
     # Se não for POST, mostra página de confirmação
     return render(request, 'confirmarexclusaocondominio.html', {'condominio': condominio})
@@ -199,6 +199,62 @@ def cadastro_apartamento(request):
     return render(request, 'cadastro/formularioapartamento.html', {'form': form})
 
 @login_required 
+def consulta_apartamentos(request):
+    apartamentos = Apartamento.objects.all().order_by('apartamentonro')
+    
+    # Filtros
+    nome = request.GET.get('nome')
+    if nome:
+        apartamentos = apartamentos.filter(Q(apartamentonro__icontains=nome))
+    
+    context = {
+        'apartamentos': apartamentos,
+        'filtros': {
+            'apartamentonro': nome or ''
+        }
+    }
+    print(context)
+    return render(request, 'consulta_apartamentos.html', context)
+
+@login_required 
+def editar_apartamento(request, id):
+    apartamento = get_object_or_404(Apartamento, id=id)
+    
+    if request.method == 'POST':
+        form = ApartamentoForm(request.POST, request.FILES, instance=apartamento)
+        if form.is_valid():
+            form.save()
+            return redirect('detalhes_apartamento', id=apartamento.id)
+    else:
+        form = ApartamentoForm(instance=apartamento)
+    
+    return render(request, 'editar_apartamento.html', {
+        'form': form,
+        'apartamento': apartamento
+    })
+
+@login_required
+def detalhes_apartamento(request, id):
+    apartamento = get_object_or_404(Apartamento, id=id)
+    return render(request, 'detalhes_apartamento.html', {'apartamento': apartamento})
+
+@login_required 
+def excluir_apartamento(request, id):
+    apartamento = get_object_or_404(Apartamento, id=id)
+    
+    if request.method == 'POST':
+        try:
+            apartamento.delete()
+            messages.success(request, 'Apartamento excluído com sucesso!')
+            return redirect('consulta_apartamentos')
+        except Exception as e:
+            messages.error(request, f'Erro ao excluir apartamento: {str(e)}')
+            return redirect('detalhes_apartamento', id=id)
+    
+    # Se não for POST, mostra página de confirmação
+    return render(request, 'confirmarexclusaoapartamento.html', {'apartamento': apartamento})
+
+@login_required 
 def cadastro_consultor(request):
     if request.method == 'POST':
         form = ConsultorForm(request.POST, request.FILES)
@@ -210,6 +266,30 @@ def cadastro_consultor(request):
         form = ConsultorForm()
     
     return render(request, 'cadastro/formularioconsultor.html', {'form': form})
+
+@login_required 
+def consulta_consultores(request):
+    consultores = Consultor.objects.all().order_by('consultorNome')
+    
+    # Filtros
+    nome = request.GET.get('nome')
+    email = request.GET.get('email')
+    
+    if nome:
+        consultores = consultores.filter(Q(consultorNome__icontains=nome))
+    if email:
+        consultores = consultores.filter(Q(consultorEmail__icontains=email))
+
+    
+    context = {
+        'consultores': consultores,
+        'filtros': {
+            'consultorNome': nome or '',
+            'consultorEmail': email or '',
+        }
+    }
+    
+    return render(request, 'consulta_consultores.html', context)
 
 @login_required 
 def cadastro_precliente(request):

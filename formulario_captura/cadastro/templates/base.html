@@ -25,9 +25,9 @@
 </head>
 <body>
     <!-- Barra de Navegação -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'consulta_clientes' %}">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" >
+        <div class="container" >
+            <a class="navbar-brand" href="{% url 'consulta_clientes' %}" >
                 <i class="fas fa-users me-2"></i>Vila11
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -35,28 +35,17 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'consulta_clientes' %}active{% endif %}" 
-                           href="{% url 'consulta_clientes' %}">
-                            <i class="fas fa-search me-1"></i>Consulta
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'cadastro_cliente' %}active{% endif %}" 
-                           href="{% url 'cadastro_cliente' %}">
-                           <i class="fas fa-plus-circle me-1"></i>Novo Cliente
-                        </a>                        
-                    </li>
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-cog me-1"></i>Configurações
+                            <i class="fas fa-bars me-1"></i>Opções
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'consulta_condominios' %}">Condominios</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'cadastro_apartamento' %}">Apartamentos</a></li>
+                            <li><a class="dropdown-item" href="{% url 'consulta_apartamentos' %}">Apartamentos</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'cadastro_consultor' %}">Consultores</a></li>
+                            <li><a class="dropdown-item" href="{% url 'consulta_consultores' %}">Consultores</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'consulta_preclientes' %}">Pré-Clientes</a></li>
                             <li><hr class="dropdown-divider"></li>    

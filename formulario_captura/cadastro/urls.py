@@ -23,9 +23,16 @@ urlpatterns = [
     path('get_condominio_completo/', views.get_condominio_completo, name='get_condominio_completo'),
     #apartamento
     path('cadastro_apartamento/', views.cadastro_apartamento, name='cadastro_apartamento'),  
+    path('consulta_apartamentos/', views.consulta_apartamentos, name='consulta_apartamentos'),
+    path('apartamento/<int:id>/detalhes/', views.detalhes_apartamento, name='detalhes_apartamento'),
+    path('apartamento/<int:id>/editar/', views.editar_apartamento, name='editar_apartamento'),
+    path('apartamento/excluir/<int:id>/', views.excluir_apartamento, name='excluir_apartamento'),
     path('get_apartamentos/', views.get_apartamentos, name='get_apartamentos'), 
     #consultores
     path('cadastro_consultor/', views.cadastro_consultor, name='cadastro_consultor'),
+    path('consulta_consultores/', views.consulta_consultores, name='consulta_consultores'),
+
+    
     #pré-cliente
     path('cadastro_precliente/', views.cadastro_precliente, name='cadastro_precliente'),
     path('consulta_preclientes', views.consulta_preclientes, name='consulta_preclientes')

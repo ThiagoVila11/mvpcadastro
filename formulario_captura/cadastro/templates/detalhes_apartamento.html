@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Detalhes do Apartamento</h2>
+                <div>
+                    <a href="{% url 'editar_apartamento' apartamento.id %}" class="btn btn-primary">Editar</a>
+                    <a href="{% url 'consulta_apartamentos'  %}" class="btn btn-secondary">Voltar</a>
+                    <a href="{% url 'excluir_apartamento' apartamento.id %}" class="btn btn-danger">Excluir</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h5>Informações do Apartamento</h5>
+                            <p><strong>Nome do Condominio:</strong> {{ apartamento.Condominio.condominioNome }}</p>
+                            <p><strong>Apartamento:</strong> {{ apartamento.apartamentonro }}</p>
+                            <p><strong>Vagas:</strong> {{ apartamento.apartamentovagas }}</p>
+                            <p><strong>IPTU:</strong> {{ apartamento.apartamentoiptu }}</p>
+                            <p><strong>Valor:</strong> {{ apartamento.apartamentovrunidade }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

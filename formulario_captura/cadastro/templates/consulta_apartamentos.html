@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Consulta Apartamentos     
+        <a href="{% url 'cadastro_apartamento' %}" class="btn btn-success"><i class="fas fa-plus"></i> Adicionar</a> 
+    </h2>
+
+    <!-- Formulário de Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="nome">Número</label>
+                            <input type="text" class="form-control" id="nome" name="nome" value="{{ filtros.nome }}">
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <a href="{% url 'consulta_apartamentos' %}" class="btn btn-secondary">Limpar</a>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Tabela de Resultados -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Condominio</th>
+                            <th>Número</th>
+                            <th>Vagas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for apartamento in apartamentos %}
+                        <tr>
+                            <td>{{ apartamento.id}}</td>
+                            <td>{{ apartamento.Condominio.condominionome}}</td>
+                            <td>{{ apartamento.apartamentonro }}</td>
+                            <td>{{ apartamento.apartamentovagas }}</td>
+                            <td>
+                                
+                                <a href="{% url 'editar_apartamento' apartamento.id %}" class="btn btn-sm btn-primary">Editar</a>
+                                <a href="{% url 'detalhes_apartamento' apartamento.id %}" class="btn btn-sm btn-info">Detalhes</a>
+                                <a href="{% url 'excluir_apartamento' apartamento.id %}" class="btn btn-danger">Excluir</a>
+                            
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center">Nenhum apartamento encontrado</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

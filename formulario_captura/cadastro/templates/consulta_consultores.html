@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Consulta de Consultores     
+        <a href="{% url 'cadastro_consultor' %}" class="btn btn-success"><i class="fas fa-plus"></i> Adicionar</a> 
+    </h2>
+
+    <!-- Formulário de Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="nome">Nome</label>
+                            <input type="text" class="form-control" id="nome" name="nome" value="{{ filtros.nome }}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="cpf">Email</label>
+                            <input type="text" class="form-control" id="email" name="email" value="{{ filtros.email }}">
+                        </div>
+                    </div>
+
+                </div>
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <a href="{% url 'consulta_consultores' %}" class="btn btn-secondary">Limpar</a>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Tabela de Resultados -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Telefone</th>
+                            <th>Email</th>
+                            <th>Ativo/Inativo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for consultor in consultores %}
+                        <tr>
+                            <td>{{ consultor.consultorNome }}</td>
+                            <td>{{ consultor.consultorTelefone }}</td>
+                            <td>{{ consultor.consultorEmail }}</td>
+                            <td>{{ consultor.consultorAtivoInativo }}</td>
+                            <td>
+                                
+                                <a href="{% url 'editar_cliente' consultor.id %}" class="btn btn-sm btn-primary">Editar</a>
+                                <a href="{% url 'detalhes_cliente' consultor.id %}" class="btn btn-sm btn-info">Detalhes</a>
+                                <a href="{% url 'preencher_pdf' consultor.id %}" class="btn btn-sm btn-info">Criar Cliente</a>
+                            
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center">Nenhum consultor encontrado</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

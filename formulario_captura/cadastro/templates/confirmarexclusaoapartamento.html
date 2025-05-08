@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h4>Confirmar Exclusão</h4>
+        </div>
+        <div class="card-body">
+            <p>Tem certeza que deseja excluir o apartamento <strong>{{ apartamento.Condominio.condominioNome }}</strong> (Número: {{ apartamento.apartamentonro }})?</p>
+            <form method="post" action="{% url 'excluir_apartamento' apartamento.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+                <a href="{% url 'detalhes_apartamento' apartamento.id %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
