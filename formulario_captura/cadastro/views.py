@@ -26,9 +26,23 @@ import requests
 from django.contrib.auth import get_user_model
 import logging
 from requests.exceptions import RequestException
+from django.db.models import Count, Sum, Avg
+from plotly.offline import plot
+import plotly.express as px
+import pandas as pd
+from datetime import datetime, timedelta
+from functools import wraps
+from django.http import HttpResponseForbidden
 
+def requer_consultor(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if request.session.get('api_funcao') == 'CONSULTOR':
+            return render(request, 'erros/sem_permissao.html', status=403)
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
-@login_required 
+@login_required
 def cadastro_cliente(request):
     if request.method == 'POST':
         form = ClienteForm(request.POST, request.FILES)
@@ -113,6 +127,7 @@ def excluir_cliente(request, id):
     return render(request, 'confirmar_exclusao.html', {'cliente': cliente})
 
 @login_required 
+@requer_consultor
 def cadastro_condominio(request):
     if request.method == 'POST':
         form = CondominioForm(request.POST, request.FILES)
@@ -148,11 +163,13 @@ def consulta_condominios(request):
     return render(request, 'consulta_condominios.html', context)
 
 @login_required 
+@requer_consultor
 def detalhes_condominio(request, id):
     condominio = get_object_or_404(Condominio, id=id)
     return render(request, 'detalhes_condominio.html', {'condominio': condominio})
 
 @login_required 
+@requer_consultor
 def editar_condominio(request, id):
     condominio = get_object_or_404(Condominio, id=id)
     
@@ -170,6 +187,7 @@ def editar_condominio(request, id):
     })
 
 @login_required 
+@requer_consultor
 def excluir_condominio(request, id):
     condominio = get_object_or_404(Condominio, id=id)
     
@@ -186,6 +204,7 @@ def excluir_condominio(request, id):
     return render(request, 'confirmarexclusaocondominio.html', {'condominio': condominio})
 
 @login_required 
+@requer_consultor
 def cadastro_apartamento(request):
     if request.method == 'POST':
         form = ApartamentoForm(request.POST, request.FILES)
@@ -217,6 +236,7 @@ def consulta_apartamentos(request):
     return render(request, 'consulta_apartamentos.html', context)
 
 @login_required 
+@requer_consultor
 def editar_apartamento(request, id):
     apartamento = get_object_or_404(Apartamento, id=id)
     
@@ -234,11 +254,13 @@ def editar_apartamento(request, id):
     })
 
 @login_required
+@requer_consultor
 def detalhes_apartamento(request, id):
     apartamento = get_object_or_404(Apartamento, id=id)
     return render(request, 'detalhes_apartamento.html', {'apartamento': apartamento})
 
 @login_required 
+@requer_consultor
 def excluir_apartamento(request, id):
     apartamento = get_object_or_404(Apartamento, id=id)
     
@@ -255,6 +277,7 @@ def excluir_apartamento(request, id):
     return render(request, 'confirmarexclusaoapartamento.html', {'apartamento': apartamento})
 
 @login_required 
+@requer_consultor
 def cadastro_consultor(request):
     if request.method == 'POST':
         form = ConsultorForm(request.POST, request.FILES)
@@ -268,6 +291,7 @@ def cadastro_consultor(request):
     return render(request, 'cadastro/formularioconsultor.html', {'form': form})
 
 @login_required 
+@requer_consultor
 def consulta_consultores(request):
     consultores = Consultor.objects.all().order_by('consultorNome')
     
@@ -583,8 +607,18 @@ def login_view(request):
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
             
-            # 4. Armazena o token na sessão
+            # 4. Armazena o token e função na sessão
             request.session['api_token'] = token_data.get('token')
+            response_dados = requests.get(
+                f'http://3.149.23.107:8001/api/usuario-por-email/?nomeusuario={username}',
+                headers={'Content-Type': 'application/json'},
+                timeout=10
+            )
+            if response_dados.status_code == 200:
+                dados = response_dados.json()
+                request.session['api_funcao'] = dados["usuarioFuncao"]
+            else:
+                print(f"Erro {response_dados.status_code}: {response_dados.text}")
             
             return redirect(request.GET.get('next', 'consulta_clientes'))
             
@@ -598,3 +632,4 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'Você foi desconectado com sucesso')
     return redirect('login')
+
