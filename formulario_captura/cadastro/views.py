@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import ClienteForm, CondominioForm, ApartamentoForm, ConsultorForm, PreClienteForm
 from .models import Cliente, Condominio, Apartamento, Consultor, PreCliente
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
@@ -33,6 +33,8 @@ import pandas as pd
 from datetime import datetime, timedelta
 from functools import wraps
 from django.http import HttpResponseForbidden
+from django.views.generic import TemplateView
+
 
 def requer_consultor(view_func):
     @wraps(view_func)
@@ -633,3 +635,25 @@ def logout_view(request):
     messages.success(request, 'Você foi desconectado com sucesso')
     return redirect('login')
 
+class CondominioKPIDashboard(TemplateView):
+    template_name = 'condominio/kpi_dashboard.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        total_condominios = Condominio.objects.count()
+        context['total_condominios'] = total_condominios
+
+        total_apartamentos = Apartamento.objects.count()
+        context['total_apartamentos'] = total_apartamentos
+
+        total_consultores = Consultor.objects.count()
+        context['total_consultores'] = total_consultores      
+
+        total_preclientes = PreCliente.objects.count()
+        context['total_preclientes'] = total_preclientes 
+
+        total_Clientes = Cliente.objects.count()
+        context['total_Clientes'] = total_Clientes 
+
+        return context
+    

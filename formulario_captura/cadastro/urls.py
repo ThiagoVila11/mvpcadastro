@@ -1,8 +1,10 @@
 from django.urls import path
 from . import views
+from cadastro.views import CondominioKPIDashboard
+
 
 urlpatterns = [
-    path('', views.cadastro_cliente, name='cadastro'),
+    path('', CondominioKPIDashboard.as_view(), name='cadastro'),
     path('cadastro_cliente/', views.cadastro_cliente, name='cadastro_cliente'),
     path('sucesso/', views.sucesso, name='sucesso'),
     path('clientes/consulta/', views.consulta_clientes, name='consulta_clientes'),
@@ -35,6 +37,8 @@ urlpatterns = [
     
     #pré-cliente
     path('cadastro_precliente/', views.cadastro_precliente, name='cadastro_precliente'),
-    path('consulta_preclientes', views.consulta_preclientes, name='consulta_preclientes')
+    path('consulta_preclientes', views.consulta_preclientes, name='consulta_preclientes'),
+    #dashboards
+    path('condominios/kpi/', CondominioKPIDashboard.as_view(), name='kpi-condominios')
 
 ]

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Métricas</h2>
+    
+    <div class="row">
+        <!-- Pré-Clientes -->
+        <div class="col-md-2 col-sm-4 col-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Pré-Clientes</h6>
+                    <h3 class="display-6">{{ total_preclientes }}</h3>
+                    <small class="text-muted">Cadastrados</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Clientes -->
+        <div class="col-md-2 col-sm-4 col-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Clientes</h6>
+                    <h3 class="display-6">{{ total_clientes }}</h3>
+                    <small class="text-muted">Cadastrados</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Consultores -->
+        <div class="col-md-2 col-sm-4 col-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Consultores</h6>
+                    <h3 class="display-6">{{ total_consultores }}</h3>
+                    <small class="text-muted">Cadastrados</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Condomínios -->
+        <div class="col-md-2 col-sm-4 col-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Condomínios</h6>
+                    <h3 class="display-6">{{ total_condominios }}</h3>
+                    <small class="text-muted">Cadastrados</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Apartamentos -->
+        <div class="col-md-2 col-sm-4 col-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Apartamentos</h6>
+                    <h3 class="display-6">{{ total_apartamentos }}</h3>
+                    <small class="text-muted">Cadastrados</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .display-6 {
+        font-size: 1.8rem;
+        font-weight: 300;
+    }
+    @media (max-width: 768px) {
+        .display-6 {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
