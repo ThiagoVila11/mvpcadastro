@@ -206,11 +206,20 @@
                         }
                     }
                     //renda presumida
-                    const rendapresumida = dados["Data"]["Income"]["Presumed"];
+                    const rendapresumida = dados["Data"]["Income"]["Personal"];
                     if(rendapresumida) {
 
                         if($('#id_preclienteRendaPresumida').length) {
                             $('#id_preclienteRendaPresumida').val(rendapresumida);
+                        }
+                    }
+
+                    //renda presumida
+                    const rendafamiliar = dados["Data"]["Income"]["Family"];
+                    if(rendafamiliar) {
+
+                        if($('#id_preclienteRendaFamiliar').length) {
+                            $('#id_preclienteRendaFamiliar').val(rendafamiliar);
                         }
                     }
                     
@@ -229,7 +238,7 @@
                     } 
 
                     //Avaliação Automática
-                    if(obs.length = 0 && rendapresumida >= 15000 && score >= 750) {
+                    if(obs.length = 0 && rendapresumida >= 10000 && score >= 750) {
 
                         if($('#id_preclienteAvalAuto').length) {
                             const avaliacao = 'A'
@@ -272,4 +281,49 @@
         });
     });
 </script>
+
+<style>
+    #id_preclienteAvalAuto {
+        display: none;
+        visibility: hidden;
+        height: 0;
+        padding: 0;
+        margin: 0;
+        border: 0;
+    }
+    
+    /* Opcional: esconde também o label */
+    label[for="id_preclienteAvalAuto"] {
+        display: none;
+    }
+
+    #id_preclienteAvaliacao {
+        display: none;
+        visibility: hidden;
+        height: 0;
+        padding: 0;
+        margin: 0;
+        border: 0;
+    }
+    
+    /* Opcional: esconde também o label */
+    label[for="id_preclienteAvaliacao"] {
+        display: none;
+    }
+
+    /* Esconde o campo JSON mas mantém no formulário */
+    #id_preclienteJson {
+        display: none;
+        visibility: hidden;
+        height: 0;
+        padding: 0;
+        margin: 0;
+        border: 0;
+    }
+    
+    /* Opcional: esconde também o label */
+    label[for="id_preclienteJson"] {
+        display: none;
+    }
+</style>
 {% endblock %}

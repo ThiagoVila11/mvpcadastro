@@ -63,11 +63,37 @@ class PreCliente(models.Model):
     preclienteScore = models.CharField(verbose_name='Score', null=True, blank=True, default='0')
     preclienteApontamentos = models.CharField(verbose_name='Apontamentos', null=True, blank=True)
     preclienteRendaPresumida = models.DecimalField(verbose_name="Renda Presumida", max_digits=10, decimal_places=2, null=True, blank=True)
+    preclienteRendaFamiliar = models.DecimalField(verbose_name="Renda Familiar", max_digits=10, decimal_places=2, null=True, blank=True)
     preclienteAvalAuto = models.CharField(verbose_name='Avaliação Automática', max_length=1, null=True, blank=True)
     preclienteAvaliacao = models.CharField(verbose_name='Avaliação', max_length=1, null=True, blank=True)
     preclienteJson = models.TextField(verbose_name='Json', null=True, blank=True)
 
-
+    def pode_ser_convertido(self):
+        return self.preclienteAvaliacao == 'A'  # Só converte se estiver aprovado
+    
+    def converter_para_cliente(self, consultor=None, condominio=None, apartamento=None):
+        """
+        Converte um Pré-Cliente em Cliente
+        """
+        if not self.pode_ser_convertido():
+            raise ValueError("Pré-cliente não está aprovado para conversão")
+        
+        cliente = Cliente(
+            nome=self.preclienteNome,
+            cpf=self.preclienteCpf,
+            email=self.precoclienteEmail,
+            score=self.preclienteScore,
+            # Mapeie outros campos conforme necessário
+            Consultor=consultor,
+            Condominio=condominio,
+            Apartamento=apartamento,
+            PreCliente=self,
+        )
+        
+        cliente.save()
+        return cliente
+    
+    
     def __str__(self):
         return self.preclienteNome
     
@@ -131,6 +157,7 @@ class Cliente(models.Model):
     Condominio = models.ForeignKey(Condominio, on_delete=models.CASCADE, null=True, blank=True)
     Apartamento = models.ForeignKey(Apartamento, on_delete=models.CASCADE, null=True, blank=True)
     Consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE, null=True, blank=True)
+    PreCliente = models.ForeignKey(PreCliente, on_delete=models.CASCADE, null=True, blank=True, unique=True)
 
     def __str__(self):
         return self.nome

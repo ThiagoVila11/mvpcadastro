@@ -355,6 +355,24 @@ def consulta_preclientes(request):
     
     return render(request, 'consulta_precliente.html', context)
 
+@login_required 
+def detalhes_precliente(request, id):
+    precliente = get_object_or_404(PreCliente, id=id)
+    return render(request, 'detalhes_precliente.html', {'precliente': precliente})
+
+def converter_precliente(request, precliente_id):
+    precliente = get_object_or_404(PreCliente, pk=precliente_id)
+    
+    try:
+        cliente = precliente.converter_para_cliente(
+            consultor=request.user.consultor if hasattr(request.user, 'consultor') else None
+        )
+        messages.success(request, f'Pré-cliente {precliente.preclienteNome} convertido para cliente com sucesso!')
+        return redirect('detalhes_cliente', id=cliente.id)
+    except Exception as e:
+        messages.error(request, f'Erro ao converter pré-cliente: {str(e)}')
+        return redirect('consulta_preclientes')
+
 
 def consulta_cpf(request):
     if request.method == 'POST':

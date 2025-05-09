@@ -40,8 +40,9 @@
                         <tr>
                             <th>Nome</th>
                             <th>CPF</th>
-                            <th>Email</th>
-                            <th>Data do cadastro</th>
+                            <th>Score</th>
+                            <th>Apontamento</th>
+                            <th>Renda Presumida</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -49,13 +50,14 @@
                         <tr>
                             <td>{{ precliente.preclienteNome }}</td>
                             <td>{{ precliente.preclienteCpf }}</td>
-                            <td>{{ precliente.precoclienteEmail }}</td>
-                            <td>{{ precliente.preclienteDataCadastro }}</td>
+                            <td>{{ precliente.preclienteScore }}</td>
+                            <td>{{ precliente.preclienteApontamentos }}</td>
+                            <td>{{ precliente.preclienteRendaPresumida }}</td>
                             <td>
                                 
                                 <a href="{% url 'editar_cliente' precliente.id %}" class="btn btn-sm btn-primary">Editar</a>
-                                <a href="{% url 'detalhes_cliente' precliente.id %}" class="btn btn-sm btn-info">Detalhes</a>
-                                <a href="{% url 'preencher_pdf' precliente.id %}" class="btn btn-sm btn-info">Criar Cliente</a>
+                                <a href="{% url 'detalhes_precliente' precliente.id %}" class="btn btn-sm btn-info">Detalhes</a>
+                                <a href="{% url 'converter_precliente' precliente.id %}" class="btn btn-success">Converter para Cliente</a>
                             
                             </td>
                         </tr>
