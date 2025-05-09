@@ -61,10 +61,64 @@
         </div>
     </div>
 </div>
+<div class="container">
+    <h2>Avaliação de Pré-Clientes</h2>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Avaliação de Pré-Clientes</h5>
+                    <canvas id="preclienteChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Inclua a biblioteca Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('preclienteChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: {{ gr_precliente.labels|safe }},
+                datasets: [{
+                    data: {{ gr_precliente.data|safe }},
+                    backgroundColor: {{ gr_precliente.colors|safe }},
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'right' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = {{ gr_precliente.total }};
+                                const percentage = Math.round((value / total) * 100);
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+    
+    
 
 <style>
     .card {
         transition: transform 0.2s;
+        margin-bottom: 20px;
     }
     .card:hover {
         transform: translateY(-5px);
@@ -78,6 +132,9 @@
         .display-6 {
             font-size: 1.5rem;
         }
+    }
+    .table {
+        margin-top: 20px;
     }
 </style>
 {% endblock %}

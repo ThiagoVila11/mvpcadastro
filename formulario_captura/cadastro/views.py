@@ -640,20 +640,53 @@ class CondominioKPIDashboard(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        total_condominios = Condominio.objects.count()
-        context['total_condominios'] = total_condominios
 
-        total_apartamentos = Apartamento.objects.count()
-        context['total_apartamentos'] = total_apartamentos
+        # KPIs principais
+        context['total_condominios'] = Condominio.objects.count()
+        context['total_apartamentos'] = Apartamento.objects.count()
+        context['total_consultores'] = Consultor.objects.count()     
+        context['total_preclientes'] = PreCliente.objects.count()
+        context['total_clientes'] = Cliente.objects.count()
 
-        total_consultores = Consultor.objects.count()
-        context['total_consultores'] = total_consultores      
-
-        total_preclientes = PreCliente.objects.count()
-        context['total_preclientes'] = total_preclientes 
-
-        total_Clientes = Cliente.objects.count()
-        context['total_Clientes'] = total_Clientes 
-
+        #grafico preclientes aprovados
+        avaliacao_data = (PreCliente.objects
+        .values('preclienteAvaliacao')
+        .annotate(total=Count('preclienteAvaliacao'))
+        .order_by('preclienteAvaliacao')
+        )
+        # Preparar os dados para o gráfico
+        labels = []
+        data = []
+        colors = []
+        
+        for item in avaliacao_data:
+            # Determinar o label baseado no valor
+            if item['preclienteAvaliacao'] == 'A':
+                labels.append('Apto')
+                colors.append('#4CAF50')  # Verde
+            elif item['preclienteAvaliacao'] == 'N':
+                labels.append('Não Apto')
+                colors.append('#F44336')  # Vermelho
+            else:
+                labels.append('Não Avaliado')
+                colors.append('#FFC107')  # Amarelo
+                
+            data.append(item['total'])
+        
+        # Adicionar contagem para valores nulos (não avaliados)
+        nao_avaliados = PreCliente.objects.filter(preclienteAvaliacao__isnull=True).count()
+        if nao_avaliados > 0:
+            labels.append('Não Avaliado')
+            data.append(nao_avaliados)
+            colors.append('#FFC107')  # Amarelo
+        
+        context['gr_precliente'] = {
+            'labels': labels,
+            'data': data,
+            'colors': colors,
+            'total': sum(data),
+        }
+        print(context)
+        
         return context
     
