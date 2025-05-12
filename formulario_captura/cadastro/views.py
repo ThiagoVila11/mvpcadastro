@@ -360,6 +360,23 @@ def detalhes_precliente(request, id):
     precliente = get_object_or_404(PreCliente, id=id)
     return render(request, 'detalhes_precliente.html', {'precliente': precliente})
 
+@login_required 
+def editar_precliente(request, id):
+    precliente = get_object_or_404(PreCliente, id=id)
+    
+    if request.method == 'POST':
+        form = PreClienteForm(request.POST, request.FILES, instance=precliente)
+        if form.is_valid():
+            form.save()
+            return redirect('detalhes_precliente', id=precliente.id)
+    else:
+        form = PreClienteForm(instance=precliente)
+    
+    return render(request, 'editar_precliente.html', {
+        'form': form,
+        'precliente': precliente
+    })
+
 def converter_precliente(request, precliente_id):
     precliente = get_object_or_404(PreCliente, pk=precliente_id)
     

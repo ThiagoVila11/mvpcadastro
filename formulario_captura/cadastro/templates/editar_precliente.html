@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Editar Cliente</h2>
+                <a href="{% url 'detalhes_precliente' precliente.id %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Informações Pessoais</h4>
+                        <div class="mb-3">
+                            <label for="id_nome" class="form-label">Nome</label>
+                            {{ form.preclienteNome }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_cpf" class="form-label">CPF</label>
+                            {{ form.preclienteCpf }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Email</label>
+                            {{ form.precoclienteEmail }}
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                <a href="{% url 'detalhes_precliente' precliente.id %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
