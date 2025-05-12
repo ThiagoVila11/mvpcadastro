@@ -629,7 +629,7 @@ def login_view(request):
         try:
             # 1. Primeiro valida com a API externa
             response = requests.post(
-                'http://3.149.23.107:8001/api/login/',
+                'http://3.143.172.37:8001/api/login/',
                 json={'username': username, 'password': password},
                 headers={'Content-Type': 'application/json'},
                 timeout=10
@@ -663,7 +663,7 @@ def login_view(request):
             # 4. Armazena o token e função na sessão
             request.session['api_token'] = token_data.get('token')
             response_dados = requests.get(
-                f'http://3.149.23.107:8001/api/usuario-por-email/?nomeusuario={username}',
+                f'http://3.143.172.37:8001/api/usuario-por-email/?nomeusuario={username}',
                 headers={'Content-Type': 'application/json'},
                 timeout=10
             )
