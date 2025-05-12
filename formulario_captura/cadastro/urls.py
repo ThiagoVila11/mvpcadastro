@@ -41,6 +41,7 @@ urlpatterns = [
     path('precliente/<int:id>/detalhes/', views.detalhes_precliente, name='detalhes_precliente'),
     path('precliente/<int:id>/editar/', views.editar_precliente, name='editar_precliente'),
     path('precliente/converter/<int:precliente_id>/', views.converter_precliente, name='converter_precliente'),
+    path('precliente/excluir/<int:id>/', views.excluir_precliente, name='excluir_precliente'),
     #dashboards
     path('condominios/kpi/', CondominioKPIDashboard.as_view(), name='kpi-condominios')
 

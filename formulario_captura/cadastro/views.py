@@ -377,6 +377,22 @@ def editar_precliente(request, id):
         'precliente': precliente
     })
 
+@login_required 
+def excluir_precliente(request, id):
+    precliente = get_object_or_404(PreCliente, id=id)
+    
+    if request.method == 'POST':
+        try:
+            precliente.delete()
+            messages.success(request, 'Pré-Cliente excluído com sucesso!')
+            return redirect('consulta_preclientes')
+        except Exception as e:
+            messages.error(request, f'Erro ao excluir pré-cliente: {str(e)}')
+            return redirect('detalhes_precliente', id=id)
+    
+    # Se não for POST, mostra página de confirmação
+    return render(request, 'confirmar_exclusaoprecliente.html', {'precliente': precliente})
+
 def converter_precliente(request, precliente_id):
     precliente = get_object_or_404(PreCliente, pk=precliente_id)
     
