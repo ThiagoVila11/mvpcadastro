@@ -101,7 +101,7 @@ DATABASES = {
         'NAME': 'cadastro',
         'USER': 'postgres',
         'PASSWORD': '123',
-        'HOST': 'localhost',
+        'HOST': '3.143.172.37',
         'PORT': '5432',
     }
 }
