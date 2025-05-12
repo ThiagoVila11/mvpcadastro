@@ -69,7 +69,14 @@ class PreCliente(models.Model):
     preclienteJson = models.TextField(verbose_name='Json', null=True, blank=True)
 
     def pode_ser_convertido(self):
-        return self.preclienteAvaliacao == 'A'  # Só converte se estiver aprovado
+        aprovado = 'N'
+        score = int(self.preclienteScore) if self.preclienteScore else 0
+        obs = len(self.preclienteApontamentos) if self.preclienteApontamentos else 0
+        print(obs)
+        if score >= 700 and obs == 0:
+            aprovado = 'A'
+
+        return aprovado == 'A'  # Só converte se estiver aprovado
     
     def converter_para_cliente(self, consultor=None, condominio=None, apartamento=None):
         """
@@ -84,9 +91,9 @@ class PreCliente(models.Model):
             email=self.precoclienteEmail,
             score=self.preclienteScore,
             # Mapeie outros campos conforme necessário
-            Consultor=consultor,
-            Condominio=condominio,
-            Apartamento=apartamento,
+            #Consultor=consultor,
+            #Condominio=condominio,
+            #Apartamento=apartamento,
             PreCliente=self,
         )
         

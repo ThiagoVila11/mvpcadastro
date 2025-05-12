@@ -397,11 +397,11 @@ def converter_precliente(request, precliente_id):
     precliente = get_object_or_404(PreCliente, pk=precliente_id)
     
     try:
-        cliente = precliente.converter_para_cliente(
+        precliente = precliente.converter_para_cliente(
             consultor=request.user.consultor if hasattr(request.user, 'consultor') else None
         )
         messages.success(request, f'Pré-cliente {precliente.preclienteNome} convertido para cliente com sucesso!')
-        return redirect('detalhes_cliente', id=cliente.id)
+        return redirect('detalhes_precliente', id=precliente.id)
     except Exception as e:
         messages.error(request, f'Erro ao converter pré-cliente: {str(e)}')
         return redirect('consulta_preclientes')
