@@ -165,7 +165,7 @@ class Cliente(models.Model):
                                     help_text="Exemplo: usuario@provedor.com",
                                     null=True,
                                     blank=True)
-    score = models.CharField(verbose_name="Score", max_length=5, null=True, default="0")
+    score = models.CharField(verbose_name="Score", max_length=5, null=True, default="0", blank=True)
     unidade = models.CharField(verbose_name="Unidade", max_length=3, choices=unidades, null=True, default='BEL')
     apto = models.CharField(verbose_name="Apto", max_length=4, default=0)
     nomeunidade = models.CharField(verbose_name="Nome do condomínio", max_length=50, null=True, default='', blank=True)
