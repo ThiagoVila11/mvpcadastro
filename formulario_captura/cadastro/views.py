@@ -98,18 +98,34 @@ def detalhes_cliente(request, id):
 @login_required 
 def editar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id=id)
-    
+    condominios = Condominio.objects.all()
+    apartamentos = Apartamento.objects.filter(Condominio=cliente.Condominio) if cliente.Condominio else Apartamento.objects.none()
+
     if request.method == 'POST':
         form = ClienteForm(request.POST, request.FILES, instance=cliente)
         if form.is_valid():
-            form.save()
-            return redirect('detalhes_cliente', id=cliente.id)
+            # Processar campos especiais antes de salvar
+            instance = form.save(commit=False)
+            
+            # Atualizar condomínio e apartamento
+            condominio_id = request.POST.get('Condominio')
+            apartamento_id = request.POST.get('Apartamento')
+            
+            if condominio_id:
+                instance.Condominio = Condominio.objects.get(id=condominio_id)
+            if apartamento_id:
+                instance.Apartamento = Apartamento.objects.get(id=apartamento_id)
+            
+            instance.save()
+            return redirect('detalhes_cliente', id=instance.id)
     else:
         form = ClienteForm(instance=cliente)
-    
+
     return render(request, 'editar_cliente.html', {
+        'cliente': cliente,
         'form': form,
-        'cliente': cliente
+        'condominios': condominios,
+        'apartamentos': apartamentos
     })
 
 @login_required 
@@ -442,6 +458,11 @@ def preencher_pdf(request, cliente_id):
     nomeresidente = f"{cliente.nomeresidente}".replace("{", "").replace("}", "").replace("'", "")
     numerorg = f"{cliente.rgresidente}".replace("{", "").replace("}", "").replace("'", "")
     cpfresidente = f"{cliente.cpfresidente}".replace("{", "").replace("}", "").replace("'", "")
+    enderecoresidente = f"{cliente.enderecoresidente}".replace("{", "").replace("}", "").replace("'", "")
+    profissaoresidente  = f"{cliente.profissaoresidente}".replace("{", "").replace("}", "").replace("'", "")
+    estadocivilresidente = f"{cliente.estadocivilresidente}".replace("{", "").replace("}", "").replace("'", "")
+    celularresidente = f"{cliente.celularresidente}".replace("{", "").replace("}", "").replace("'", "")
+    emailresidente = f"{cliente.emailresidente}".replace("{", "").replace("}", "").replace("'", "")
     apto = f"{cliente.Apartamento.apartamentonro}".replace("{", "").replace("}", "").replace("'", "")
     vaga = f"{cliente.Apartamento.apartamentovagas}".replace("{", "").replace("}", "").replace("'", "")
     matricula = f"{cliente.matriculaunidade}".replace("{", "").replace("}", "").replace("'", "")
@@ -451,6 +472,7 @@ def preencher_pdf(request, cliente_id):
     nriptu = f"{cliente.Condominio.condominiomatricula}".replace("{", "").replace("}", "").replace("'", "")
     datainicio = f"{cliente.data_cadastro}".replace("{", "").replace("}", "").replace("'", "")
     valor = f"{cliente.vrunidade}".replace("{", "").replace("}", "").replace("'", "")
+    prazocontrato = f"{cliente.prazocontrato}".replace("{", "").replace("}", "").replace("'", "")
     dia = datetime.now().day
     mes = datetime.now().month
     ano = datetime.now().year
@@ -467,6 +489,11 @@ def preencher_pdf(request, cliente_id):
         'nomeresidente': nomeresidente,
         'numerorg': numerorg,
         'cpfresidente': cpfresidente,
+        'enderecoresidente': enderecoresidente,
+        'profissaoresidente' :  profissaoresidente,
+        'estadocivilresidente' : estadocivilresidente,
+        'celularresidente' : celularresidente,
+        'emailresidente' : emailresidente,
         'nomeadministradora': 'Vila11',
         'cnpjadministradora': '37.232.210/0001-15',
         'contatoadministradora': 'Contato Vila11',
@@ -480,6 +507,7 @@ def preencher_pdf(request, cliente_id):
         'nriptu': nriptu,
         'datainicio': datainicio,
         'valor': valor,
+        'prazocontrato': prazocontrato,
         'mesano': datetime.now().strftime("%m/%Y"),
         'dia': dia,
         'mes': mes,
@@ -609,8 +637,13 @@ def get_condominio_completo(request):
 
 def get_apartamentos(request):
     condominio_id = request.GET.get('condominio_id')
-    apartamentos = Apartamento.objects.filter(Condominio_id=condominio_id).values('id', 'apartamentonro', 'apartamentovagas', 'apartamentoiptu', 'apartamentovrunidade')
-    return JsonResponse(list(apartamentos), safe=False)
+    #apartamentos = Apartamento.objects.filter(Condominio_id=condominio_id).values('id', 'apartamentonro', 'apartamentovagas', 'apartamentoiptu', 'apartamentovrunidade')
+    #return JsonResponse(list(apartamentos), safe=False)
+    apartamentos = Apartamento.objects.filter(condominio_id=condominio_id)
+    options = '<option value="">Selecione um apartamento</option>'
+    for apto in apartamentos:
+        options += f'<option value="{apto.id}">{apto.apartamentonro} - {apto.apartamentovagas or ""}</option>'
+    return JsonResponse(options, safe=False)
 
 
 User = get_user_model()

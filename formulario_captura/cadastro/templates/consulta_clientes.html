@@ -46,7 +46,6 @@
                             <th>Apto</th>
                             <th>Score</th>
                             <th>Consultor</th>
-                            <th>Visitado</th>
                             <th>Ações</th>                            
                         </tr>
                     </thead>
@@ -61,7 +60,6 @@
                             <td>{{ cliente.apto }}</td>
                             <td>{{ cliente.score }}</td>
                             <td>{{ cliente.Consultor}}</td>
-                            <td><input type="checkbox" {% if cliente.visitarealizada %}checked{% endif %} disabled></td>
                             <td>
                                 
                                 <a href="{% url 'editar_cliente' cliente.id %}" class="btn btn-sm btn-primary">Editar</a>

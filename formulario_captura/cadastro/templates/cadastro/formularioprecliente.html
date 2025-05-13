@@ -176,6 +176,9 @@
                     // Formata os dados para exibição (adaptado para o JSON da DataBusca)
                     let html = '<ul class="mb-0">';
                     //html += `<li><strong>Nome encontrado:</strong> ${dados["Data"]["Name"]}</li>`;
+                    if($('#id_preclienteJson').length) {
+                            $('#id_preclienteJson').val(JSON.stringify(dados));
+                        }
                     // Nome
                     if(dados["Data"]["Name"]) {
                         //html += `<li><strong>Nome:</strong> ${data.Data.NameBrasil}</li>`;
@@ -297,6 +300,20 @@
         display: none;
     }
 
+
+
+    #id_preclienteAvaliacao {
+        height: 0;
+        padding: 0;
+        margin: 0;
+        border: 0;
+    }
+    
+    /* Opcional: esconde também o label */
+    label[for="id_preclienteAvaliacao"] {
+        display: none;
+    }
+
     #id_preclienteJson {
         display: none;
         visibility: hidden;
@@ -308,18 +325,6 @@
     
     /* Opcional: esconde também o label */
     label[for="id_preclienteJson"] {
-        display: none;
-    }
-
-    #id_preclienteAvaliacao {
-        height: 0;
-        padding: 0;
-        margin: 0;
-        border: 0;
-    }
-    
-    /* Opcional: esconde também o label */
-    label[for="id_preclienteAvaliacao"] {
         display: none;
     }
 </style>

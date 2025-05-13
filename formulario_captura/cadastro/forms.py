@@ -6,6 +6,8 @@ class ClienteForm(forms.ModelForm):
         model = Cliente
         fields = ['cpf', 'nome', 'score','profissao', 'estcivil', 'rgrne', 'email', 'telefone', 
                   'endereco', 'data_nascimento', 'nomeresidente', 'cpfresidente', 'rgresidente', 
+                  'enderecoresidente', 'profissaoresidente', 'estadocivilresidente', 'celularresidente',
+                  'emailresidente', 
                   'Consultor', 'Condominio', 'Apartamento',
                   'cnpjunidade', 'matriculaunidade', 'vagaunidade',
                   'enderecounidade', 'nriptuunidade', 'vrunidade', 
