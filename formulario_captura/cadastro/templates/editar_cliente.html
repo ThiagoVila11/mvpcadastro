@@ -31,16 +31,6 @@
                             <input type="file" class="form-control" id="imagem" name="imagem">
                         </div>
                         
-                        {% if cliente.documentacaoenviada %}
-                            <a href="{{ cliente.documentacaoenviada.url }}" class="btn btn-info btn-sm mt-2" download>
-                                Baixar Documentação
-                            </a>
-                        {% endif %}
-                        
-                        <div class="mb-3">
-                            <label for="documentacaoenviada" class="form-label">Alterar Documentação</label>
-                            <input type="file" class="form-control" id="documentacaoenviada" name="documentacaoenviada">
-                        </div>
                     </div>
                     
                     <div class="col-md-8">
@@ -166,15 +156,16 @@
 
                                 </div>
                                 <div class="mb-3">
-                                    <label for="apartamento" class="form-label">Apartamento</label>
-                                    <select class="form-select" id="apartamento" name="Apartamento">
-                                        <option value="">Selecione um apartamento</option>
-                                        {% for apto in apartamentos %}
-                                            <option value="{{ apto.id }}" {% if cliente.Apartamento.id == apto.id %}selected{% endif %}>
-                                               Apto: {{ apto.apartamentonro }} - vagas:  {{ apto.apartamentovagas|default:"" }}
-                                            </option>
-                                        {% endfor %}
-                                    </select>
+                                    <label for="apto" class="form-label">Apartamento</label>
+                                    <input type="text" class="form-control" id="apto" name="apto" value="{{ cliente.apto}}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="vrunidade" class="form-label">Valor</label>
+                                    <input type="text" class="form-control" id="vrunidade" name="vrunidade" value="{{ cliente.vrunidade}}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="vagaunidade" class="form-label">Vagas</label>
+                                    <input type="text" class="form-control" id="vagaunidade" name="vagaunidade" value="{{ cliente.vagaunidade}}">
                                 </div>
                             </div>
                         

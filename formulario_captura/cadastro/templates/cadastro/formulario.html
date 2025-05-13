@@ -346,7 +346,7 @@
         // Quando o campo Condominio for alterado
         $('#id_Condominio').change(function() {
             var condominioId = $(this).val();
-            var apartamentoSelect = $('#id_Apartamento');
+            //var apartamentoSelect = $('#id_Apartamento');
             console.log(condominioId)
             if (condominioId) {
                 // Requisição AJAX para buscar dados do condomínio e apartamentos
@@ -363,6 +363,7 @@
                         $('#id_enderecounidade').val(data.condominio.condominioendereco);
                         
                         // 2. Preenche a lista de apartamentos
+                        /*
                         apartamentoSelect.empty().append('<option value="">Selecione um apartamento</option>');
                         $.each(data.apartamentos, function(key, value) {
                             apartamentoSelect.append(
@@ -383,6 +384,7 @@
                             $('#id_nriptuunidade').val(primeiroApto.apartamentoiptu);
                             $('#id_vrunidade').val(primeiroApto.apartamentovrunidade);
                         }
+                            */
                     },
                     error: function(xhr) {
                         console.error('Erro ao carregar dados:', xhr.responseText);
@@ -403,12 +405,14 @@
         });
         
         // (Opcional) Carregar dados do apartamento quando selecionado
+        /*
         $('#id_Apartamento').change(function() {
             var selectedOption = $(this).find('option:selected');
             $('#id_vagaunidade').val(selectedOption.data('vagas'));
             $('#id_nriptuunidade').val(selectedOption.data('iptu'));
             $('#id_vrunidade').val(selectedOption.data('valor'));
         });
+        */
     });
 </script>
 {% endblock %}

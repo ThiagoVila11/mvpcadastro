@@ -8,7 +8,7 @@ class ClienteForm(forms.ModelForm):
                   'endereco', 'data_nascimento', 'nomeresidente', 'cpfresidente', 'rgresidente', 
                   'enderecoresidente', 'profissaoresidente', 'estadocivilresidente', 'celularresidente',
                   'emailresidente', 
-                  'Consultor', 'Condominio', 'Apartamento',
+                  'Consultor', 'Condominio', 'apto',
                   'cnpjunidade', 'matriculaunidade', 'vagaunidade',
                   'enderecounidade', 'nriptuunidade', 'vrunidade', 
                   'iniciocontrato', 'prazocontrato',
@@ -47,6 +47,19 @@ class ConsultorForm(forms.ModelForm):
         }
 
 class PreClienteForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Campos que não devem ser editáveis
+        campos_nao_editaveis = ['preclienteNome', 'precoclienteEmail', 'preclienteRendaFamiliar', 'preclienteRendaPresumida',
+                                'preclienteScore', 'preclienteApontamentos']
+        
+        for campo in campos_nao_editaveis:
+            if campo in self.fields:
+                #self.fields[campo].readonly = True
+                self.fields[campo].widget.attrs['readonly'] = True  # Opcional: adiciona readonly também
+                self.fields[campo].widget.attrs['class'] = 'form-control bg-light'  # Estilo visual
+
     class Meta:
         model = PreCliente
         fields = '__all__'

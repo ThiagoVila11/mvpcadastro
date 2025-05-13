@@ -44,6 +44,24 @@ def requer_consultor(view_func):
         return view_func(request, *args, **kwargs)
     return _wrapped_view
 
+def valida_consultor(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        # Adiciona uma variável ao contexto indicando se é consultor
+        is_consultor = request.session.get('api_funcao') == 'CONSULTOR'
+            
+        response = view_func(request, *args, **kwargs)
+        
+        # Se for uma TemplateResponse ou HttpResponse, adiciona o contexto
+        if hasattr(response, 'context_data'):
+            response.context_data['is_consultor'] = is_consultor
+        elif isinstance(response, render):
+            response.context_data = response.context_data or {}
+            response.context_data['is_consultor'] = is_consultor
+        print(response)    
+        return response
+    return _wrapped_view
+
 @login_required
 def cadastro_cliente(request):
     if request.method == 'POST':
@@ -85,7 +103,8 @@ def consulta_clientes(request):
         'filtros': {
             'nome': nome or '',
             'cpf': cpf or '',
-        }
+        },
+        'is_consultor': request.session.get('api_funcao') == 'CONSULTOR'
     }
     
     return render(request, 'consulta_clientes.html', context)
@@ -125,7 +144,8 @@ def editar_cliente(request, id):
         'cliente': cliente,
         'form': form,
         'condominios': condominios,
-        'apartamentos': apartamentos
+        'apartamentos': apartamentos,
+        'is_consultor': request.session.get('api_funcao') == 'CONSULTOR'
     })
 
 @login_required 
@@ -366,7 +386,8 @@ def consulta_preclientes(request):
         'filtros': {
             'preclienteNome': nome or '',
             'preclienteCpf': cpf or '',
-        }
+        },
+        'is_consultor': request.session.get('api_funcao') == 'CONSULTOR'
     }
     
     return render(request, 'consulta_precliente.html', context)
@@ -463,15 +484,15 @@ def preencher_pdf(request, cliente_id):
     estadocivilresidente = f"{cliente.estadocivilresidente}".replace("{", "").replace("}", "").replace("'", "")
     celularresidente = f"{cliente.celularresidente}".replace("{", "").replace("}", "").replace("'", "")
     emailresidente = f"{cliente.emailresidente}".replace("{", "").replace("}", "").replace("'", "")
-    apto = f"{cliente.Apartamento.apartamentonro}".replace("{", "").replace("}", "").replace("'", "")
-    vaga = f"{cliente.Apartamento.apartamentovagas}".replace("{", "").replace("}", "").replace("'", "")
+    apto = f"{cliente.apto}".replace("{", "").replace("}", "").replace("'", "")
+    vaga = f"{cliente.vagaunidade}".replace("{", "").replace("}", "").replace("'", "")
     matricula = f"{cliente.matriculaunidade}".replace("{", "").replace("}", "").replace("'", "")
     condominio =f"{cliente.Condominio.condominionome}".replace("{", "").replace("}", "").replace("'", "")
     cnpjcondominio = f"{cliente.Condominio.condominiocnpj}".replace("{", "").replace("}", "").replace("'", "")
     enderecocondominio = f"{cliente.Condominio.condominioendereco}".replace("{", "").replace("}", "").replace("'", "")
     nriptu = f"{cliente.Condominio.condominiomatricula}".replace("{", "").replace("}", "").replace("'", "")
     datainicio = f"{cliente.iniciocontrato}".replace("{", "").replace("}", "").replace("'", "")
-    valor = f"{cliente.Apartamento.apartamentovrunidade}".replace("{", "").replace("}", "").replace("'", "")
+    valor = f"{cliente.vrunidade}".replace("{", "").replace("}", "").replace("'", "")
     prazocontrato = f"{cliente.prazocontrato}".replace("{", "").replace("}", "").replace("'", "")
     dia = datetime.now().day
     mes = datetime.now().month

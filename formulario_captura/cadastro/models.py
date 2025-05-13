@@ -55,13 +55,14 @@ class Apartamento(models.Model):
 class PreCliente(models.Model):
     AvaliacaoAutomatica = (('A', 'Apto'),('N', 'Não Apto'))
 
-    preclienteNome = models.CharField(verbose_name="Nome",  max_length=100)
+    preclienteNome = models.CharField(verbose_name="Nome",  max_length=100,null=True, blank=True)
     preclienteCpf = models.CharField(verbose_name="CPF", max_length=14, unique=True)
     precoclienteEmail = models.EmailField(verbose_name="E-mail",
                                     max_length=255,
                                     unique=True,  # Opcional: para garantir emails únicos
                                     validators=[EmailValidator(message="Digite um e-mail válido")],
-                                    help_text="Exemplo: usuario@provedor.com")
+                                    help_text="Exemplo: usuario@provedor.com",
+                                    null=True, blank=True)
     preclienteDataCadastro = models.DateTimeField(verbose_name="Data de cadastro", auto_now_add=True)
     preclienteScore = models.CharField(verbose_name='Score', null=True, blank=True, default='0')
     preclienteApontamentos = models.CharField(verbose_name='Apontamentos', null=True, blank=True)
@@ -75,7 +76,7 @@ class PreCliente(models.Model):
         aprovado = 'N'
         score = int(self.preclienteScore) if self.preclienteScore else 0
         obs = len(self.preclienteApontamentos) if self.preclienteApontamentos else 0
-        if score >= 700 and obs == 0:
+        if score >= 100 and obs == 0:
             aprovado = 'A'
 
         return aprovado == 'A'  # Só converte se estiver aprovado

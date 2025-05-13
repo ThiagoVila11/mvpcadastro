@@ -10,7 +10,9 @@
                 <div>
                     <a href="{% url 'editar_cliente' cliente.id %}" class="btn btn-primary">Editar</a>
                     <a href="{% url 'consulta_clientes' %}" class="btn btn-secondary">Voltar</a>
+                    {% if not is_consultor %}
                     <a href="{% url 'excluir_cliente' cliente.id %}" class="btn btn-danger">Excluir Cliente</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -24,12 +26,7 @@
                             <span class="text-muted">Sem imagem</span>
                         </div>
                     {% endif %}
-                    
-                    {% if cliente.documentacaoenviada %}
-                        <a href="{{ cliente.documentacaoenviada.url }}" class="btn btn-info btn-sm mt-2" download>
-                            Baixar Documentação
-                        </a>
-                    {% endif %}
+
                 </div>
                 <div class="col-md-8">
                     <div class="row mb-3">
@@ -53,6 +50,8 @@
                             <h5>Informações da Unidade</h5>
                             <p><strong>Unidade:</strong> {{ cliente.get_unidade_display }}</p>
                             <p><strong>Apto:</strong> {{ cliente.apto }}</p>
+                            <p><strong>vagas:</strong> {{ cliente.vagaunidade }}</p>
+                            <p><strong>Valor:</strong> {{ cliente.vrunidade }}</p>
                             
                         </div>
                         <div class="col-md-6">
