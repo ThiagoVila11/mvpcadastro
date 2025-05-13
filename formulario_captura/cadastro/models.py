@@ -72,7 +72,6 @@ class PreCliente(models.Model):
         aprovado = 'N'
         score = int(self.preclienteScore) if self.preclienteScore else 0
         obs = len(self.preclienteApontamentos) if self.preclienteApontamentos else 0
-        print(obs)
         if score >= 700 and obs == 0:
             aprovado = 'A'
 
@@ -85,8 +84,10 @@ class PreCliente(models.Model):
         if not self.pode_ser_convertido():
             raise ValueError("Pré-cliente não está aprovado para conversão")
         
+        nome = self.preclienteNome
+        print(nome)
         cliente = Cliente(
-            nome=self.preclienteNome,
+            nome=nome,
             cpf=self.preclienteCpf,
             email=self.precoclienteEmail,
             score=self.preclienteScore,

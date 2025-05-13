@@ -395,13 +395,14 @@ def excluir_precliente(request, id):
 
 def converter_precliente(request, precliente_id):
     precliente = get_object_or_404(PreCliente, pk=precliente_id)
+    print(precliente)
     
     try:
         precliente = precliente.converter_para_cliente(
             consultor=request.user.consultor if hasattr(request.user, 'consultor') else None
         )
-        messages.success(request, f'Pré-cliente {precliente.preclienteNome} convertido para cliente com sucesso!')
-        return redirect('detalhes_precliente', id=precliente.id)
+        messages.success(request, f'Pré-cliente convertido para cliente com sucesso!')
+        return redirect('consulta_preclientes')
     except Exception as e:
         messages.error(request, f'Erro ao converter pré-cliente: {str(e)}')
         return redirect('consulta_preclientes')
@@ -441,13 +442,13 @@ def preencher_pdf(request, cliente_id):
     nomeresidente = f"{cliente.nomeresidente}".replace("{", "").replace("}", "").replace("'", "")
     numerorg = f"{cliente.rgresidente}".replace("{", "").replace("}", "").replace("'", "")
     cpfresidente = f"{cliente.cpfresidente}".replace("{", "").replace("}", "").replace("'", "")
-    apto = f"{cliente.apto}".replace("{", "").replace("}", "").replace("'", "")
-    vaga = f"{cliente.vaga}".replace("{", "").replace("}", "").replace("'", "")
+    apto = f"{cliente.Apartamento.apartamentonro}".replace("{", "").replace("}", "").replace("'", "")
+    vaga = f"{cliente.Apartamento.apartamentovagas}".replace("{", "").replace("}", "").replace("'", "")
     matricula = f"{cliente.matriculaunidade}".replace("{", "").replace("}", "").replace("'", "")
-    condominio =f"{cliente.nomeunidade}".replace("{", "").replace("}", "").replace("'", "")
-    cnpjcondominio = f"{cliente.cnpjunidade}".replace("{", "").replace("}", "").replace("'", "")
-    enderecocondominio = f"{cliente.enderecounidade}".replace("{", "").replace("}", "").replace("'", "")
-    nriptu = f"{cliente.nriptuunidade}".replace("{", "").replace("}", "").replace("'", "")
+    condominio =f"{cliente.Condominio.condominionome}".replace("{", "").replace("}", "").replace("'", "")
+    cnpjcondominio = f"{cliente.Condominio.condominiocnpj}".replace("{", "").replace("}", "").replace("'", "")
+    enderecocondominio = f"{cliente.Condominio.condominioendereco}".replace("{", "").replace("}", "").replace("'", "")
+    nriptu = f"{cliente.Condominio.condominiomatricula}".replace("{", "").replace("}", "").replace("'", "")
     datainicio = f"{cliente.data_cadastro}".replace("{", "").replace("}", "").replace("'", "")
     valor = f"{cliente.vrunidade}".replace("{", "").replace("}", "").replace("'", "")
     dia = datetime.now().day
@@ -487,7 +488,7 @@ def preencher_pdf(request, cliente_id):
 
     try:
         # Caminho completo para o template
-        template_path = "template.docx" #template.template_file.path
+        template_path = "template_contrato.docx" #template.template_file.path
         
         # Carrega o template
         buffer = BytesIO()

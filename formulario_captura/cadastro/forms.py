@@ -10,9 +10,10 @@ class ClienteForm(forms.ModelForm):
                   'cnpjunidade', 'matriculaunidade', 'vagaunidade',
                   'enderecounidade', 'nriptuunidade', 'vrunidade', 
                   'iniciocontrato', 'prazocontrato',
-                  'terminocontrato', 'observacoes'] #'__all__' #['imagem', 'nome', 'cpf', 'score', 'email', 'telefone', 'data_nascimento',  'unidade', 'apto', 'observacoes']
+                  'observacoes'] #'__all__' #['imagem', 'nome', 'cpf', 'score', 'email', 'telefone', 'data_nascimento',  'unidade', 'apto', 'observacoes']
         widgets = {
             'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
+            'iniciocontrato': forms.DateInput(attrs={'type': 'date'}),
             'observacoes': forms.Textarea(attrs={'rows': 3}),
         }
 
