@@ -470,12 +470,14 @@ def preencher_pdf(request, cliente_id):
     cnpjcondominio = f"{cliente.Condominio.condominiocnpj}".replace("{", "").replace("}", "").replace("'", "")
     enderecocondominio = f"{cliente.Condominio.condominioendereco}".replace("{", "").replace("}", "").replace("'", "")
     nriptu = f"{cliente.Condominio.condominiomatricula}".replace("{", "").replace("}", "").replace("'", "")
-    datainicio = f"{cliente.data_cadastro}".replace("{", "").replace("}", "").replace("'", "")
-    valor = f"{cliente.vrunidade}".replace("{", "").replace("}", "").replace("'", "")
+    datainicio = f"{cliente.iniciocontrato}".replace("{", "").replace("}", "").replace("'", "")
+    valor = f"{cliente.Apartamento.apartamentovrunidade}".replace("{", "").replace("}", "").replace("'", "")
     prazocontrato = f"{cliente.prazocontrato}".replace("{", "").replace("}", "").replace("'", "")
     dia = datetime.now().day
     mes = datetime.now().month
     ano = datetime.now().year
+    data_obj = datetime.strptime(datainicio, "%Y-%m-%d")
+    data_formatada = data_obj.strftime("%d/%m/%Y")
 
     context = {
         'nome': nome,
@@ -505,7 +507,7 @@ def preencher_pdf(request, cliente_id):
         'Contato': 'Contato Vila11',
         'enderecocondominio': enderecocondominio,
         'nriptu': nriptu,
-        'datainicio': datainicio,
+        'datainicio': data_formatada,
         'valor': valor,
         'prazocontrato': prazocontrato,
         'mesano': datetime.now().strftime("%m/%Y"),
@@ -516,7 +518,7 @@ def preencher_pdf(request, cliente_id):
 
     try:
         # Caminho completo para o template
-        template_path = "template_contrato.docx" #template.template_file.path
+        template_path = "template.docx" #template.template_file.path
         
         # Carrega o template
         buffer = BytesIO()
