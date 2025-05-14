@@ -2,8 +2,10 @@
 {% load static %}
 {% block content %}
 <div class="container mt-4">
-    <h2>Consulta de Clientes     
+    <h2>Consulta de Clientes  
+        {% if not is_consultor %}   
         <a href="{% url 'cadastro_cliente' %}" class="btn btn-success"><i class="fas fa-plus"></i> Adicionar</a> 
+        {% endif %}
     </h2>
 
     <!-- Formulário de Filtros -->
