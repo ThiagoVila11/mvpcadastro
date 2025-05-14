@@ -498,7 +498,23 @@ def preencher_pdf(request, cliente_id):
     mes = datetime.now().month
     ano = datetime.now().year
     data_obj = datetime.strptime(datainicio, "%Y-%m-%d")
+    meses_pt = {
+        1: "Janeiro",
+        2: "Fevereiro",
+        3: "Março",
+        4: "Abril",
+        5: "Maio",
+        6: "Junho",
+        7: "Julho",
+        8: "Agosto",
+        9: "Setembro",
+        10: "Outubro",
+        11: "Novembro",
+        12: "Dezembro"
+    }
     data_formatada = data_obj.strftime("%d/%m/%Y")
+    nome_mes = meses_pt.get(mes, "Mês inválido")
+
 
     context = {
         'nome': nome,
@@ -533,7 +549,7 @@ def preencher_pdf(request, cliente_id):
         'prazocontrato': prazocontrato,
         'mesano': datetime.now().strftime("%m/%Y"),
         'dia': dia,
-        'mes': mes,
+        'mes': nome_mes,
         'ano': ano,
     }    
 
