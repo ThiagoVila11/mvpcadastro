@@ -165,10 +165,27 @@
                                     <input type="text" class="form-control" id="vagaunidade" name="vagaunidade" value="{{ cliente.vagaunidade}}">
                                 </div>
                             </div>
+
+                        <div class="mb-3">
+                            <h5>Desconto temporário</h5>
+                            <div class="mb-3"></div>
+                                <label for="percentualdesconto" class="form-label">Percentual de desconto temporário</label>
+                                <input type="text" class="form-control" id="percentualdesconto" name="percentualdesconto" value="{{ cliente.percentualdesconto}}">
+                            </div>
+                            <div class="mb-3"></div>
+                                <label for="datainiciodesconto" class="form-label">Data de início do desconto</label>
+                                <input type="date" class="form-control" id="datainiciodesconto" name="datainiciodesconto" value="{{ cliente.datainiciodesconto|date:'Y-m-d'}}">
+                            </div>
+                            <div class="mb-3"></div>
+                                <label for="dataterminodesconto" class="form-label">Data de término do desconto</label>
+                                <input type="date" class="form-control" id="dataterminodesconto" name="dataterminodesconto" value="{{ cliente.dataterminodesconto|date:'Y-m-d'}}">
+                            </div>
+                        </div>
                         
                         <div class="mb-3">
                             <h5>Observações</h5>
-                            <textarea class="form-control" id="observacoes" name="observacoes" rows="4">{{ cliente.observacoes }}</textarea>
+                            <textarea class="form-control" id="observacoes" name="observacoes" rows="4" value="{{ cliente.observacoes }}"> </textarea>
+
                         </div>
                         
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">

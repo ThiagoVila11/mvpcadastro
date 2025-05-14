@@ -497,7 +497,24 @@ def preencher_pdf(request, cliente_id):
     dia = datetime.now().day
     mes = datetime.now().month
     ano = datetime.now().year
+    percdes = f"{cliente.percentualdesconto}".replace("{", "").replace("}", "").replace("'", "")
+    iniciodesc = f"{cliente.datainiciodesconto}".replace("{", "").replace("}", "").replace("'", "")
+    terminodesc = f"{cliente.dataterminodesconto}".replace("{", "").replace("}", "").replace("'", "")
     data_obj = datetime.strptime(datainicio, "%Y-%m-%d")
+    data_formatada = data_obj.strftime("%d/%m/%Y")
+
+    data_obj = datetime.strptime(iniciodesc, "%Y-%m-%d")
+    iniciodescformat = data_obj.strftime("%d/%m/%Y")
+
+    data_obj = datetime.strptime(terminodesc, "%Y-%m-%d")
+    terminodescformat = data_obj.strftime("%d/%m/%Y")
+
+    textoi1 = ''
+    textoi11 = ''
+    if cliente.percentualdesconto > 0:
+        textoi1 = f"I.2. Desconto de Incentivo: A VILA 11 concede ao LOCATÁRIO desconto no valor do Aluguel, especificamente para o Período de Desconto de {iniciodescformat} a {terminodescformat}, conforme abaixo:"
+        textoi11 = f"a) De {iniciodescformat} a {terminodescformat} de locação - {cliente.percentualdesconto} % de desconto sobre o valor do Aluguel mensal;"
+
     meses_pt = {
         1: "Janeiro",
         2: "Fevereiro",
@@ -512,7 +529,7 @@ def preencher_pdf(request, cliente_id):
         11: "Novembro",
         12: "Dezembro"
     }
-    data_formatada = data_obj.strftime("%d/%m/%Y")
+    
     nome_mes = meses_pt.get(mes, "Mês inválido")
 
 
@@ -551,6 +568,8 @@ def preencher_pdf(request, cliente_id):
         'dia': dia,
         'mes': nome_mes,
         'ano': ano,
+        'clausulai1': textoi1,
+        'clausulai11': textoi11
     }    
 
     try:

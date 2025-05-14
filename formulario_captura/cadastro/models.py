@@ -185,6 +185,10 @@ class Cliente(models.Model):
     Apartamento = models.ForeignKey(Apartamento, on_delete=models.CASCADE, null=True, blank=True)
     Consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE, null=True, blank=True)
     PreCliente = models.ForeignKey(PreCliente, on_delete=models.CASCADE, null=True, blank=True, unique=True)
+    percentualdesconto = models.DecimalField(verbose_name='Percentual de desconto', max_digits=8, decimal_places=4,
+                                           null=True, blank=True)
+    datainiciodesconto = models.DateField(verbose_name="Data de início do desconto", null=True, blank=True)
+    dataterminodesconto = models.DateField(verbose_name="Data de término do desconto", null=True, blank=True)
 
     def __str__(self):
         return self.nome

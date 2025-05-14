@@ -11,8 +11,8 @@ class ClienteForm(forms.ModelForm):
                   'Consultor', 'Condominio', 'apto',
                   'cnpjunidade', 'matriculaunidade', 'vagaunidade',
                   'enderecounidade', 'nriptuunidade', 'vrunidade', 
-                  'iniciocontrato', 'prazocontrato',
-                  'observacoes'] #'__all__' #['imagem', 'nome', 'cpf', 'score', 'email', 'telefone', 'data_nascimento',  'unidade', 'apto', 'observacoes']
+                  'iniciocontrato', 'prazocontrato', 'percentualdesconto', 'datainiciodesconto',
+                  'dataterminodesconto', 'observacoes'] #'__all__' #['imagem', 'nome', 'cpf', 'score', 'email', 'telefone', 'data_nascimento',  'unidade', 'apto', 'observacoes']
         widgets = {
             'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
             'iniciocontrato': forms.DateInput(attrs={'type': 'date'}),
