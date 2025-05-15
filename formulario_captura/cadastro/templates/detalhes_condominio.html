@@ -8,7 +8,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h2>Detalhes do Condominio</h2>
                 <div>
-                    <a href="{% url 'editar_cliente' condominio.id %}" class="btn btn-primary">Editar</a>
+                    <a href="{% url 'editar_condominio' condominio.id %}" class="btn btn-primary">Editar</a>
                     <a href="{% url 'consulta_condominios'  %}" class="btn btn-secondary">Voltar</a>
                     <a href="{% url 'excluir_condominio' condominio.id %}" class="btn btn-danger">Excluir</a>
                 </div>

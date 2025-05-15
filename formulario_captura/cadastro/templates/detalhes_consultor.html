@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Detalhes do Consultor</h2>
+                <div>
+                    <a href="{% url 'consulta_consultores' %}" class="btn btn-secondary">Voltar</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h5>Informações Pessoais</h5>
+                            <p><strong>Nome:</strong> {{ consultor.consultorNome }}</p>
+                            <p><strong>E-mail:</strong> {{ consultor.consultorEmail }}</p>
+                            <p><strong>Telefone:</strong> {{ consultor.consultorTelefone }}</p>
+                            <p><strong>Data de inicio:</strong> {{ consultor.consultorDataInicio|date:"d/m/Y"|default:"---" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

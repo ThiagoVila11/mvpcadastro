@@ -33,8 +33,9 @@ urlpatterns = [
     #consultores
     path('cadastro_consultor/', views.cadastro_consultor, name='cadastro_consultor'),
     path('consulta_consultores/', views.consulta_consultores, name='consulta_consultores'),
-
-    
+    path('consultor/excluir/<int:id>/', views.excluir_consultor, name='excluir_consultor'),
+    path('consultor/<int:id>/editar/', views.editar_consultor, name='editar_consultor'),
+    path('consultor/<int:id>/detalhes/', views.detalhes_consultor, name='detalhes_consultor'),    
     #pré-cliente
     path('cadastro_precliente/', views.cadastro_precliente, name='cadastro_precliente'),
     path('consulta_preclientes', views.consulta_preclientes, name='consulta_preclientes'),

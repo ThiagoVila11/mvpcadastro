@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Editar Consultor</h2>
+                <a href="{% url 'detalhes_consultor' consultor.id %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                    <div class="mb-3">
+                        <label for="id_consultorNome" class="form-label">Nome</label>
+                        {{ form.consultorNome }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_consultorEmail" class="form-label">E-mail</label>
+                        {{ form.consultorEmail }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_consultorTelefone" class="form-label">Telefone</label>
+                        {{ form.consultorTelefone }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_consultorDataInicio" class="form-label">Inicio</label>
+                        {{ form.consultorDataInicio }}
+                    </div>
+
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                <a href="{% url 'detalhes_consultor' consultor.id %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

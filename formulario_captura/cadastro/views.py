@@ -354,6 +354,47 @@ def consulta_consultores(request):
     return render(request, 'consulta_consultores.html', context)
 
 @login_required 
+@requer_consultor
+def excluir_consultor(request, id):
+    consultor = get_object_or_404(Consultor, id=id)
+    
+    if request.method == 'POST':
+        try:
+            consultor.delete()
+            messages.success(request, 'Consultor excluído com sucesso!')
+            return redirect('consulta_consultores')
+        except Exception as e:
+            messages.error(request, f'Erro ao excluir consultor: {str(e)}')
+            return redirect('detalhes_consultor', id=id)
+    
+    # Se não for POST, mostra página de confirmação
+    return render(request, 'confirmarexclusaoconsultor.html', {'consultor': consultor})
+
+@login_required
+@requer_consultor
+def detalhes_consultor(request, id):
+    consultor = get_object_or_404(Consultor, id=id)
+    return render(request, 'detalhes_consultor.html', {'consultor': consultor})
+
+@login_required 
+@requer_consultor
+def editar_consultor(request, id):
+    consultor = get_object_or_404(Consultor, id=id)
+    
+    if request.method == 'POST':
+        form = ConsultorForm(request.POST, request.FILES, instance=consultor)
+        if form.is_valid():
+            form.save()
+            return redirect('detalhes_consultor', id=consultor.id)
+    else:
+        form = ConsultorForm(instance=consultor)
+    
+    return render(request, 'editar_consultor.html', {
+        'form': form,
+        'consultor': consultor
+    })
+
+@login_required 
 def cadastro_precliente(request):
     if request.method == 'POST':
         form = PreClienteForm(request.POST, request.FILES)
@@ -396,6 +437,7 @@ def consulta_preclientes(request):
 def detalhes_precliente(request, id):
     precliente = get_object_or_404(PreCliente, id=id)
     return render(request, 'detalhes_precliente.html', {'precliente': precliente})
+
 
 @login_required 
 def editar_precliente(request, id):

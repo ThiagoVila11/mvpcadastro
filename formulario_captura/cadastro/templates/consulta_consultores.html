@@ -53,9 +53,9 @@
                             <td>{{ consultor.consultorAtivoInativo }}</td>
                             <td>
                                 
-                                <a href="{% url 'editar_cliente' consultor.id %}" class="btn btn-sm btn-primary">Editar</a>
-                                <a href="{% url 'detalhes_cliente' consultor.id %}" class="btn btn-sm btn-info">Detalhes</a>
-                                <a href="{% url 'preencher_pdf' consultor.id %}" class="btn btn-sm btn-info">Criar Cliente</a>
+                                <a href="{% url 'editar_consultor' consultor.id %}" class="btn btn-sm btn-primary">Editar</a>
+                                <a href="{% url 'detalhes_consultor' consultor.id %}" class="btn btn-sm btn-info">Detalhes</a>
+                                <a href="{% url 'excluir_consultor' consultor.id %}" class="btn btn-sm btn-danger">Excluir</a>
                             
                             </td>
                         </tr>
