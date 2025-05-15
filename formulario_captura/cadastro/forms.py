@@ -2,6 +2,11 @@ from django import forms
 from .models import Cliente, Condominio, Apartamento, Consultor, PreCliente
 
 class ClienteForm(forms.ModelForm):
+    isencaomulta = forms.BooleanField(
+        required=False,
+        label="Isenção de multa",
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
     class Meta:
         model = Cliente
         fields = ['cpf', 'nome', 'score','profissao', 'estcivil', 'rgrne', 'email', 'telefone', 
@@ -12,11 +17,12 @@ class ClienteForm(forms.ModelForm):
                   'cnpjunidade', 'matriculaunidade', 'vagaunidade',
                   'enderecounidade', 'nriptuunidade', 'vrunidade', 
                   'iniciocontrato', 'prazocontrato', 'percentualdesconto', 'datainiciodesconto',
-                  'dataterminodesconto', 'observacoes', 'imagem'] #'__all__' #['imagem', 'nome', 'cpf', 'score', 'email', 'telefone', 'data_nascimento',  'unidade', 'apto', 'observacoes']
+                  'dataterminodesconto', 'isencaomulta', 'observacoes', 'imagem'] #'__all__' #['imagem', 'nome', 'cpf', 'score', 'email', 'telefone', 'data_nascimento',  'unidade', 'apto', 'observacoes']
         widgets = {
             'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
             'iniciocontrato': forms.DateInput(attrs={'type': 'date'}),
             'observacoes': forms.Textarea(attrs={'rows': 3}),
+            
         }
 
         def __init__(self, *args, **kwargs):

@@ -141,6 +141,7 @@ class Cliente(models.Model):
         ('3', '3'),
         ('4', '4')
     )
+
     nome = models.CharField(verbose_name="Nome",  max_length=100)
     cpf = models.CharField(verbose_name="CPF", max_length=14)
     profissao = models.CharField(verbose_name="Profissão", max_length=40, null=True, default='')
@@ -179,7 +180,7 @@ class Cliente(models.Model):
     prazocontrato = models.IntegerField(verbose_name="Prazo do Contrato", null=True, default=0, blank=True)
     iniciocontrato = models.DateField(verbose_name="Início do contrato", null=True, blank=True)
     terminocontrato = models.DateField(verbose_name="Término do contrato", null=True, blank=True)
-    imagem = models.ImageField(verbose_name="Imagem CNH", upload_to='imagens/', default=None, null=True)
+    imagem = models.ImageField(verbose_name="Imagem CNH", upload_to='imagens/', default=None, null=True, blank=True)
     visitarealizada = models.BooleanField(verbose_name="Visita realizado", default=False, null=True)
     documentacaoenviada = models.FileField(verbose_name="Pré-Contrato", default=None, null=True)
     Condominio = models.ForeignKey(Condominio, on_delete=models.CASCADE, null=True, blank=True)
@@ -190,6 +191,7 @@ class Cliente(models.Model):
                                            null=True, blank=True)
     datainiciodesconto = models.DateField(verbose_name="Data de início do desconto", null=True, blank=True)
     dataterminodesconto = models.DateField(verbose_name="Data de término do desconto", null=True, blank=True)
+    isencaomulta = models.BooleanField(verbose_name='Isenção de contrato',  default=False, null=True, blank=True)
 
     def __str__(self):
         return self.nome

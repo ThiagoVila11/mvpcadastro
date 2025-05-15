@@ -556,7 +556,8 @@ def preencher_pdf(request, cliente_id):
     if cliente.percentualdesconto > 0:
         textoi1 = f"I.2. Desconto de Incentivo: A VILA 11 concede ao LOCATÁRIO desconto no valor do Aluguel, especificamente para o Período de Desconto de {iniciodescformat} a {terminodescformat}, conforme abaixo:"
         textoi11 = f"a) De {iniciodescformat} a {terminodescformat} de locação - {cliente.percentualdesconto} % de desconto sobre o valor do Aluguel mensal;"
-
+    
+    dadosdocondominio = f"{cliente.Condominio.condominionomecomercial} Sociedade Anônima, inscrita no CNPJ nº {cliente.Condominio.condominiocnpj} com endereço em {cliente.Condominio.condominioendereco}"
     meses_pt = {
         1: "Janeiro",
         2: "Fevereiro",
@@ -611,7 +612,8 @@ def preencher_pdf(request, cliente_id):
         'mes': nome_mes,
         'ano': ano,
         'clausulai1': textoi1,
-        'clausulai11': textoi11
+        'clausulai11': textoi11,
+        'dadoscondominio': dadosdocondominio
     }    
 
     try:
