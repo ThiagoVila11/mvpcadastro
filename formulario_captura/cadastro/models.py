@@ -9,7 +9,7 @@ class Condominio(models.Model):
     condominionome = models.CharField(verbose_name="Nome do Condominio",  max_length=100, blank=True)
     condominionomecomercial = models.CharField(verbose_name="Nome Comercial do Condominio",  max_length=100, null=True, blank=True)
     condominionomepropriedade = models.CharField(verbose_name="Nome da Propriedade",  max_length=100, null=True, blank=True)
-    condominiocnpj = models.CharField(verbose_name="CNPJ", max_length=17, null=True, default='')
+    condominiocnpj = models.CharField(verbose_name="CNPJ", max_length=20, null=True, default='')
     condominiomatricula = models.CharField(verbose_name="IPTU", max_length=30, null=True, default='')
     condominioendereco = models.CharField(verbose_name="Endereço", max_length=120, null=True, default='')
 
@@ -71,6 +71,7 @@ class PreCliente(models.Model):
     preclienteAvalAuto = models.CharField(verbose_name='Avaliação Automática', max_length=1, null=True, blank=True)
     preclienteAvaliacao = models.CharField(verbose_name='Avaliação', max_length=1, null=True, blank=True)
     preclienteJson = models.TextField(verbose_name='Json', null=True, blank=True)
+    preclienteDataVisita = models.DateField(verbose_name="Data da visita", null=True, blank=True)
 
     def pode_ser_convertido(self):
         aprovado = 'N'

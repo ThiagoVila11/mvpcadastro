@@ -26,6 +26,7 @@
                             <p><strong>Apontamentos:</strong> {{ precliente.preclienteApontamentos }}</p>
                             <p><strong>Renda Pessoal:</strong> {{ precliente.preclienteRendaPresumida }}</p>
                             <p><strong>Renda Familiar:</strong> {{ precliente.preclienteRendaFamiliar }}</p>
+                            <p><strong>Data da Visita:</strong> {{ precliente.preclienteDataVisita|date:"d/m/Y"|default:"---"  }}</p>
                         </div>
                     </div>
                 </div>

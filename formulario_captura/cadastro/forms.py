@@ -66,4 +66,5 @@ class PreClienteForm(forms.ModelForm):
         widgets = {
             'preclienteDataCadastro': forms.DateInput(attrs={'type': 'date'}),
             'preclienteJson': forms.Textarea(attrs={'rows': 10}),
+            'preclienteDataVisita': forms.DateInput(attrs={'type': 'date'}),
         }
