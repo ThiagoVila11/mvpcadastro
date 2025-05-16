@@ -19,7 +19,7 @@ load_dotenv()
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['3.142.98.253']
+ALLOWED_HOSTS = ['3.142.98.253', '*']
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
