@@ -12,16 +12,20 @@
                 </div>
             </div>
         </div>
+        
         <div class="card-body">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 
                 <div class="row">
+                    <!-- Coluna da Imagem -->
                     <div class="col-md-4 text-center">
                         {% if cliente.imagem %}
-                            <img src="{{ cliente.imagem.url }}" alt="{{ cliente.nome }}" class="img-fluid rounded mb-3" style="max-height: 200px;">
+                            <img src="{{ cliente.imagem.url }}" alt="{{ cliente.nome }}" 
+                                 class="img-fluid rounded mb-3" style="max-height: 200px;">
                         {% else %}
-                            <div class="bg-light rounded mb-3 d-flex align-items-center justify-content-center" style="height: 200px; width: 200px;">
+                            <div class="bg-light rounded mb-3 d-flex align-items-center justify-content-center" 
+                                 style="height: 200px; width: 200px;">
                                 <span class="text-muted">Sem imagem</span>
                             </div>
                         {% endif %}
@@ -30,13 +34,14 @@
                             <label for="imagem" class="form-label">Alterar Imagem CNH</label>
                             <input type="file" class="form-control" id="imagem" name="imagem">
                         </div>
-                        
                     </div>
                     
+                    <!-- Coluna de Formulário -->
                     <div class="col-md-8">
+                        <!-- Informações Pessoais e Contato -->
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <h5>Informações Pessoais</h5>
+                                <h5 class="mb-3 border-bottom pb-2">Informações Pessoais</h5>
                                 <div class="mb-3">
                                     <label for="nome" class="form-label">Nome</label>
                                     <input type="text" class="form-control" id="nome" name="nome" value="{{ cliente.nome }}">
@@ -47,13 +52,16 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="data_nascimento" class="form-label">Data Nascimento</label>
-                                    <input type="date" class="form-control" id="data_nascimento" name="data_nascimento" value="{{ cliente.data_nascimento|date:'Y-m-d' }}">
+                                    <input type="date" class="form-control" id="data_nascimento" 
+                                           name="data_nascimento" value="{{ cliente.data_nascimento|date:'Y-m-d' }}">
                                 </div>
                                 <div class="mb-3">
                                     <label for="estcivil" class="form-label">Estado Civil</label>
                                     <select class="form-select" id="estcivil" name="estcivil">
                                         {% for value, label in cliente.estadocivil %}
-                                            <option value="{{ value }}" {% if cliente.estcivil == value %}selected{% endif %}>{{ label }}</option>
+                                            <option value="{{ value }}" {% if cliente.estcivil == value %}selected{% endif %}>
+                                                {{ label }}
+                                            </option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -64,7 +72,7 @@
                             </div>
                             
                             <div class="col-md-6">
-                                <h5>Contato</h5>
+                                <h5 class="mb-3 border-bottom pb-2">Contato</h5>
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" class="form-control" id="email" name="email" value="{{ cliente.email }}">
@@ -81,13 +89,13 @@
                                     <label for="rgrne" class="form-label">RG/RNE</label>
                                     <input type="text" class="form-control" id="rgrne" name="rgrne" value="{{ cliente.rgrne }}">
                                 </div>
-
                             </div>
                         </div>
                         
+                        <!-- Informações do Residente -->
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <h5>Informações do Residentes</h5>
+                                <h5 class="mb-3 border-bottom pb-2">Informações do Residentes</h5>
                                 <div class="mb-3">
                                     <label for="nomeresidente" class="form-label">Nome do residente</label>
                                     <input type="text" class="form-control" id="nomeresidente" name="nomeresidente" value="{{ cliente.nomeresidente }}">
@@ -104,8 +112,7 @@
                                     <label for="estadocivilresidente" class="form-label">Estado Civil do Residente</label>
                                     <select class="form-select" id="estadocivilresidente" name="estadocivilresidente">
                                         {% for value, label in cliente.estadocivil %}
-                                            <option value="{{ value }}" 
-                                                {% if cliente.estadocivilresidente == value %}selected{% endif %}>
+                                            <option value="{{ value }}" {% if cliente.estadocivilresidente == value %}selected{% endif %}>
                                                 {{ label }}
                                             </option>
                                         {% endfor %}
@@ -120,37 +127,33 @@
                                     <input type="email" class="form-control" id="emailresidente" name="emailresidente" value="{{ cliente.emailresidente }}">
                                 </div>
                             </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <h5>Informações do contratuais</h5>
-                                    <div class="mb-3">
-                                        <label for="prazocontrato" class="form-label">Prazo do contrato</label>
-                                        <input type="text" class="form-control" id="prazocontrato" name="prazocontrato" value="{{ cliente.prazocontrato }}">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="iniciocontrato" class="form-label">Inicio do contrato</label>
-                                        <input type="date" class="form-control" id="iniciocontrato" name="iniciocontrato" value="{{ cliente.iniciocontrato|date:'Y-m-d'}}">
-                                    </div>
-                                </div>
                             
+                            <!-- Informações Contratuais e Unidade -->
                             <div class="col-md-6">
-                                <h5>Informações da Unidade</h5>
+                                <h5 class="mb-3 border-bottom pb-2">Informações Contratuais</h5>
                                 <div class="mb-3">
+                                    <label for="prazocontrato" class="form-label">Prazo do contrato</label>
+                                    <input type="text" class="form-control" id="prazocontrato" name="prazocontrato" value="{{ cliente.prazocontrato }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="iniciocontrato" class="form-label">Inicio do contrato</label>
+                                    <input type="date" class="form-control" id="iniciocontrato" 
+                                           name="iniciocontrato" value="{{ cliente.iniciocontrato|date:'Y-m-d'}}">
+                                </div>
+                                
+                                <h5 class="mb-3 mt-4 border-bottom pb-2">Informações da Unidade</h5>
+                                <div class="mb-3">
+                                    <label for="condominio" class="form-label">Condomínio</label>
                                     <select class="form-select" id="condominio" name="Condominio">
                                         <option value="">Selecione um condomínio</option>
                                         {% for cond in condominios %}
-                                            <option value="{{ cond.id }}" 
-                                                    {% if cliente.Condominio and cond.id == cliente.Condominio.id %}selected{% endif %}>
+                                            <option value="{{ cond.id }}" {% if cliente.Condominio and cond.id == cliente.Condominio.id %}selected{% endif %}>
                                                 {{ cond.id }} - {{ cond.condominionome|default:"Nome não disponível" }}
                                             </option>
                                         {% empty %}
                                             <option value="">Nenhum condomínio cadastrado</option>
                                         {% endfor %}
                                     </select>
-
-
                                 </div>
                                 <div class="mb-3">
                                     <label for="apto" class="form-label">Apartamento</label>
@@ -165,40 +168,55 @@
                                     <input type="text" class="form-control" id="vagaunidade" name="vagaunidade" value="{{ cliente.vagaunidade}}">
                                 </div>
                             </div>
-
-                        <div class="mb-3">
-                            <h5>Desconto temporário</h5>
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="isencaomulta" name="isencaomulta" {% if cliente.isencaomulta %}checked{% endif %}>
-                                <label class="form-check-label" for="isencaomulta">Isenção de multa</label>
+                        </div>
+                        
+                        <!-- Desconto Temporário -->
+                        <div class="mb-4">
+                            <h5 class="mb-3 border-bottom pb-2">Desconto temporário</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="isencaomulta" 
+                                               name="isencaomulta" {% if cliente.isencaomulta %}checked{% endif %}>
+                                        <label class="form-check-label" for="isencaomulta">Isenção de multa</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="percentualdesconto" class="form-label">Percentual de desconto</label>
+                                    <input type="text" class="form-control" id="percentualdesconto" 
+                                           name="percentualdesconto" value="{{ cliente.percentualdesconto|floatformat:'-5'}}">
+                                </div>
                             </div>
-                            <div class="mb-3"></div>
-                                <label for="percentualdesconto" class="form-label">Percentual de desconto temporário</label>
-                                <input type="text" class="form-control" id="percentualdesconto" name="percentualdesconto" value="{{ cliente.percentualdesconto|floatformat:'-5'}}">
-                            </div>
-                            <div class="mb-3"></div>
-                                <label for="datainiciodesconto" class="form-label">Data de início do desconto</label>
-                                <input type="date" class="form-control" id="datainiciodesconto" name="datainiciodesconto" value="{{ cliente.datainiciodesconto|date:'Y-m-d'}}">
-                            </div>
-                            <div class="mb-3"></div>
-                                <label for="dataterminodesconto" class="form-label">Data de término do desconto</label>
-                                <input type="date" class="form-control" id="dataterminodesconto" name="dataterminodesconto" value="{{ cliente.dataterminodesconto|date:'Y-m-d'}}">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="datainiciodesconto" class="form-label">Data de início</label>
+                                    <input type="date" class="form-control" id="datainiciodesconto" 
+                                           name="datainiciodesconto" value="{{ cliente.datainiciodesconto|date:'Y-m-d'}}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="dataterminodesconto" class="form-label">Data de término</label>
+                                    <input type="date" class="form-control" id="dataterminodesconto" 
+                                           name="dataterminodesconto" value="{{ cliente.dataterminodesconto|date:'Y-m-d'}}">
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="mb-3">
-                            <h5>Observações</h5>
-                            <textarea class="form-control" id="observacoes" name="observacoes" rows="4" value="{{ cliente.observacoes }}"> </textarea>
-
+                        <!-- Observações -->
+                        <div class="mb-4">
+                            <h5 class="mb-3 border-bottom pb-2">Observações</h5>
+                            <textarea class="form-control" id="observacoes" name="observacoes" 
+                                      rows="4">{{ cliente.observacoes }}</textarea>
                         </div>
                         
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                        <!-- Botão de Submit -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <button type="submit" class="btn btn-primary px-4">Salvar Alterações</button>
                         </div>
                     </div>
                 </div>
+                
                 {% if form.errors %}
-                    <div class="alert alert-danger">
+                    <div class="alert alert-danger mt-4">
                         <h4>Erros no formulário:</h4>
                         {{ form.errors }}
                     </div>

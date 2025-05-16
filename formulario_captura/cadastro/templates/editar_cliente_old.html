@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
 <div class="container mt-4">
     <div class="card">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
                 <h2>Editar Cliente</h2>
-                <a href="{% url 'detalhes_cliente' cliente.id %}" class="btn btn-secondary">Cancelar</a>
+                <div>
+                    <a href="{% url 'consulta_clientes' %}" class="btn btn-secondary">Voltar</a>
+                </div>
             </div>
         </div>
         <div class="card-body">
@@ -14,78 +17,219 @@
                 {% csrf_token %}
                 
                 <div class="row">
-                    <div class="col-md-6">
-                        <h4>Informações Pessoais</h4>
+                    <div class="col-md-4 text-center">
+                        {% if cliente.imagem %}
+                            <img src="{{ cliente.imagem.url }}" alt="{{ cliente.nome }}" class="img-fluid rounded mb-3" style="max-height: 200px;">
+                        {% else %}
+                            <div class="bg-light rounded mb-3 d-flex align-items-center justify-content-center" style="height: 200px; width: 200px;">
+                                <span class="text-muted">Sem imagem</span>
+                            </div>
+                        {% endif %}
+                        
                         <div class="mb-3">
-                            <label for="id_nome" class="form-label">Nome</label>
-                            {{ form.nome }}
+                            <label for="imagem" class="form-label">Alterar Imagem CNH</label>
+                            <input type="file" class="form-control" id="imagem" name="imagem">
                         </div>
-                        <div class="mb-3">
-                            <label for="id_cpf" class="form-label">CPF</label>
-                            {{ form.cpf }}
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_data_nascimento" class="form-label">Data de Nascimento</label>
-                            {{ form.data_nascimento }}
-                        </div>
+                        
                     </div>
                     
-                    <div class="col-md-6">
-                        <h4>Contato</h4>
-                        <div class="mb-3">
-                            <label for="id_email" class="form-label">Email</label>
-                            {{ form.email }}
+                    <div class="col-md-8">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h5>Informações Pessoais</h5>
+                                <div class="mb-3">
+                                    <label for="nome" class="form-label">Nome</label>
+                                    <input type="text" class="form-control" id="nome" name="nome" value="{{ cliente.nome }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="cpf" class="form-label">CPF</label>
+                                    <input type="text" class="form-control" id="cpf" name="cpf" value="{{ cliente.cpf }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="data_nascimento" class="form-label">Data Nascimento</label>
+                                    <input type="date" class="form-control" id="data_nascimento" name="data_nascimento" value="{{ cliente.data_nascimento|date:'Y-m-d' }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="estcivil" class="form-label">Estado Civil</label>
+                                    <select class="form-select" id="estcivil" name="estcivil">
+                                        {% for value, label in cliente.estadocivil %}
+                                            <option value="{{ value }}" {% if cliente.estcivil == value %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="profissao" class="form-label">Profissão</label>
+                                    <input type="text" class="form-control" id="profissao" name="profissao" value="{{ cliente.profissao }}">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5>Contato</h5>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" value="{{ cliente.email }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="telefone" class="form-label">Celular</label>
+                                    <input type="text" class="form-control" id="telefone" name="telefone" value="{{ cliente.telefone }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="endereco" class="form-label">Endereço</label>
+                                    <input type="text" class="form-control" id="endereco" name="endereco" value="{{ cliente.endereco }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="rgrne" class="form-label">RG/RNE</label>
+                                    <input type="text" class="form-control" id="rgrne" name="rgrne" value="{{ cliente.rgrne }}">
+                                </div>
+
+                            </div>
                         </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h5>Informações do Residentes</h5>
+                                <div class="mb-3">
+                                    <label for="nomeresidente" class="form-label">Nome do residente</label>
+                                    <input type="text" class="form-control" id="nomeresidente" name="nomeresidente" value="{{ cliente.nomeresidente }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="cpfresidente" class="form-label">CPF do residente</label>
+                                    <input type="text" class="form-control" id="cpfresidente" name="cpfresidente" value="{{ cliente.cpfresidente }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="rgresidente" class="form-label">RG do residente</label>
+                                    <input type="text" class="form-control" id="rgresidente" name="rgresidente" value="{{ cliente.rgresidente|default:'' }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="estadocivilresidente" class="form-label">Estado Civil do Residente</label>
+                                    <select class="form-select" id="estadocivilresidente" name="estadocivilresidente">
+                                        {% for value, label in cliente.estadocivil %}
+                                            <option value="{{ value }}" 
+                                                {% if cliente.estadocivilresidente == value %}selected{% endif %}>
+                                                {{ label }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="celularresidente" class="form-label">Celular do residente</label>
+                                    <input type="text" class="form-control" id="celularresidente" name="celularresidente" value="{{ cliente.celularresidente }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="emailresidente" class="form-label">E-mail do residente</label>
+                                    <input type="email" class="form-control" id="emailresidente" name="emailresidente" value="{{ cliente.emailresidente }}">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <h5>Informações do contratuais</h5>
+                                    <div class="mb-3">
+                                        <label for="prazocontrato" class="form-label">Prazo do contrato</label>
+                                        <input type="text" class="form-control" id="prazocontrato" name="prazocontrato" value="{{ cliente.prazocontrato }}">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="iniciocontrato" class="form-label">Inicio do contrato</label>
+                                        <input type="date" class="form-control" id="iniciocontrato" name="iniciocontrato" value="{{ cliente.iniciocontrato|date:'Y-m-d'}}">
+                                    </div>
+                                </div>
+                            
+                            <div class="col-md-6">
+                                <h5>Informações da Unidade</h5>
+                                <div class="mb-3">
+                                    <select class="form-select" id="condominio" name="Condominio">
+                                        <option value="">Selecione um condomínio</option>
+                                        {% for cond in condominios %}
+                                            <option value="{{ cond.id }}" 
+                                                    {% if cliente.Condominio and cond.id == cliente.Condominio.id %}selected{% endif %}>
+                                                {{ cond.id }} - {{ cond.condominionome|default:"Nome não disponível" }}
+                                            </option>
+                                        {% empty %}
+                                            <option value="">Nenhum condomínio cadastrado</option>
+                                        {% endfor %}
+                                    </select>
+
+
+                                </div>
+                                <div class="mb-3">
+                                    <label for="apto" class="form-label">Apartamento</label>
+                                    <input type="text" class="form-control" id="apto" name="apto" value="{{ cliente.apto}}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="vrunidade" class="form-label">Valor</label>
+                                    <input type="text" class="form-control" id="vrunidade" name="vrunidade" value="{{ cliente.vrunidade}}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="vagaunidade" class="form-label">Vagas</label>
+                                    <input type="text" class="form-control" id="vagaunidade" name="vagaunidade" value="{{ cliente.vagaunidade}}">
+                                </div>
+                            </div>
+
                         <div class="mb-3">
-                            <label for="id_telefone" class="form-label">Telefone</label>
-                            {{ form.telefone }}
+                            <h5>Desconto temporário</h5>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="isencaomulta" name="isencaomulta" {% if cliente.isencaomulta %}checked{% endif %}>
+                                <label class="form-check-label" for="isencaomulta">Isenção de multa</label>
+                            </div>
+                            <div class="mb-3"></div>
+                                <label for="percentualdesconto" class="form-label">Percentual de desconto temporário</label>
+                                <input type="text" class="form-control" id="percentualdesconto" name="percentualdesconto" value="{{ cliente.percentualdesconto|floatformat:'-5'}}">
+                            </div>
+                            <div class="mb-3"></div>
+                                <label for="datainiciodesconto" class="form-label">Data de início do desconto</label>
+                                <input type="date" class="form-control" id="datainiciodesconto" name="datainiciodesconto" value="{{ cliente.datainiciodesconto|date:'Y-m-d'}}">
+                            </div>
+                            <div class="mb-3"></div>
+                                <label for="dataterminodesconto" class="form-label">Data de término do desconto</label>
+                                <input type="date" class="form-control" id="dataterminodesconto" name="dataterminodesconto" value="{{ cliente.dataterminodesconto|date:'Y-m-d'}}">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>Observações</h5>
+                            <textarea class="form-control" id="observacoes" name="observacoes" rows="4" value="{{ cliente.observacoes }}"> </textarea>
+
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
                         </div>
                     </div>
                 </div>
-                
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <h4>Informações da Unidade</h4>
-                        <div class="mb-3">
-                            <label for="id_unidade" class="form-label">Unidade</label>
-                            {{ form.unidade }}
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_apto" class="form-label">Apto</label>
-                            {{ form.apto }}
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_score" class="form-label">Score</label>
-                            {{ form.score }}
-                        </div>
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <h4>Erros no formulário:</h4>
+                        {{ form.errors }}
                     </div>
-                    
-                    <div class="col-md-6">
-                        <h4>Status e Documentos</h4>
-                        <div class="mb-3 form-check">
-                            {{ form.visitarealizada }}
-                            <label class="form-check-label" for="id_visitarealizada">Visita Realizada</label>
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_imagem" class="form-label">Foto do Cliente</label>
-                            {{ form.imagem }}
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_documentacaoenviada" class="form-label">Documentação</label>
-                            {{ form.documentacaoenviada }}
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <h4>Observações</h4>
-                    {{ form.observacoes }}
-                </div>
-                
-                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                <a href="{% url 'detalhes_cliente' cliente.id %}" class="btn btn-secondary">Cancelar</a>
+                {% endif %}
             </form>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Carregar apartamentos quando o condomínio for selecionado
+    $('#condominio').change(function() {
+        var condominioId = $(this).val();
+        console.log(condominioId)
+        if (condominioId) {
+            $.ajax({
+                url: '/get_apartamentos/',
+                data: {
+                    'condominio_id': condominioId
+                },
+                success: function(data) {
+                    $('#apartamento').html(data);
+                }
+            });
+        } else {
+            $('#apartamento').html('<option value="">Selecione um apartamento</option>');
+        }
+    });
+});
+</script>
 {% endblock %}
