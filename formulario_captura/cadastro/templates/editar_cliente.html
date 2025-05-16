@@ -168,6 +168,10 @@
 
                         <div class="mb-3">
                             <h5>Desconto temporário</h5>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="isencaomulta" name="isencaomulta" {% if cliente.isencaomulta %}checked{% endif %}>
+                                <label class="form-check-label" for="isencaomulta">Isenção de multa</label>
+                            </div>
                             <div class="mb-3"></div>
                                 <label for="percentualdesconto" class="form-label">Percentual de desconto temporário</label>
                                 <input type="text" class="form-control" id="percentualdesconto" name="percentualdesconto" value="{{ cliente.percentualdesconto|floatformat:'-5'}}">
@@ -179,10 +183,6 @@
                             <div class="mb-3"></div>
                                 <label for="dataterminodesconto" class="form-label">Data de término do desconto</label>
                                 <input type="date" class="form-control" id="dataterminodesconto" name="dataterminodesconto" value="{{ cliente.dataterminodesconto|date:'Y-m-d'}}">
-                            </div>
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="isencaomulta" name="isencaomulta" {% if cliente.isencaomulta %}checked{% endif %}>
-                                <label class="form-check-label" for="isencaomulta">Isenção de multa</label>
                             </div>
                         </div>
                         

@@ -16,13 +16,15 @@ class ClienteForm(forms.ModelForm):
                   'Consultor', 'Condominio', 'apto',
                   'cnpjunidade', 'matriculaunidade', 'vagaunidade',
                   'enderecounidade', 'nriptuunidade', 'vrunidade', 
-                  'iniciocontrato', 'prazocontrato', 'percentualdesconto', 'datainiciodesconto',
-                  'dataterminodesconto', 'isencaomulta', 'observacoes', 'imagem'] #'__all__' #['imagem', 'nome', 'cpf', 'score', 'email', 'telefone', 'data_nascimento',  'unidade', 'apto', 'observacoes']
+                  'iniciocontrato', 'prazocontrato', 'isencaomulta','percentualdesconto', 
+                  'datainiciodesconto', 'dataterminodesconto', 
+                  'observacoes', 'imagem'] #'__all__' #['imagem', 'nome', 'cpf', 'score', 'email', 'telefone', 'data_nascimento',  'unidade', 'apto', 'observacoes']
         widgets = {
             'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
             'iniciocontrato': forms.DateInput(attrs={'type': 'date'}),
             'observacoes': forms.Textarea(attrs={'rows': 3}),
-            
+            'datainiciodesconto': forms.DateInput(attrs={'type': 'date'}),
+            'dataterminodesconto': forms.DateInput(attrs={'type': 'date'}),
         }
 
         def __init__(self, *args, **kwargs):

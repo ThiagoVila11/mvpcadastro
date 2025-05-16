@@ -72,6 +72,7 @@ class PreCliente(models.Model):
     preclienteAvaliacao = models.CharField(verbose_name='Avaliação', max_length=1, null=True, blank=True)
     preclienteJson = models.TextField(verbose_name='Json', null=True, blank=True)
     preclienteDataVisita = models.DateField(verbose_name="Data da visita", null=True, blank=True)
+    preclienteCondominio = models.ForeignKey(Condominio, on_delete=models.CASCADE, verbose_name='Condominio', null=True, blank=True)
 
     def pode_ser_convertido(self):
         aprovado = 'N'
@@ -106,6 +107,7 @@ class PreCliente(models.Model):
             telefone = nrfone,
             endereco = endereco,
             data_nascimento = data_convertida,
+            Condominio = self.preclienteCondominio
         )
         
         cliente.save()
