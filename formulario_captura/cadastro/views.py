@@ -751,6 +751,7 @@ def get_apartamentos(request):
 User = get_user_model()
 logger = logging.getLogger(__name__)
 def login_view(request):
+    print('entrou no Login')
     if request.user.is_authenticated:
         return redirect('consulta_clientes')
         
@@ -765,18 +766,21 @@ def login_view(request):
         try:
             # 1. Primeiro valida com a API externa
             response = requests.post(
-                'http://3.143.172.37:8001/api/login/',
+                #'http://3.143.172.37:8001/api/login/',
+                'http://localhost:8001/api/login/',
                 json={'username': username, 'password': password},
                 headers={'Content-Type': 'application/json'},
                 timeout=10
             )
-            
+            print(response)
             if response.status_code != 200:
+                print('status diferente de 200')
+                print(response.status_code)
                 messages.error(request, 'Credenciais inválidas')
                 return render(request, 'registration/login.html')
                 
             token_data = response.json()
-            
+            print(token_data)
             # 2. Verifica/Cria usuário local
             user, created = User.objects.get_or_create(
                 username=username,
@@ -799,7 +803,8 @@ def login_view(request):
             # 4. Armazena o token e função na sessão
             request.session['api_token'] = token_data.get('token')
             response_dados = requests.get(
-                f'http://3.143.172.37:8001/api/usuario-por-email/?nomeusuario={username}',
+                #f'http://3.143.172.37:8001/api/usuario-por-email/?nomeusuario={username}',
+                f'http://localhost:8001/api/usuario-por-email/?nomeusuario={username}',
                 headers={'Content-Type': 'application/json'},
                 timeout=10
             )
