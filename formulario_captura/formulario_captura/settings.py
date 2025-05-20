@@ -40,11 +40,11 @@ ALLOWED_HOSTS = ['3.142.98.253', '*', '10.1.10.86', 'localhost', '127.0.0.1']
 API_DATABUSCA_USER = "b94ad788-8a3e-deb5-1677-ed1ee11351cd"
 API_DATABUSCA_PASS = "REDA@#$%Summer22"
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://189.112.8.89',
-    'https://189.112.8.89',
-    'https://inloco.vila11.com.br',
-]
+#CSRF_TRUSTED_ORIGINS = [
+#    'http://189.112.8.89',
+#    'https://189.112.8.89',
+#    'https://inloco.vila11.com.br',
+#]
 
 
 # Application definition
