@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
+from . import api
 from cadastro.views import CondominioKPIDashboard
+from .api import get_consultor_id_by_email
 
 
 urlpatterns = [
@@ -14,7 +16,9 @@ urlpatterns = [
     path('consulta/', views.consulta_view, name='consulta'),
     path('consulta-cpf/', views.consulta_cpf, name='consulta_cpf'),
     path('preencher_pdf/<int:cliente_id>/', views.preencher_pdf, name='preencher_pdf'),
+    path('assinar_contrato/<int:cliente_id>/', views.assinar_contrato, name='assinar_contrato'),
     path('documentos/<int:cliente_id>/', views.visualizar_documento, name='visualizar_documento'),
+    path('retorno_assinatura/', views.webhook_receiver, name='webhook_receiver'),
     #condominio
     path('cadastro_condominio/', views.cadastro_condominio, name='cadastro_condominio'),
     path('consulta_condominios/', views.consulta_condominios, name='consulta_condominios'),
@@ -44,6 +48,7 @@ urlpatterns = [
     path('precliente/converter/<int:precliente_id>/', views.converter_precliente, name='converter_precliente'),
     path('precliente/excluir/<int:id>/', views.excluir_precliente, name='excluir_precliente'),
     #dashboards
-    path('condominios/kpi/', CondominioKPIDashboard.as_view(), name='kpi-condominios')
-
+    path('condominios/kpi/', CondominioKPIDashboard.as_view(), name='kpi-condominios'),
+    #API´s
+    path('api/consultor/', get_consultor_id_by_email, name='get_consultor_id_by_email'),
 ]

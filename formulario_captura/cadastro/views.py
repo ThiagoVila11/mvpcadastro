@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
 from .forms import ClienteForm, CondominioForm, ApartamentoForm, ConsultorForm, PreClienteForm
 from .models import Cliente, Condominio, Apartamento, Consultor, PreCliente
 from django.db.models import Q, Count
 from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseNotAllowed
 from .services.api_service import APIDataBuscaService
 import json
 from django.template.loader import render_to_string
@@ -34,6 +35,11 @@ from datetime import datetime, timedelta
 from functools import wraps
 from django.http import HttpResponseForbidden
 from django.views.generic import TemplateView
+from .serializers import ConsultorSerializer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response  # Este import é crucial
+from django.views.decorators.http import require_http_methods
+from decimal import Decimal
 
 
 def requer_consultor(view_func):
@@ -881,4 +887,252 @@ class CondominioKPIDashboard(TemplateView):
         print(context)
         
         return context
+
+#@require_http_methods(["POST"])  # Agora só aceita POST
+def assinar_contrato(request, cliente_id):
+    # Obtenha o template do banco de dados
+    cliente = Cliente.objects.get(id=cliente_id)
+
+    # Dados dinâmicos - pode vir de um formulário ou banco de dados
+    nome = f"{cliente.nome}".replace("{", "").replace("}", "").replace("'", "")
+    profissao = f"{cliente.profissao}".replace("{", "").replace("}", "").replace("'", "")
+    estadocivil = f"{cliente.estcivil}".replace("{", "").replace("}", "").replace("'", "")
+    rg = f"{cliente.rgrne}".replace("{", "").replace("}", "").replace("'", "")
+    cpf = f"{cliente.cpf}".replace("{", "").replace("}", "").replace("'", "")
+    email = f"{cliente.email}".replace("{", "").replace("}", "").replace("'", "")
+    celular = f"{cliente.telefone}".replace("{", "").replace("}", "").replace("'", "")
+    endereco = f"{cliente.endereco}".replace("{", "").replace("}", "").replace("'", "")
+    nomeresidente = f"{cliente.nomeresidente}".replace("{", "").replace("}", "").replace("'", "")
+    numerorg = f"{cliente.rgresidente}".replace("{", "").replace("}", "").replace("'", "")
+    cpfresidente = f"{cliente.cpfresidente}".replace("{", "").replace("}", "").replace("'", "")
+    enderecoresidente = f"{cliente.enderecoresidente}".replace("{", "").replace("}", "").replace("'", "")
+    profissaoresidente  = f"{cliente.profissaoresidente}".replace("{", "").replace("}", "").replace("'", "")
+    estadocivilresidente = f"{cliente.estadocivilresidente}".replace("{", "").replace("}", "").replace("'", "")
+    celularresidente = f"{cliente.celularresidente}".replace("{", "").replace("}", "").replace("'", "")
+    emailresidente = f"{cliente.emailresidente}".replace("{", "").replace("}", "").replace("'", "")
+    apto = f"{cliente.apto}".replace("{", "").replace("}", "").replace("'", "")
+    vaga = f"{cliente.vagaunidade}".replace("{", "").replace("}", "").replace("'", "")
+    matricula = f"{cliente.matriculaunidade}".replace("{", "").replace("}", "").replace("'", "")
+    condominio =f"{cliente.Condominio.condominionome}".replace("{", "").replace("}", "").replace("'", "")
+    cnpjcondominio = f"{cliente.Condominio.condominiocnpj}".replace("{", "").replace("}", "").replace("'", "")
+    enderecocondominio = f"{cliente.Condominio.condominioendereco}".replace("{", "").replace("}", "").replace("'", "")
+    nriptu = f"{cliente.Condominio.condominiomatricula}".replace("{", "").replace("}", "").replace("'", "")
+    datainicio = f"{cliente.iniciocontrato}".replace("{", "").replace("}", "").replace("'", "")
+    valor = f"{cliente.vrunidade}".replace("{", "").replace("}", "").replace("'", "")
+    prazocontrato = f"{cliente.prazocontrato}".replace("{", "").replace("}", "").replace("'", "")
+    dia = datetime.now().day
+    mes = datetime.now().month
+    ano = datetime.now().year
+    percdes = f"{cliente.percentualdesconto}".replace("{", "").replace("}", "").replace("'", "")
+    iniciodesc = f"{cliente.datainiciodesconto}".replace("{", "").replace("}", "").replace("'", "")
+    terminodesc = f"{cliente.dataterminodesconto}".replace("{", "").replace("}", "").replace("'", "")
+    data_obj = datetime.strptime(datainicio, "%Y-%m-%d")
+    data_formatada = data_obj.strftime("%d/%m/%Y")
+
+    data_obj = datetime.strptime(iniciodesc, "%Y-%m-%d")
+    iniciodescformat = data_obj.strftime("%d/%m/%Y")
+
+    data_obj = datetime.strptime(terminodesc, "%Y-%m-%d")
+    terminodescformat = data_obj.strftime("%d/%m/%Y")
+
+    textoi1 = ''
+    textoi11 = ''
+    if cliente.percentualdesconto > 0:
+        textoi1 = f"I.2. Desconto de Incentivo: A VILA 11 concede ao LOCATÁRIO desconto no valor do Aluguel, especificamente para o Período de Desconto de {iniciodescformat} a {terminodescformat}, conforme abaixo:"
+        textoi11 = f"a) De {iniciodescformat} a {terminodescformat} de locação - {cliente.percentualdesconto} % de desconto sobre o valor do Aluguel mensal;"
     
+    dadosdocondominio = f"{cliente.Condominio.condominionomecomercial} Sociedade Anônima, inscrita no CNPJ nº {cliente.Condominio.condominiocnpj} com endereço em {cliente.Condominio.condominioendereco}"
+    meses_pt = {
+        1: "Janeiro",
+        2: "Fevereiro",
+        3: "Março",
+        4: "Abril",
+        5: "Maio",
+        6: "Junho",
+        7: "Julho",
+        8: "Agosto",
+        9: "Setembro",
+        10: "Outubro",
+        11: "Novembro",
+        12: "Dezembro"
+    }
+    
+    nome_mes = meses_pt.get(mes, "Mês inválido")
+
+    document_data = {
+        "signature_list": [
+            {
+                "service": "lexiosign",
+                "titulo": "Nome do Documento",
+                "signers": [
+                    {
+                        "nome": nome,
+                        "email": email,
+                        "funcao": "Cliente"
+                    },
+                    {
+                        "nome": "Isadora Romão",
+                        "email": "isadora.romao@vila11.com.br",
+                        "funcao": "Testemunha"
+                    },
+                    {
+                        "nome": "Carla Viana",
+                        "email": "carla.viana@vila11.com.br",
+                        "funcao": "Testemunha"
+                    },
+                    {
+                        "nome": "Jorge Luiz Bernardo de moraes",
+                        "email": "jorge.moraes@vila11.com.br",
+                        "funcao": "Representante Legal"
+                    },
+                    {
+                        "nome": "Roberto Sergio Dib",
+                        "email": "roberto.dib@vila11.com.br",
+                        "funcao": "Representante Legal"
+                    }
+                ],
+                "send_email": True,
+                "order_by": False,
+                "lembrete": 3,
+                "engine_campos": {
+                    "Landlord": cliente.Condominio.condominionomecomercial, 
+                    "Type": "Sociedade de responsabilidade limitada", 
+                    "Cnpj": cliente.Condominio.condominiocnpj, 
+                    "AddressLandlord": cliente.Condominio.condominioendereco, 
+                    "IndicatedPerson": cliente.nome, 
+                    "EmailPerson": cliente.email, 
+                    "Lessee": "1", 
+                    "NameOne": cliente.email, 
+                    "ProfessionOne": cliente.profissao, 
+                    "MaritalStatOne": cliente.estcivil, 
+                    "RgOne": cliente.rgrne, 
+                    "CpfOne": cliente.cpf, 
+                    "EmailOne": cliente.email, 
+                    "CelOne": cliente.telefone, 
+                    "AddressOne": cliente.endereco, 
+                    "NameTwo": "", 
+                    "ProfessionTwo": "", 
+                    "MaritalStatTwo": "", 
+                    "RgTwo": "", 
+                    "CpfTwo": "", 
+                    "EmailTwo": "", 
+                    "CelTwo": "", 
+                    "AddressTwo": "", 
+                    "NameThree": "", 
+                    "ProfessionThree": "", 
+                    "MaritalStatThree": "", 
+                    "RgThree": "", 
+                    "CpfThree": "", 
+                    "EmailThree": "", 
+                    "CelThree": "", 
+                    "AddressThree": "", 
+                    "NameFour": "", 
+                    "ProfessionFour": "", 
+                    "MaritalStatFour": "", 
+                    "RgFour": "", 
+                    "CpfFour": "", 
+                    "EmailFour": "", 
+                    "CelFour": "", 
+                    "AddressFour": "", 
+                    "NameFive": "", 
+                    "ProfessionFive": "", 
+                    "MaritalStatFive": "", 
+                    "RgFive": "", 
+                    "CpfFive": "", 
+                    "EmailFive": "", 
+                    "CelFive": "", 
+                    "AddressFive": "", 
+                    "Residents": "1", 
+                    "ResNameOne": cliente.nomeresidente, 
+                    "ResRgOne": cliente.rgresidente, 
+                    "ResCpfOne": cliente.cpfresidente, 
+                    "ResNameTwo": "", 
+                    "ResRgTwo": "", 
+                    "ResCpfTwo": "", 
+                    "ResNameThree": "", 
+                    "ResRgThree": "", 
+                    "ResCpfThree": "", 
+                    "ResNameFour": "", 
+                    "ResRgFour": "", 
+                    "ResCpfFour": "", 
+                    "AdmName": cliente.Condominio.condominionomecomercial, 
+                    "AdmCnpj": cliente.Condominio.condominiocnpj, 
+                    "AdmCel": "(11) 99999-9999", 
+                    "Apartment": cliente.apto, 
+                    "CondoName": cliente.Condominio.condominionome, 
+                    "Registration": cliente.Condominio.condominiomatricula, 
+                    "ContactCondo": "(11) 99999-9999", 
+                    "CnpjCondo": cliente.Condominio.condominiocnpj, 
+                    "PropertyAddress": cliente.Condominio.condominioendereco, 
+                    "Iptu": cliente.Condominio.condominiomatricula, 
+                    "RentMonth": str(cliente.vrunidade), 
+                    "DataBase": cliente.iniciocontrato.strftime("%Y%m%d"), 
+                    "DataSig": datetime.now().strftime("%Y%m%d"), 
+                    "WitName1": "", 
+                    "WitAdress1": "", 
+                    "WitRg1": "", 
+                    "WitName2": "", 
+                    "WitAdress2": "", 
+                    "WitRg2": ""
+                }
+            }
+        ]
+    }
+    # URL da API
+    url = "https://app.lexio.legal/api/generate_form_document_v2/Vila11LocacaoQuadroResumoTeste"
+    
+    # Headers com o token de autenticação
+    headers = {
+        "lexiotoken": '8e3d3c2bc7bce9c379e4976c4de696e7a73eb1888f6d19182c3741269fcb6b7e',
+        "Content-Type": "application/json"
+    }
+    try:
+        # Faz a requisição POST
+        response = requests.post(
+            url,
+            headers=headers,
+            data=json.dumps(document_data))  # Convertemos o dict para JSON string
+        
+        print(response)
+        # Verifica se a requisição foi bem sucedida
+        if response.status_code == 200:
+            print(response.json())
+            resposta = response.json()
+            process_id = resposta["sent"][0]["process_id"]
+            print(process_id)
+            cliente.processoassinaturaid = process_id
+            cliente.save()
+            #return redirect('consulta_clientes.html')
+            return JsonResponse(resposta)  # Retorna a resposta da API como JSON
+             
+        else:
+            print(f"Erro na requisição: Status {response.status_code}")
+            print(f"Resposta: {response.text}")
+            return JsonResponse({
+                "erro": f"Erro na requisição: {response.status_code}",
+                "mensagem": response.text
+            }, status=response.status_code)
+
+    except requests.exceptions.RequestException as e:
+        print(f"Erro ao conectar com a API: {str(e)}")
+        return JsonResponse({"erro": "Falha na conexão com a API", "mensagem": str(e)}, status=500)
+    except json.JSONDecodeError as e:
+        print(f"Erro ao decodificar a resposta JSON: {str(e)}")
+        return JsonResponse({"erro": "Erro ao decodificar JSON", "mensagem": str(e)}, status=500)
+
+logger = logging.getLogger(__name__)
+@csrf_exempt  # Para permitir requisições externas (sem CSRF token)
+def webhook_receiver(request, cliente_id):
+    cliente = Cliente.objects.get(id=cliente_id)
+    if request.method == "POST":
+        try:
+            payload = json.loads(request.body)
+            logger.info(f"Webhook recebido: {payload}")
+            cliente.enderecowebhook = payload
+            cliente.save()
+            # Aqui você pode processar o payload: salvar em banco, acionar lógica, etc.
+            return JsonResponse({"status": "sucesso"}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({"erro": "JSON inválido"}, status=400)
+
+    return JsonResponse({"erro": "Método não permitido"}, status=405)

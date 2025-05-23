@@ -194,6 +194,11 @@ class Cliente(models.Model):
     datainiciodesconto = models.DateField(verbose_name="Data de início do desconto", null=True, blank=True)
     dataterminodesconto = models.DateField(verbose_name="Data de término do desconto", null=True, blank=True)
     isencaomulta = models.BooleanField(verbose_name='Isenção de contrato',  default=False, null=True, blank=True)
+    processoassinaturaid = models.IntegerField(verbose_name='ID do processo de assinatura', null=True, blank=True)
+    enderecowebhook = models.TextField(verbose_name='Endereço Webhook', max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return self.nome
 
     def __str__(self):
         return self.nome

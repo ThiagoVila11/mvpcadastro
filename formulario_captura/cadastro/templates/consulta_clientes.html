@@ -68,8 +68,8 @@
                                 {% if not is_consultor %}
                                 <a href="{% url 'excluir_cliente' cliente.id %}" class="btn btn-danger">Excluir</a>
                                 {% endif %}
-                                <a href="{% url 'preencher_pdf' cliente.id %}" class="btn btn-sm btn-info">Gerar Documento</a>
-
+                                <a href="{% url 'assinar_contrato' cliente.id %}" class="btn btn-sm btn-info">Assinar Contrato</a>
+                                
                             </td>
                         </tr>
                         {% empty %}
