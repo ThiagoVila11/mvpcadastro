@@ -1066,7 +1066,7 @@ def assinar_contrato(request, cliente_id):
                     "PropertyAddress": cliente.Condominio.condominioendereco, 
                     "Iptu": cliente.Condominio.condominiomatricula, 
                     "RentMonth": str(cliente.vrunidade), 
-                    "DataBase": cliente.iniciocontrato.strftime("%Y%m%d"), 
+                    "DataBase": datetime.now().strftime("%Y%m%d"), #cliente.iniciocontrato.strftime("%Y%m%d"), 
                     "DataSig": datetime.now().strftime("%Y%m%d"), 
                     "WitName1": "", 
                     "WitAdress1": "", 
