@@ -893,72 +893,6 @@ def assinar_contrato(request, cliente_id):
     # Obtenha o template do banco de dados
     cliente = Cliente.objects.get(id=cliente_id)
 
-    # Dados dinâmicos - pode vir de um formulário ou banco de dados
-    nome = f"{cliente.nome}".replace("{", "").replace("}", "").replace("'", "")
-    profissao = f"{cliente.profissao}".replace("{", "").replace("}", "").replace("'", "")
-    estadocivil = f"{cliente.estcivil}".replace("{", "").replace("}", "").replace("'", "")
-    rg = f"{cliente.rgrne}".replace("{", "").replace("}", "").replace("'", "")
-    cpf = f"{cliente.cpf}".replace("{", "").replace("}", "").replace("'", "")
-    email = f"{cliente.email}".replace("{", "").replace("}", "").replace("'", "")
-    celular = f"{cliente.telefone}".replace("{", "").replace("}", "").replace("'", "")
-    endereco = f"{cliente.endereco}".replace("{", "").replace("}", "").replace("'", "")
-    nomeresidente = f"{cliente.nomeresidente}".replace("{", "").replace("}", "").replace("'", "")
-    numerorg = f"{cliente.rgresidente}".replace("{", "").replace("}", "").replace("'", "")
-    cpfresidente = f"{cliente.cpfresidente}".replace("{", "").replace("}", "").replace("'", "")
-    enderecoresidente = f"{cliente.enderecoresidente}".replace("{", "").replace("}", "").replace("'", "")
-    profissaoresidente  = f"{cliente.profissaoresidente}".replace("{", "").replace("}", "").replace("'", "")
-    estadocivilresidente = f"{cliente.estadocivilresidente}".replace("{", "").replace("}", "").replace("'", "")
-    celularresidente = f"{cliente.celularresidente}".replace("{", "").replace("}", "").replace("'", "")
-    emailresidente = f"{cliente.emailresidente}".replace("{", "").replace("}", "").replace("'", "")
-    apto = f"{cliente.apto}".replace("{", "").replace("}", "").replace("'", "")
-    vaga = f"{cliente.vagaunidade}".replace("{", "").replace("}", "").replace("'", "")
-    matricula = f"{cliente.matriculaunidade}".replace("{", "").replace("}", "").replace("'", "")
-    condominio =f"{cliente.Condominio.condominionome}".replace("{", "").replace("}", "").replace("'", "")
-    cnpjcondominio = f"{cliente.Condominio.condominiocnpj}".replace("{", "").replace("}", "").replace("'", "")
-    enderecocondominio = f"{cliente.Condominio.condominioendereco}".replace("{", "").replace("}", "").replace("'", "")
-    nriptu = f"{cliente.Condominio.condominiomatricula}".replace("{", "").replace("}", "").replace("'", "")
-    datainicio = f"{cliente.iniciocontrato}".replace("{", "").replace("}", "").replace("'", "")
-    valor = f"{cliente.vrunidade}".replace("{", "").replace("}", "").replace("'", "")
-    prazocontrato = f"{cliente.prazocontrato}".replace("{", "").replace("}", "").replace("'", "")
-    dia = datetime.now().day
-    mes = datetime.now().month
-    ano = datetime.now().year
-    percdes = f"{cliente.percentualdesconto}".replace("{", "").replace("}", "").replace("'", "")
-    iniciodesc = f"{cliente.datainiciodesconto}".replace("{", "").replace("}", "").replace("'", "")
-    terminodesc = f"{cliente.dataterminodesconto}".replace("{", "").replace("}", "").replace("'", "")
-    data_obj = datetime.strptime(datainicio, "%Y-%m-%d")
-    data_formatada = data_obj.strftime("%d/%m/%Y")
-
-    data_obj = datetime.strptime(iniciodesc, "%Y-%m-%d")
-    iniciodescformat = data_obj.strftime("%d/%m/%Y")
-
-    data_obj = datetime.strptime(terminodesc, "%Y-%m-%d")
-    terminodescformat = data_obj.strftime("%d/%m/%Y")
-
-    textoi1 = ''
-    textoi11 = ''
-    if cliente.percentualdesconto > 0:
-        textoi1 = f"I.2. Desconto de Incentivo: A VILA 11 concede ao LOCATÁRIO desconto no valor do Aluguel, especificamente para o Período de Desconto de {iniciodescformat} a {terminodescformat}, conforme abaixo:"
-        textoi11 = f"a) De {iniciodescformat} a {terminodescformat} de locação - {cliente.percentualdesconto} % de desconto sobre o valor do Aluguel mensal;"
-    
-    dadosdocondominio = f"{cliente.Condominio.condominionomecomercial} Sociedade Anônima, inscrita no CNPJ nº {cliente.Condominio.condominiocnpj} com endereço em {cliente.Condominio.condominioendereco}"
-    meses_pt = {
-        1: "Janeiro",
-        2: "Fevereiro",
-        3: "Março",
-        4: "Abril",
-        5: "Maio",
-        6: "Junho",
-        7: "Julho",
-        8: "Agosto",
-        9: "Setembro",
-        10: "Outubro",
-        11: "Novembro",
-        12: "Dezembro"
-    }
-    
-    nome_mes = meses_pt.get(mes, "Mês inválido")
-
     document_data = {
         "signature_list": [
             {
@@ -966,8 +900,8 @@ def assinar_contrato(request, cliente_id):
                 "titulo": "Nome do Documento",
                 "signers": [
                     {
-                        "nome": nome,
-                        "email": email,
+                        "nome": cliente.nome,
+                        "email": cliente.email,
                         "funcao": "Cliente"
                     },
                     {
