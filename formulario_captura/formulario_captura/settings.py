@@ -13,11 +13,22 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from decouple import AutoConfig
+try:
+    # Tenta o novo formato primeiro
+    from decouple import Config, RepositoryEnv
+    config = Config(RepositoryEnv('.env'))
+except ImportError:
+    try:
+        # Fallback para versões médias
+        from decouple import AutoConfig
+        config = AutoConfig()
+    except ImportError:
+        # Último fallback para versões antigas
+        from decouple import config
 
 load_dotenv()
 
-config = AutoConfig()
+
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['3.142.98.253', '*', 'localhost', '189.112.8.89']
