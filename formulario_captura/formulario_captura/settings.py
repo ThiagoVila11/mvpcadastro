@@ -44,7 +44,11 @@ CSRF_TRUSTED_ORIGINS = [
 #    'http://189.112.8.89',
 #    'https://189.112.8.89',
     'https://inloco.vila11.com.br',
+    'http://127.0.0.1',
+    'http://localhost',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Application definition

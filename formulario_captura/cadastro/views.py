@@ -1056,15 +1056,17 @@ def assinar_contrato(request, cliente_id):
 
 logger = logging.getLogger(__name__)
 @csrf_exempt  # Para permitir requisições externas (sem CSRF token)
-def webhook_receiver(request, cliente_id):
-    cliente = Cliente.objects.get(id=cliente_id)
+def webhook_receiver(request):
     if request.method == "POST":
         try:
             payload = json.loads(request.body)
             logger.info(f"Webhook recebido: {payload}")
-            cliente.enderecowebhook = payload
+            cliente = Cliente.objects.filter(processoassinaturaid=payload.get('process_id')).first()
+            if cliente is None:
+                logger.error(f"Cliente não encontrado para o process_id: {payload.get('process_id')}")
+                return JsonResponse({"erro": "Cliente não encontrado"}, status=404)
+            cliente.enderecowebhook = payload.get('url')
             cliente.save()
-            # Aqui você pode processar o payload: salvar em banco, acionar lógica, etc.
             return JsonResponse({"status": "sucesso"}, status=200)
         except json.JSONDecodeError:
             return JsonResponse({"erro": "JSON inválido"}, status=400)

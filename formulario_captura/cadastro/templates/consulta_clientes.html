@@ -62,14 +62,24 @@
                             <td>{{ cliente.apto }}</td>
                             <td>{{ cliente.score }}</td>
                             <td>{{ cliente.Consultor}}</td>
+                            <td class="d-none">{{cliente.processoassinaturaid}}</td>
+                            <td class="d-none">{{cliente.enderecowebhook}}</td>
+
                             <td>
                                 <a href="{% url 'editar_cliente' cliente.id %}" class="btn btn-sm btn-primary">Editar</a>
                                 <a href="{% url 'detalhes_cliente' cliente.id %}" class="btn btn-sm btn-info">Detalhes</a>
                                 {% if not is_consultor %}
                                 <a href="{% url 'excluir_cliente' cliente.id %}" class="btn btn-danger">Excluir</a>
                                 {% endif %}
-                                <a href="{% url 'assinar_contrato' cliente.id %}" class="btn btn-sm btn-info">Assinar Contrato</a>
-                                
+                                <a href="{% url 'assinar_contrato' cliente.id %}" class="btn btn-sm btn-info">Gerar Contrato</a>
+                                {% if cliente.enderecowebhook %}
+                                <a href="{{cliente.enderecowebhook}}" 
+                                    class="btn btn-sm btn-info"
+                                    target="_blank"
+                                    rel="noopener noreferrer">  <!-- Segurança contra phishing -->
+                                    Assinar Contrato
+                                </a>
+                                {% endif %}
                             </td>
                         </tr>
                         {% empty %}
