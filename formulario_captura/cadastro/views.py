@@ -1036,7 +1036,8 @@ def assinar_contrato(request, cliente_id):
             print(process_id)
             cliente.processoassinaturaid = process_id
             cliente.save()
-            return redirect('consulta_clientes.html')
+            print(JsonResponse(resposta))
+            return redirect(request.GET.get('next', 'consulta_clientes'))
             #return JsonResponse(resposta)  # Retorna a resposta da API como JSON
              
         else:
@@ -1065,6 +1066,7 @@ def webhook_receiver(request):
             if cliente is None:
                 logger.error(f"Cliente não encontrado para o process_id: {payload.get('process_id')}")
                 return JsonResponse({"erro": "Cliente não encontrado"}, status=404)
+                
             cliente.enderecowebhook = payload.get('url')
             cliente.save()
             return JsonResponse({"status": "sucesso"}, status=200)
