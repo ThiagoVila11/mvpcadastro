@@ -1036,8 +1036,8 @@ def assinar_contrato(request, cliente_id):
             print(process_id)
             cliente.processoassinaturaid = process_id
             cliente.save()
-            #return redirect('consulta_clientes.html')
-            return JsonResponse(resposta)  # Retorna a resposta da API como JSON
+            return redirect('consulta_clientes.html')
+            #return JsonResponse(resposta)  # Retorna a resposta da API como JSON
              
         else:
             print(f"Erro na requisição: Status {response.status_code}")
