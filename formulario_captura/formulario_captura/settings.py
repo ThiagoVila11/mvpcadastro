@@ -13,10 +13,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from decouple import config
+from decouple import AutoConfig
 
 load_dotenv()
 
+config = AutoConfig()
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['3.142.98.253', '*', 'localhost', '189.112.8.89']
