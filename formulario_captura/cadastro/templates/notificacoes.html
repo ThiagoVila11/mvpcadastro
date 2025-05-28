@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Notificações</h2>
+<ul>
+    {% for notificacao in notificacoes %}
+        <li style="{% if not notificacao.NotificacaoLido %}font-weight: bold;{% endif %}">
+            <strong>{{ notificacao.get_NotificacaoTipo_display }}</strong>:
+            <a href="{{ notificacao.NotificacaoDescricao }}" target="_blank" rel="noopener noreferrer">
+                {{ notificacao.NotificacaoTitulo }}
+            </a>
+            <br><small>{{ notificacao.NotificacaoData }}</small>
+        </li>
+    {% empty %}
+        <li>Nenhuma notificação encontrada.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

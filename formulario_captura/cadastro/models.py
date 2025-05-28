@@ -204,6 +204,7 @@ class Cliente(models.Model):
     enderecowebhook = models.TextField(verbose_name='Endereço Webhook', max_length=255, null=True, blank=True)
     documentacaoassinada = models.BooleanField(verbose_name='Documentação assinada', default=False, null=True, blank=True)  
     datahoraassinatura = models.DateTimeField(verbose_name='Data e hora da assinatura', null=True, blank=True)
+    statusassinatura = models.CharField(verbose_name='Status da assinatura', max_length=30, null=True, blank=True, default='Pendente')  
 
     def __str__(self):
         return self.nome
@@ -217,7 +218,7 @@ class Notificacao(models.Model):
     )   
 
     NotificacaoTitulo = models.CharField(verbose_name='Título', max_length=100, null=True, blank=True)
-    NotificacaoDescricao = models.TextField(verbose_name='Descrição', null=True, blank=True)
+    NotificacaoDescricao = models.CharField(verbose_name='Descrição', max_length=300, null=True, blank=True)
     NotificacaoData = models.DateTimeField(verbose_name='Data', auto_now_add=True)
     NotificacaoTipo = models.CharField(verbose_name='Tipo', max_length=1, choices=TipoNotificacao, null=True, blank=True)
     NotificacaoLido = models.BooleanField(verbose_name='Lido', default=False, null=True, blank=True)

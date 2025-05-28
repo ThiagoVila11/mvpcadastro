@@ -2,6 +2,33 @@
 
 <!DOCTYPE html>
 <html lang="pt-br">
+    <style>
+        #notificacoes-dropdown {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 300px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: none;
+        }
+
+        #lista-notificacoes li {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        #lista-notificacoes li:last-child {
+            border-bottom: none;
+        }
+
+        .font-weight-bold {
+            font-weight: bold;
+        }
+    </style>
 <head>
     {% load static %}
     <meta charset="UTF-8">
@@ -70,21 +97,19 @@
                             <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
                         </ul>
                 
-                        <!-- Botão de Notificações à direita 
-                        <div class="dropdown ms-2">
-                            <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-bell"></i>
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notification-count">3</span>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="width: 300px;">
-                                <li class="dropdown-header">Notificações</li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-envelope me-2 text-primary"></i> Novo cliente cadastrado</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-chart-line me-2 text-success"></i> Relatório atualizado</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-exclamation-circle me-2 text-warning"></i> Erro de importação</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-center" href="#">Ver todas</a></li>
-                            </ul>
-                        </div>-->
+                        <!-- Botão de Notificações à direita -->
+                        <a id="btn-notificacoes" class="btn btn-outline-primary position-relative">
+                            🔔
+                            <span id="badge-notificacoes" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
+                                0
+                            </span>
+                        </a>
+                        
+                        <!-- Dropdown de notificações -->
+                        <div id="notificacoes-dropdown" style="display: none; position: absolute; background: white; border: 1px solid #ccc; width: 300px; z-index: 1000;">
+                            <ul id="lista-notificacoes" style="list-style: none; padding: 10px; margin: 0;"></ul>
+                        </div>
+                                     
                     </li>
                 </ul>
                 
@@ -174,3 +199,77 @@
     {% block extra_js %}{% endblock %}
 </body>
 </html>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function(){
+    $('#btn-notificacoes').click(function(){
+        $.ajax({
+            url: '{% url "notificacoes_ajax" %}',
+            type: 'GET',
+            success: function(response){
+                const lista = $('#lista-notificacoes');
+                lista.empty();
+                let naoLidas = 0;
+
+                response.notificacoes.forEach((n, i) => {
+                    const tituloHtml = `<h6 style="margin: 0;">${n.titulo}</h6>`;
+
+                    let descricaoTexto = n.descricao || '';
+                    let descricaoLimitada = descricaoTexto.length > 25 
+                        ? descricaoTexto.substring(0, 25) + '...'
+                        : descricaoTexto;
+                    let id_notificacao = n.id || '';
+
+                    const descricaoHtml = `
+                        <a href="${n.descricao}" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        class="descricao-link" 
+                        data-id="${n.id}">
+                            ${descricaoLimitada}
+                        </a>`;
+
+                    const item = `
+                        <li style="margin-bottom: 10px; ${n.lido ? '' : 'font-weight: bold;'}">
+                            ${tituloHtml}
+                            ${descricaoHtml}<br>
+                            <small>${n.data}</small>
+                        </li>
+                    `;
+                    lista.append(item);
+                    if (!n.lido) naoLidas++;
+                });
+
+                // Marcar como lido ao clicar
+                $(document).on('click', '.descricao-link', function() {
+                    const id = $(this).data('id');
+                    $.ajax({
+                        url: '{% url "marcar_notificacao_lida" %}',
+                        type: 'POST',
+                        data: { id },
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        success: function(response) {
+                            console.log('Notificação marcada como lida:', id);
+                        }
+                    });
+                });
+
+                // Atualiza o badge
+                if (naoLidas > 0) {
+                    $('#badge-notificacoes').text(naoLidas).show();
+                } else {
+                    $('#badge-notificacoes').hide();
+                }
+
+                // Toggle do dropdown
+                $('#notificacoes-dropdown').toggle();
+            }
+        });
+    });
+});
+</script>
+
+

@@ -51,4 +51,9 @@ urlpatterns = [
     path('condominios/kpi/', CondominioKPIDashboard.as_view(), name='kpi-condominios'),
     #API´s
     path('api/consultor/', get_consultor_id_by_email, name='get_consultor_id_by_email'),
+    # notificações
+    path('notificacoes/', views.notificacoes_view, name='notificacoes'),
+    path('ajax/notificacoes/', views.notificacoes_ajax, name='notificacoes_ajax'),
+    path('ajax/marcar_lida/', views.marcar_notificacao_lida, name='marcar_notificacao_lida'),
+
 ]

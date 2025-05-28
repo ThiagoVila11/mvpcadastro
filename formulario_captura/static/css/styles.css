@@ -226,3 +226,11 @@ textarea.form-control {
     background-color: #007bff;
     border-color: #007bff;
 }
+
+#notificacoes-dropdown {
+    right: 0;
+    top: 100%;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}

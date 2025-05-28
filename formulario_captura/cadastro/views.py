@@ -40,6 +40,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response  # Este import é crucial
 from django.views.decorators.http import require_http_methods
 from decimal import Decimal
+from django.core.files.base import ContentFile
 
 
 def requer_consultor(view_func):
@@ -1076,19 +1077,46 @@ def webhook_receiver(request):
             print(f"Webhook recebido: {payload}")
             processo_id = data.get('payload', {}).get('process_id', None)
             doc_download = data.get('payload', {}).get('download', None)
+            doc_status = data["payload"]["contrato"]["status"]
+            enderecowebhook = data["payload"]["document"]["signers"][0]["signer_link"]
+            #data.get('payload', {}).get('signer_link', None)
+            print(enderecowebhook)
+            print(doc_status)
             print(f"processo_id: {processo_id}")
-            cliente = Cliente.objects.filter(processoassinaturaid=payload.get('processo_id')).first()
+            cliente = Cliente.objects.filter(processoassinaturaid=processo_id).first()
+            print(cliente)
             if cliente is None:
                 logger.error(f"Cliente não encontrado para o process_id: {payload.get('process_id')}")
                 return JsonResponse({"erro": "Cliente não encontrado"}, status=404)
                 
-            #cliente.enderecowebhook = payload.get('url')
-            #cliente.documentacaoassinada
+            if doc_status == 'assinado':
+                cliente.documentacaoassinada = True
+                cliente.datahoraassinatura = datetime.now()
+                # Salva o documento assinado
+                if doc_download:
+                    try:
+                        response = requests.get(doc_download)
+                        if response.status_code == 200:
+                            # Salva o documento assinado no campo documentacaoassinada
+                            cliente.documentacaoenviada.save(
+                                f"Contrato_Assinado_{cliente.nome}.pdf",
+                                ContentFile(response.content)
+                            )
+                        else:
+                            logger.error(f"Erro ao baixar o documento: {response.status_code}")
+                    except requests.RequestException as e:
+                        logger.error(f"Erro ao baixar o documento: {str(e)}")
+            else:
+                cliente.documentacaoassinada = False
+
+            cliente.enderecowebhook = enderecowebhook
+            cliente.statusassinatura = doc_status
             cliente.save()
             #grava a notificação de recebimento do webhook
             notificacao = Notificacao(
-                    NotificacaoTitulo = 'Assinatura de Contrato',
-                    NotificacaoDescricao = payload.get('url'),
+                    NotificacaoTitulo = 'Assinatura de Contrato:' + cliente.nome,
+                    NotificacaoData = datetime.now(),
+                    NotificacaoDescricao = enderecowebhook,
                     NotificacaoTipo = 'A',
                     NotificacaoLido = False
                     #Consultor
@@ -1100,11 +1128,48 @@ def webhook_receiver(request):
 
     return JsonResponse({"erro": "Método não permitido"}, status=405)
 
-def minha_view(request):
-    notificacoes = Notificacao.objects.filter(NotificacaoLido=False).order_by('-NotificacaoData')[:5]
 
-    context = {
+def notificacoes_view(request):
+    #consultor = request.user.consultor  # Assumindo que o usuário está logado e tem um consultor vinculado
+    #notificacoes = Notificacao.objects.filter(Consultor=consultor).order_by('-NotificacaoData')
+    notificacoes = Notificacao.objects.filter(NotificacaoLido=False).order_by('-NotificacaoData')
+    notificacoes_nao_lidas = notificacoes.filter(NotificacaoLido=False)
+    return render(request, 'notificacoes.html', {
         'notificacoes': notificacoes,
-    }
+        'notificacoes_nao_lidas': notificacoes_nao_lidas.count()
+    })
 
-    return render(request, 'base.html', context)
+def notificacoes_ajax(request):
+    #consultor = request.user.consultor
+    notificacoes = Notificacao.objects.order_by('-NotificacaoData')[:10]
+
+    data = []
+    for n in notificacoes:
+        data.append({
+            'id': n.id,
+            'titulo': n.NotificacaoTitulo,
+            'descricao': n.NotificacaoDescricao,
+            'tipo': n.get_NotificacaoTipo_display(),
+            'data': n.NotificacaoData.strftime("%d/%m/%Y %H:%M"),
+            'lido': n.NotificacaoLido
+        })
+
+    print(data)
+
+    return JsonResponse({'notificacoes': data})
+
+@csrf_exempt  # ou use o token CSRF no JavaScript, veja nota abaixo
+def marcar_notificacao_lida(request):
+    if request.method == 'POST':
+        id_notificacao = request.POST.get('id')
+        print(id_notificacao)
+        if not id_notificacao:
+            return JsonResponse({'status': 'erro', 'mensagem': 'ID da notificação não fornecido'})
+        try:
+            notificacao = Notificacao.objects.get(id=id_notificacao)
+            notificacao.NotificacaoLido = True
+            notificacao.save()
+            return JsonResponse({'status': 'ok'})
+        except Notificacao.DoesNotExist:
+            return JsonResponse({'status': 'erro', 'mensagem': 'Notificação não encontrada'})
+    return JsonResponse({'status': 'erro', 'mensagem': 'Requisição inválida'})
