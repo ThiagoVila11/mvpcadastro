@@ -97,7 +97,7 @@
                             <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
                         </ul>
                 
-                        <!-- Botão de Notificações à direita -->
+                        <!-- Botão de Notificações à direita 
                         <a id="btn-notificacoes" class="btn btn-outline-primary position-relative">
                             🔔
                             {% if notificacoes_nao_lidas > 0 %}
@@ -105,8 +105,13 @@
                                     {{ notificacoes_nao_lidas }}
                                 </span>
                             {% endif %}
+                        </a> -->
+                        <a href="#" id="btn-notificacoes" class="btn btn-outline-primary position-relative">
+                            🔔
+                            <span id="badge-notificacoes" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
+                                0
+                            </span>
                         </a>
-
                         
                         <!-- Dropdown de notificações -->
                         <div id="notificacoes-dropdown" style="display: none; position: absolute; background: white; border: 1px solid #ccc; width: 300px; z-index: 1000;">
@@ -178,25 +183,31 @@
 
     <!-- Sistema de Notificações JS -->
     <script>
-        function showNotification(message, type = 'info', timeout = 5000) {
-            const container = document.getElementById('notification-container');
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type} alert-dismissible fade show`;
-            alert.role = 'alert';
-            alert.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            `;
-            container.appendChild(alert);
+        function atualizarNotificacoes() {
+            $.ajax({
+                url: '{% url "notificacoes_ajax" %}',  // Usando o nome da URL para mais segurança
+                type: 'GET',
+                success: function(response) {
+                    let naoLidas = response.notificacoes.filter(n => !n.lido).length;
+                    const badge = $('#badge-notificacoes');
 
-            if (timeout > 0) {
-                setTimeout(() => {
-                    alert.classList.remove('show');
-                    alert.classList.add('hide');
-                    setTimeout(() => alert.remove(), 500);
-                }, timeout);
-            }
+                    if (naoLidas > 0) {
+                        badge.text(naoLidas).show();
+                    } else {
+                        badge.hide();
+                    }
+                },
+                error: function() {
+                    console.error("Erro ao buscar notificações.");
+                }
+            });
         }
+
+        $(document).ready(function() {
+            atualizarNotificacoes();
+            setInterval(atualizarNotificacoes, 5000); // 5 segundos
+        });
+
     </script>
 
     {% block extra_js %}{% endblock %}
