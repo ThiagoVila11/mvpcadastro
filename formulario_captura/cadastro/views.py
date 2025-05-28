@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from .forms import ClienteForm, CondominioForm, ApartamentoForm, ConsultorForm, PreClienteForm
-from .models import Cliente, Condominio, Apartamento, Consultor, PreCliente
+from .models import Cliente, Condominio, Apartamento, Consultor, PreCliente, Notificacao
 from django.db.models import Q, Count
 from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404, redirect
@@ -816,7 +816,17 @@ def login_view(request):
             )
             if response_dados.status_code == 200:
                 dados = response_dados.json()
-                request.session['api_funcao'] = dados["usuarioFuncao"]
+                funcao = dados["usuarioFuncao"]
+                email = dados["usuarioEmail"]
+                if funcao == 'CONSULTOR':
+                    request.session['is_consultor'] = True
+                    request.session['api_funcao'] = funcao
+                    consultor = Consultor.objects.filter(consultorEmail=email).first()
+                    request.session['email'] = email
+                    request.session['consultor_id'] = consultor.id
+                else:
+                    request.session['is_consultor'] = False
+                
             else:
                 print(f"Erro {response_dados.status_code}: {response_dados.text}")
             
@@ -892,36 +902,36 @@ class CondominioKPIDashboard(TemplateView):
 def assinar_contrato(request, cliente_id):
     # Obtenha o template do banco de dados
     cliente = Cliente.objects.get(id=cliente_id)
-
+    nomedocumento = f"Contrato de Locação - {cliente.nome} - {cliente.Condominio.condominionome}"
     document_data = {
         "signature_list": [
             {
                 "service": "lexiosign",
-                "titulo": "Nome do Documento",
+                "titulo": nomedocumento,
                 "signers": [
                     {
                         "nome": cliente.nome,
-                        "email": cliente.email,
+                        "email": "simbiox.thiago.tosatti@vila11.com.br", #cliente.email,
                         "funcao": "Cliente"
                     },
                     {
                         "nome": "Isadora Romão",
-                        "email": "isadora.romao@vila11.com.br",
+                        "email": "simbiox.thiago.tosatti@vila11.com.br", #"isadora.romao@vila11.com.br",
                         "funcao": "Testemunha"
                     },
                     {
                         "nome": "Carla Viana",
-                        "email": "carla.viana@vila11.com.br",
+                        "email": "simbiox.thiago.tosatti@vila11.com.br", #"carla.viana@vila11.com.br",
                         "funcao": "Testemunha"
                     },
                     {
                         "nome": "Jorge Luiz Bernardo de moraes",
-                        "email": "jorge.moraes@vila11.com.br",
+                        "email": "simbiox.thiago.tosatti@vila11.com.br", #"jorge.moraes@vila11.com.br",
                         "funcao": "Representante Legal"
                     },
                     {
                         "nome": "Roberto Sergio Dib",
-                        "email": "roberto.dib@vila11.com.br",
+                        "email": "simbiox.thiago.tosatti@vila11.com.br", #"roberto.dib@vila11.com.br",
                         "funcao": "Representante Legal"
                     }
                 ],
@@ -1061,16 +1071,40 @@ def webhook_receiver(request):
     if request.method == "POST":
         try:
             payload = json.loads(request.body)
-            logger.info(f"Webhook recebido: {payload}")
-            cliente = Cliente.objects.filter(processoassinaturaid=payload.get('process_id')).first()
+            data = json.loads(request.body)
+            #logger.info(f"Webhook recebido: {payload}")
+            print(f"Webhook recebido: {payload}")
+            processo_id = data.get('payload', {}).get('process_id', None)
+            doc_download = data.get('payload', {}).get('download', None)
+            print(f"processo_id: {processo_id}")
+            cliente = Cliente.objects.filter(processoassinaturaid=payload.get('processo_id')).first()
             if cliente is None:
                 logger.error(f"Cliente não encontrado para o process_id: {payload.get('process_id')}")
                 return JsonResponse({"erro": "Cliente não encontrado"}, status=404)
                 
-            cliente.enderecowebhook = payload.get('url')
+            #cliente.enderecowebhook = payload.get('url')
+            #cliente.documentacaoassinada
             cliente.save()
+            #grava a notificação de recebimento do webhook
+            notificacao = Notificacao(
+                    NotificacaoTitulo = 'Assinatura de Contrato',
+                    NotificacaoDescricao = payload.get('url'),
+                    NotificacaoTipo = 'A',
+                    NotificacaoLido = False
+                    #Consultor
+            )
+            notificacao.save()
             return JsonResponse({"status": "sucesso"}, status=200)
         except json.JSONDecodeError:
             return JsonResponse({"erro": "JSON inválido"}, status=400)
 
     return JsonResponse({"erro": "Método não permitido"}, status=405)
+
+def minha_view(request):
+    notificacoes = Notificacao.objects.filter(NotificacaoLido=False).order_by('-NotificacaoData')[:5]
+
+    context = {
+        'notificacoes': notificacoes,
+    }
+
+    return render(request, 'base.html', context)

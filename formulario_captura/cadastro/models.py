@@ -78,7 +78,7 @@ class PreCliente(models.Model):
         aprovado = 'N'
         score = int(self.preclienteScore) if self.preclienteScore else 0
         obs = len(self.preclienteApontamentos) if self.preclienteApontamentos else 0
-        if score >= 100 and obs == 0:
+        if score >= 700 and obs == 0:
             aprovado = 'A'
 
         return aprovado == 'A'  # Só converte se estiver aprovado
@@ -95,8 +95,14 @@ class PreCliente(models.Model):
         primeiroEndereco = preclienteJson['Data']['Addresses'][0]
         print(primeiroEndereco)
         endereco = primeiroEndereco['Alias'] #street + ', ' +  ' - ' +  ' - ' + ' - ' + city + ' - ' + state
-        primeirotelefone = preclienteJson['Data']['Phones'][0]
-        nrfone = primeirotelefone['FormattedNumber']
+        phones = preclienteJson.get('Data', {}).get('Phones', [])
+        if isinstance(phones, list) and len(phones) > 0:
+            nrfone = phones[0]
+            # Aqui você pode acessar phone_0 com segurança
+            print(nrfone)
+        else:
+            print("Nenhum telefone encontrado")
+            nrfone = ''
         
         cliente = Cliente(
             nome=nome,
@@ -150,7 +156,7 @@ class Cliente(models.Model):
     estcivil = models.CharField(verbose_name="Estado Civil", max_length=30, choices=estadocivil, null=True, default='Solteiro(a)')
     rgrne = models.CharField(verbose_name="RG/RNE", max_length=20, null=True, default='')
     email = models.EmailField(verbose_name="Email", null=True, default='')
-    telefone = models.CharField(verbose_name="Celular", max_length=15, null=True, default='')
+    telefone = models.CharField(verbose_name="Celular", max_length=15, null=True, default='', blank=True)
     endereco = models.CharField(verbose_name="Endereço", max_length=120, null=True, default='')
     data_nascimento = models.DateField(verbose_name="Data de nascimento", null=True, blank=True)
     observacoes = models.TextField(verbose_name="Observações", blank=True)
@@ -196,10 +202,26 @@ class Cliente(models.Model):
     isencaomulta = models.BooleanField(verbose_name='Isenção de contrato',  default=False, null=True, blank=True)
     processoassinaturaid = models.IntegerField(verbose_name='ID do processo de assinatura', null=True, blank=True)
     enderecowebhook = models.TextField(verbose_name='Endereço Webhook', max_length=255, null=True, blank=True)
+    documentacaoassinada = models.BooleanField(verbose_name='Documentação assinada', default=False, null=True, blank=True)  
+    datahoraassinatura = models.DateTimeField(verbose_name='Data e hora da assinatura', null=True, blank=True)
 
     def __str__(self):
         return self.nome
 
-    def __str__(self):
-        return self.nome
     
+class Notificacao(models.Model):
+    TipoNotificacao = (
+        ('A', 'Alerta'),
+        ('I', 'Informação'),
+        ('E', 'Erro')
+    )   
+
+    NotificacaoTitulo = models.CharField(verbose_name='Título', max_length=100, null=True, blank=True)
+    NotificacaoDescricao = models.TextField(verbose_name='Descrição', null=True, blank=True)
+    NotificacaoData = models.DateTimeField(verbose_name='Data', auto_now_add=True)
+    NotificacaoTipo = models.CharField(verbose_name='Tipo', max_length=1, choices=TipoNotificacao, null=True, blank=True)
+    NotificacaoLido = models.BooleanField(verbose_name='Lido', default=False, null=True, blank=True)
+    Consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return self.NotificacaoTitulo
