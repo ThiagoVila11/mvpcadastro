@@ -1131,8 +1131,10 @@ def webhook_receiver(request):
 
 def notificacoes_view(request):
     #consultor = request.user.consultor  # Assumindo que o usuário está logado e tem um consultor vinculado
+    #print(consultor)
     #notificacoes = Notificacao.objects.filter(Consultor=consultor).order_by('-NotificacaoData')
     notificacoes = Notificacao.objects.filter(NotificacaoLido=False).order_by('-NotificacaoData')
+    print(notificacoes)
     notificacoes_nao_lidas = notificacoes.filter(NotificacaoLido=False)
     return render(request, 'notificacoes.html', {
         'notificacoes': notificacoes,
@@ -1141,7 +1143,7 @@ def notificacoes_view(request):
 
 def notificacoes_ajax(request):
     #consultor = request.user.consultor
-    notificacoes = Notificacao.objects.order_by('-NotificacaoData')[:10]
+    notificacoes = Notificacao.objects.filter(NotificacaoLido=False).order_by('-NotificacaoData')[:10]
 
     data = []
     for n in notificacoes:

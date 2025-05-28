@@ -100,10 +100,13 @@
                         <!-- Botão de Notificações à direita -->
                         <a id="btn-notificacoes" class="btn btn-outline-primary position-relative">
                             🔔
-                            <span id="badge-notificacoes" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
-                                0
-                            </span>
+                            {% if notificacoes_nao_lidas > 0 %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {{ notificacoes_nao_lidas }}
+                                </span>
+                            {% endif %}
                         </a>
+
                         
                         <!-- Dropdown de notificações -->
                         <div id="notificacoes-dropdown" style="display: none; position: absolute; background: white; border: 1px solid #ccc; width: 300px; z-index: 1000;">
