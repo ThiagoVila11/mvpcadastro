@@ -1,6 +1,5 @@
 from django import forms
-from .models import Cliente, Condominio, Apartamento, Consultor, PreCliente
-
+from .models import Cliente, Condominio, Apartamento, Consultor, PreCliente, LogAcesso
 class ClienteForm(forms.ModelForm):
     isencaomulta = forms.BooleanField(
         required=False,
@@ -75,4 +74,12 @@ class PreClienteForm(forms.ModelForm):
             'preclienteDataCadastro': forms.DateInput(attrs={'type': 'date'}),
             'preclienteJson': forms.Textarea(attrs={'rows': 10}),
             'preclienteDataVisita': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+class LogAcessoForm(forms.ModelForm):
+    class Meta:
+        model = LogAcesso
+        fields = '__all__'
+        widgets = {
+            'logacessoData': forms.DateInput(attrs={'type': 'date'}),
         }

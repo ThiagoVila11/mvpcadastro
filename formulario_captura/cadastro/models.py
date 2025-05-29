@@ -228,3 +228,11 @@ class Notificacao(models.Model):
 
     def __str__(self):
         return self.NotificacaoTitulo
+    
+class LogAcesso(models.Model):
+    logacessoUsuario = models.CharField(verbose_name='Usuário', max_length=50, null=True, blank=True)
+    logacessoData = models.DateField(verbose_name='Data', auto_now_add=True)
+    logacessoDataHora = models.DateTimeField(verbose_name='Data/hora', auto_now_add=True)
+
+    def __str__(self):
+        return self.logacessoUsuario

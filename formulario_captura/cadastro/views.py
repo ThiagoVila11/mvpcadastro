@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from .forms import ClienteForm, CondominioForm, ApartamentoForm, ConsultorForm, PreClienteForm
-from .models import Cliente, Condominio, Apartamento, Consultor, PreCliente, Notificacao
+from .models import Cliente, Condominio, Apartamento, Consultor, PreCliente, Notificacao, LogAcesso
 from django.db.models import Q, Count
 from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404, redirect
@@ -834,6 +834,12 @@ def login_view(request):
             else:
                 print(f"Erro {response_dados.status_code}: {response_dados.text}")
             
+            #Grava o log de acesso
+            logacesso = LogAcesso(
+                logacessoUsuario = username
+            )
+            logacesso.save()
+
             return redirect(request.GET.get('next', 'consulta_clientes'))
             
         except RequestException as e:
@@ -859,6 +865,8 @@ class CondominioKPIDashboard(TemplateView):
         context['total_consultores'] = Consultor.objects.count()     
         context['total_preclientes'] = PreCliente.objects.count()
         context['total_clientes'] = Cliente.objects.count()
+        context['total_acessos'] = LogAcesso.objects.count()
+
 
         #grafico preclientes aprovados
         avaliacao_data = (PreCliente.objects
