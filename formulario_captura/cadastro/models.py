@@ -73,6 +73,7 @@ class PreCliente(models.Model):
     preclienteJson = models.TextField(verbose_name='Json', null=True, blank=True)
     preclienteDataVisita = models.DateField(verbose_name="Data da visita", null=True, blank=True)
     preclienteCondominio = models.ForeignKey(Condominio, on_delete=models.CASCADE, verbose_name='Condominio', null=True, blank=True)
+    Consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE, verbose_name='Consultor', null=True, blank=True)
 
     def pode_ser_convertido(self):
         aprovado = 'N'

@@ -495,6 +495,7 @@ def converter_precliente(request, precliente_id):
 
 
 def consulta_cpf(request):
+    print('consulta_cpf')
     if request.method == 'POST':
         cpf = request.POST.get('cpf', '').replace('.', '').replace('-', '')
         
@@ -1175,3 +1176,19 @@ def marcar_notificacao_lida(request):
         except Notificacao.DoesNotExist:
             return JsonResponse({'status': 'erro', 'mensagem': 'Notificação não encontrada'})
     return JsonResponse({'status': 'erro', 'mensagem': 'Requisição inválida'})
+
+def criar_cadastro(request):
+    print('entrou no criar_cadastro')
+    if request.method == 'POST':
+        form = PreCliente(request.POST)
+        if form.is_valid():
+            PreCliente = form.save(commit=False)
+            consultor_id = request.session.get('consultor_id')
+            if consultor_id:
+                PreCliente.Consultor = consultor_id
+            PreCliente.save()
+            return redirect('cadastro_sucesso')
+    else:
+        form = PreCliente()
+
+    return render(request, 'consulta_preclientes.html', {'form': form})
