@@ -98,7 +98,7 @@ class PreCliente(models.Model):
         endereco = primeiroEndereco['Alias'] #street + ', ' +  ' - ' +  ' - ' + ' - ' + city + ' - ' + state
         phones = preclienteJson.get('Data', {}).get('Phones', [])
         if isinstance(phones, list) and len(phones) > 0:
-            nrfone = phones[0]
+            nrfone = phones[0]["FormattedNumber"]
             # Aqui você pode acessar phone_0 com segurança
             print(nrfone)
         else:
@@ -114,7 +114,8 @@ class PreCliente(models.Model):
             telefone = nrfone,
             endereco = endereco,
             data_nascimento = data_convertida,
-            Condominio = self.preclienteCondominio
+            Condominio = self.preclienteCondominio,
+            Consultor = self.Consultor 
         )
         
         cliente.save()
@@ -157,7 +158,7 @@ class Cliente(models.Model):
     estcivil = models.CharField(verbose_name="Estado Civil", max_length=30, choices=estadocivil, null=True, default='Solteiro(a)')
     rgrne = models.CharField(verbose_name="RG/RNE", max_length=20, null=True, default='')
     email = models.EmailField(verbose_name="Email", null=True, default='')
-    telefone = models.CharField(verbose_name="Celular", max_length=15, null=True, default='', blank=True)
+    telefone = models.CharField(verbose_name="Celular", max_length=20, null=True, default='', blank=True)
     endereco = models.CharField(verbose_name="Endereço", max_length=120, null=True, default='')
     data_nascimento = models.DateField(verbose_name="Data de nascimento", null=True, blank=True)
     observacoes = models.TextField(verbose_name="Observações", blank=True)

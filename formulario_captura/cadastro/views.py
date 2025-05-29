@@ -824,8 +824,10 @@ def login_view(request):
                     request.session['is_consultor'] = True
                     request.session['api_funcao'] = funcao
                     consultor = Consultor.objects.filter(consultorEmail=email).first()
+                    consultor_id = consultor.pk
+                    print(consultor_id)
                     request.session['email'] = email
-                    request.session['consultor_id'] = consultor.id
+                    request.session['consultor_id'] = consultor_id
                 else:
                     request.session['is_consultor'] = False
                 
@@ -918,22 +920,22 @@ def assinar_contrato(request, cliente_id):
                     },
                     {
                         "nome": "Isadora Romão",
-                        "email": "simbiox.thiago.tosatti@vila11.com.br", #"isadora.romao@vila11.com.br",
+                        "email": "thiagotosatti@bol.com.br", #"isadora.romao@vila11.com.br",
                         "funcao": "Testemunha"
                     },
                     {
                         "nome": "Carla Viana",
-                        "email": "simbiox.thiago.tosatti@vila11.com.br", #"carla.viana@vila11.com.br",
+                        "email": "thiagotosatti@hotmail.com", #"carla.viana@vila11.com.br",
                         "funcao": "Testemunha"
                     },
                     {
                         "nome": "Jorge Luiz Bernardo de moraes",
-                        "email": "simbiox.thiago.tosatti@vila11.com.br", #"jorge.moraes@vila11.com.br",
+                        "email": "thiago.tosatti@simbiox.com.br", #"jorge.moraes@vila11.com.br",
                         "funcao": "Representante Legal"
                     },
                     {
                         "nome": "Roberto Sergio Dib",
-                        "email": "simbiox.thiago.tosatti@vila11.com.br", #"roberto.dib@vila11.com.br",
+                        "email": "thiagaotosatti@gmail.com", #"roberto.dib@vila11.com.br",
                         "funcao": "Representante Legal"
                     }
                 ],
@@ -1085,6 +1087,11 @@ def webhook_receiver(request):
             print(doc_status)
             print(f"processo_id: {processo_id}")
             cliente = Cliente.objects.filter(processoassinaturaid=processo_id).first()
+            if cliente.Consultor.pk:
+                consultor_id = cliente.Consultor.pk
+            else:
+                consultor_id = None
+            print('gravar notificacao: ' + str(consultor_id))
             print(cliente)
             if cliente is None:
                 logger.error(f"Cliente não encontrado para o process_id: {payload.get('process_id')}")
@@ -1115,12 +1122,12 @@ def webhook_receiver(request):
             cliente.save()
             #grava a notificação de recebimento do webhook
             notificacao = Notificacao(
-                    NotificacaoTitulo = 'Assinatura de Contrato:' + cliente.nome,
+                    NotificacaoTitulo = 'Contrato assinado:' + cliente.nome if doc_status == 'assinado' else 'Assinatura de Contrato: ' + cliente.nome,
                     NotificacaoData = datetime.now(),
                     NotificacaoDescricao = enderecowebhook,
                     NotificacaoTipo = 'A',
-                    NotificacaoLido = False
-                    #Consultor
+                    NotificacaoLido = False,
+                    Consultor = Consultor.objects.get(id=consultor_id)
             )
             notificacao.save()
             return JsonResponse({"status": "sucesso"}, status=200)
@@ -1131,10 +1138,16 @@ def webhook_receiver(request):
 
 
 def notificacoes_view(request):
-    #consultor = request.user.consultor  # Assumindo que o usuário está logado e tem um consultor vinculado
-    #print(consultor)
-    #notificacoes = Notificacao.objects.filter(Consultor=consultor).order_by('-NotificacaoData')
-    notificacoes = Notificacao.objects.filter(NotificacaoLido=False).order_by('-NotificacaoData')
+    consultor_id = request.session.get('consultor_id')
+    print(consultor_id)
+    if consultor_id:
+        notificacoes = Notificacao.objects.filter(
+            Consultor = consultor_id, 
+            NotificacaoLido=False
+            ).order_by('-NotificacaoData')[:10]
+    else:
+        notificacoes = Notificacao.objects.filter(NotificacaoLido=False).order_by('-NotificacaoData')[:10]
+
     print(notificacoes)
     notificacoes_nao_lidas = notificacoes.filter(NotificacaoLido=False)
     return render(request, 'notificacoes.html', {
@@ -1143,8 +1156,15 @@ def notificacoes_view(request):
     })
 
 def notificacoes_ajax(request):
-    #consultor = request.user.consultor
-    notificacoes = Notificacao.objects.filter(NotificacaoLido=False).order_by('-NotificacaoData')[:10]
+    consultor_id = request.session.get('consultor_id')
+    print('ajax: ' + str(consultor_id))
+    if consultor_id:
+        notificacoes = Notificacao.objects.filter(
+            Consultor = consultor_id, 
+            NotificacaoLido=False
+            ).order_by('-NotificacaoData')[:10]
+    else:
+        notificacoes = Notificacao.objects.filter(NotificacaoLido=False).order_by('-NotificacaoData')[:10]
 
     data = []
     for n in notificacoes:
