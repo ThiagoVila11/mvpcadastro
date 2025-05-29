@@ -858,14 +858,14 @@ class CondominioKPIDashboard(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        hoje = datetime.now().date()
         # KPIs principais
         context['total_condominios'] = Condominio.objects.count()
         context['total_apartamentos'] = Apartamento.objects.count()
         context['total_consultores'] = Consultor.objects.count()     
         context['total_preclientes'] = PreCliente.objects.count()
         context['total_clientes'] = Cliente.objects.count()
-        context['total_acessos'] = LogAcesso.objects.count()
+        context['total_acessos'] = LogAcesso.objects.filter(logacessoData=hoje).count()
 
 
         #grafico preclientes aprovados
@@ -907,6 +907,24 @@ class CondominioKPIDashboard(TemplateView):
             'total': sum(data),
         }
         print(context)
+
+        # grafico de acessos por usuário/dia
+        acessos_por_usuario = (
+            LogAcesso.objects
+            .filter(logacessoData=hoje)
+            .values('logacessoUsuario')
+            .annotate(total=Count('id'))
+            .order_by('-total')
+        )
+
+        # Preparar dados para o gráfico de barras
+        user_labels = [item['logacessoUsuario'] for item in acessos_por_usuario]
+        user_data = [item['total'] for item in acessos_por_usuario]
+
+        context['gr_acessos_usuarios'] = {
+            'labels': user_labels,
+            'data': user_data,
+            }    
         
         return context
 

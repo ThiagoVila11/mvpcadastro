@@ -64,7 +64,7 @@
         <div class="col-md-2 col-sm-4 col-6 mb-4">
             <div class="card h-100">
                 <div class="card-body text-center">
-                    <h6 class="card-title">Acessos</h6>
+                    <h6 class="card-title">Acessos de Hoje</h6>
                     <h3 class="display-6">{{ total_acessos }}</h3>
                     <small class="text-muted">Realizados</small>
                 </div>
@@ -73,19 +73,31 @@
     </div>
 </div>
 <div class="container">
-    <h2>Avaliação de Pré-Clientes</h2>
-    
+    <h2>Gráficos</h2>
+
     <div class="row">
-        <div class="col-md-6">
-            <div class="card">
+        <!-- Gráfico de Pizza: Pré-Clientes -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
                 <div class="card-body">
                     <h5 class="card-title">Avaliação de Pré-Clientes</h5>
                     <canvas id="preclienteChart"></canvas>
                 </div>
             </div>
         </div>
+
+        <!-- Gráfico de Barras: Acessos por Usuário -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Acessos por Usuário</h5>
+                    <canvas id="acessosPorUsuarioChart"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
 
 <!-- Inclua a biblioteca Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -121,6 +133,29 @@
                 }
             }
         });
+    });
+
+    const ctxUser = document.getElementById('acessosPorUsuarioChart').getContext('2d');
+    const acessosPorUsuarioChart = new Chart(ctxUser, {
+        type: 'bar',
+        data: {
+            labels: {{ gr_acessos_usuarios.labels|safe }},
+            datasets: [{
+                label: 'Acessos por Usuário (Hoje)',
+                data: {{ gr_acessos_usuarios.data|safe }},
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            }
+        }
     });
 </script>
     
