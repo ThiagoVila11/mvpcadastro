@@ -759,7 +759,7 @@ def get_apartamentos(request):
 User = get_user_model()
 logger = logging.getLogger(__name__)
 def login_view(request):
-    print('entrou no Login')
+    #print('entrou no Login')
     if request.user.is_authenticated:
         return redirect('consulta_clientes')
         
