@@ -65,7 +65,7 @@ def valida_consultor(view_func):
         elif isinstance(response, render):
             response.context_data = response.context_data or {}
             response.context_data['is_consultor'] = is_consultor
-        print(response)    
+        #print(response)    
         return response
     return _wrapped_view
 
@@ -73,7 +73,7 @@ def valida_consultor(view_func):
 def cadastro_cliente(request):
     if request.method == 'POST':
         form = ClienteForm(request.POST, request.FILES)
-        print(form)
+        #print(form)
         if form.is_valid():
             form.save()
             return redirect('sucesso')
@@ -176,7 +176,7 @@ def excluir_cliente(request, id):
 def cadastro_condominio(request):
     if request.method == 'POST':
         form = CondominioForm(request.POST, request.FILES)
-        print(form)
+        #print(form)
         if form.is_valid():
             form.save()
             return redirect('sucesso')
@@ -193,8 +193,8 @@ def consulta_condominios(request):
     
     # Filtros
     nome = request.GET.get('nome')
-    print('Nome:')
-    print(nome)
+    #print('Nome:')
+    #print(nome)
     if nome:
         condominios = condominios.filter(Q(condominionome__icontains=nome))
     
@@ -204,7 +204,7 @@ def consulta_condominios(request):
             'condominionome': nome or ''
         }
     }
-    print(context)
+    #print(context)
     return render(request, 'consulta_condominios.html', context)
 
 @login_required 
@@ -253,7 +253,7 @@ def excluir_condominio(request, id):
 def cadastro_apartamento(request):
     if request.method == 'POST':
         form = ApartamentoForm(request.POST, request.FILES)
-        print(form)
+        #print(form)
         if form.is_valid():
             form.save()
             return redirect('sucesso')
@@ -326,7 +326,7 @@ def excluir_apartamento(request, id):
 def cadastro_consultor(request):
     if request.method == 'POST':
         form = ConsultorForm(request.POST, request.FILES)
-        print(form)
+        #print(form)
         if form.is_valid():
             form.save()
             return redirect('sucesso')
@@ -405,7 +405,7 @@ def editar_consultor(request, id):
 def cadastro_precliente(request):
     if request.method == 'POST':
         form = PreClienteForm(request.POST, request.FILES)
-        print(form)
+        #print(form)
         if form.is_valid():
             form.save()
             return redirect('sucesso')
@@ -481,7 +481,7 @@ def excluir_precliente(request, id):
 
 def converter_precliente(request, precliente_id):
     precliente = get_object_or_404(PreCliente, pk=precliente_id)
-    print(precliente)
+    #print(precliente)
     
     try:
         precliente = precliente.converter_para_cliente(
@@ -495,7 +495,7 @@ def converter_precliente(request, precliente_id):
 
 
 def consulta_cpf(request):
-    print('consulta_cpf')
+    #print('consulta_cpf')
     if request.method == 'POST':
         cpf = request.POST.get('cpf', '').replace('.', '').replace('-', '')
         
@@ -673,27 +673,27 @@ def visualizar_documento(request, cliente_id):
         })
     
     # Se for DOCX, podemos tentar converter para HTML para visualização
-    print(ext)
-    print(cliente.documentacaoenviada.path)
+    #print(ext)
+    #print(cliente.documentacaoenviada.path)
     if ext == '.docx':
-        print('dentro')
+        #print('dentro')
         try:
-            print('try')
+            #print('try')
             import docx2txt
             texto = docx2txt.process(cliente.documentacaoenviada.path)
-            print('texto: ' + texto)
+            #print('texto: ' + texto)
             return render(request, 'visualizar_word.html', {
                 'cliente': cliente,
                 'conteudo': texto,
                 'tipo': 'docx'
             })
         except ImportError:
-            print('except')
+            #print('except')
             # Se docx2txt não estiver instalado, faz download
             pass
         except Exception as e:
-            print(Exception)
-            print('exception')
+            #print(Exception)
+            #print('exception')
             return render(request, 'erro.html', {
                 'mensagem': f'Erro ao processar documento: {str(e)}'
             })
@@ -780,15 +780,15 @@ def login_view(request):
                 headers={'Content-Type': 'application/json'},
                 timeout=10
             )
-            print(response)
+            #print(response)
             if response.status_code != 200:
-                print('status diferente de 200')
-                print(response.status_code)
+                #print('status diferente de 200')
+                #print(response.status_code)
                 messages.error(request, 'Credenciais inválidas')
                 return render(request, 'registration/login.html')
                 
             token_data = response.json()
-            print(token_data)
+            #print(token_data)
             # 2. Verifica/Cria usuário local
             user, created = User.objects.get_or_create(
                 username=username,
@@ -825,7 +825,7 @@ def login_view(request):
                     request.session['api_funcao'] = funcao
                     consultor = Consultor.objects.filter(consultorEmail=email).first()
                     consultor_id = consultor.pk
-                    print(consultor_id)
+                    #print(consultor_id)
                     request.session['email'] = email
                     request.session['consultor_id'] = consultor_id
                 else:
@@ -1067,32 +1067,32 @@ def assinar_contrato(request, cliente_id):
             headers=headers,
             data=json.dumps(document_data))  # Convertemos o dict para JSON string
         
-        print(response)
+        #print(response)
         # Verifica se a requisição foi bem sucedida
         if response.status_code == 200:
-            print(response.json())
+            #print(response.json())
             resposta = response.json()
             process_id = resposta["sent"][0]["process_id"]
-            print(process_id)
+            #print(process_id)
             cliente.processoassinaturaid = process_id
             cliente.save()
-            print(JsonResponse(resposta))
+            #print(JsonResponse(resposta))
             return redirect(request.GET.get('next', 'consulta_clientes'))
             #return JsonResponse(resposta)  # Retorna a resposta da API como JSON
              
         else:
-            print(f"Erro na requisição: Status {response.status_code}")
-            print(f"Resposta: {response.text}")
+            #print(f"Erro na requisição: Status {response.status_code}")
+            #print(f"Resposta: {response.text}")
             return JsonResponse({
                 "erro": f"Erro na requisição: {response.status_code}",
                 "mensagem": response.text
             }, status=response.status_code)
 
     except requests.exceptions.RequestException as e:
-        print(f"Erro ao conectar com a API: {str(e)}")
+        #print(f"Erro ao conectar com a API: {str(e)}")
         return JsonResponse({"erro": "Falha na conexão com a API", "mensagem": str(e)}, status=500)
     except json.JSONDecodeError as e:
-        print(f"Erro ao decodificar a resposta JSON: {str(e)}")
+        #print(f"Erro ao decodificar a resposta JSON: {str(e)}")
         return JsonResponse({"erro": "Erro ao decodificar JSON", "mensagem": str(e)}, status=500)
 
 logger = logging.getLogger(__name__)
@@ -1103,22 +1103,22 @@ def webhook_receiver(request):
             payload = json.loads(request.body)
             data = json.loads(request.body)
             #logger.info(f"Webhook recebido: {payload}")
-            print(f"Webhook recebido: {payload}")
+            #print(f"Webhook recebido: {payload}")
             processo_id = data.get('payload', {}).get('process_id', None)
             doc_download = data.get('payload', {}).get('download', None)
             doc_status = data["payload"]["contrato"]["status"]
             enderecowebhook = data["payload"]["document"]["signers"][0]["signer_link"]
             #data.get('payload', {}).get('signer_link', None)
-            print(enderecowebhook)
-            print(doc_status)
-            print(f"processo_id: {processo_id}")
+            #print(enderecowebhook)
+            #print(doc_status)
+            #print(f"processo_id: {processo_id}")
             cliente = Cliente.objects.filter(processoassinaturaid=processo_id).first()
             if cliente.Consultor.pk:
                 consultor_id = cliente.Consultor.pk
             else:
                 consultor_id = None
-            print('gravar notificacao: ' + str(consultor_id))
-            print(cliente)
+            #print('gravar notificacao: ' + str(consultor_id))
+            #print(cliente)
             if cliente is None:
                 logger.error(f"Cliente não encontrado para o process_id: {payload.get('process_id')}")
                 return JsonResponse({"erro": "Cliente não encontrado"}, status=404)
@@ -1165,7 +1165,7 @@ def webhook_receiver(request):
 
 def notificacoes_view(request):
     consultor_id = request.session.get('consultor_id')
-    print(consultor_id)
+    #print(consultor_id)
     if consultor_id:
         notificacoes = Notificacao.objects.filter(
             Consultor = consultor_id, 
@@ -1174,7 +1174,7 @@ def notificacoes_view(request):
     else:
         notificacoes = Notificacao.objects.filter(NotificacaoLido=False).order_by('-NotificacaoData')[:10]
 
-    print(notificacoes)
+    #print(notificacoes)
     notificacoes_nao_lidas = notificacoes.filter(NotificacaoLido=False)
     return render(request, 'notificacoes.html', {
         'notificacoes': notificacoes,
@@ -1183,7 +1183,7 @@ def notificacoes_view(request):
 
 def notificacoes_ajax(request):
     consultor_id = request.session.get('consultor_id')
-    print('ajax: ' + str(consultor_id))
+    #print('ajax: ' + str(consultor_id))
     if consultor_id:
         notificacoes = Notificacao.objects.filter(
             Consultor = consultor_id, 
@@ -1203,7 +1203,7 @@ def notificacoes_ajax(request):
             'lido': n.NotificacaoLido
         })
 
-    print(data)
+    #print(data)
 
     return JsonResponse({'notificacoes': data})
 
@@ -1211,7 +1211,7 @@ def notificacoes_ajax(request):
 def marcar_notificacao_lida(request):
     if request.method == 'POST':
         id_notificacao = request.POST.get('id')
-        print(id_notificacao)
+        #print(id_notificacao)
         if not id_notificacao:
             return JsonResponse({'status': 'erro', 'mensagem': 'ID da notificação não fornecido'})
         try:
@@ -1224,7 +1224,7 @@ def marcar_notificacao_lida(request):
     return JsonResponse({'status': 'erro', 'mensagem': 'Requisição inválida'})
 
 def criar_cadastro(request):
-    print('entrou no criar_cadastro')
+    #print('entrou no criar_cadastro')
     if request.method == 'POST':
         form = PreCliente(request.POST)
         if form.is_valid():
