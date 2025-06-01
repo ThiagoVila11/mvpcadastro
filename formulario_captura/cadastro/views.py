@@ -189,7 +189,7 @@ def cadastro_condominio(request):
 def consulta_condominios(request):
     # Obtém todos os clientes inicialmente
     condominios = Condominio.objects.all().order_by('condominionome')
-    print(condominios)
+    #print(condominios)
     
     # Filtros
     nome = request.GET.get('nome')
@@ -277,7 +277,7 @@ def consulta_apartamentos(request):
             'apartamentonro': nome or ''
         }
     }
-    print(context)
+    #print(context)
     return render(request, 'consulta_apartamentos.html', context)
 
 @login_required 
@@ -906,7 +906,7 @@ class CondominioKPIDashboard(TemplateView):
             'colors': colors,
             'total': sum(data),
         }
-        print(context)
+        #print(context)
 
         # grafico de acessos por usuário/dia
         acessos_por_usuario = (
