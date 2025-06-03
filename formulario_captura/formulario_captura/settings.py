@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'rest_framework',
     'corsheaders', 
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -202,3 +203,16 @@ LOGOUT_REDIRECT_URL = 'login'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'seu_email@gmail.com'
+EMAIL_HOST_PASSWORD = 'sua_senha_ou_app_password'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+CELERY_BROKER_URL = 'amqp://localhost' #'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'

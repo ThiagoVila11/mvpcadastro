@@ -941,27 +941,27 @@ def assinar_contrato(request, cliente_id):
                 "signers": [
                     {
                         "nome": cliente.nome,
-                        "email": "simbiox.thiago.tosatti@vila11.com.br", #cliente.email,
+                        "email": cliente.email,
                         "funcao": "Cliente"
                     },
                     {
                         "nome": "Isadora Romão",
-                        "email": "thiagotosatti@bol.com.br", #"isadora.romao@vila11.com.br",
+                        "email": "isadora.romao@vila11.com.br",
                         "funcao": "Testemunha"
                     },
                     {
                         "nome": "Carla Viana",
-                        "email": "thiagotosatti@hotmail.com", #"carla.viana@vila11.com.br",
+                        "email": "carla.viana@vila11.com.br",
                         "funcao": "Testemunha"
                     },
                     {
                         "nome": "Jorge Luiz Bernardo de moraes",
-                        "email": "thiago.tosatti@simbiox.com.br", #"jorge.moraes@vila11.com.br",
+                        "email": "jorge.moraes@vila11.com.br",
                         "funcao": "Representante Legal"
                     },
                     {
                         "nome": "Roberto Sergio Dib",
-                        "email": "thiagaotosatti@gmail.com", #"roberto.dib@vila11.com.br",
+                        "email": "roberto.dib@vila11.com.br",
                         "funcao": "Representante Legal"
                     }
                 ],
