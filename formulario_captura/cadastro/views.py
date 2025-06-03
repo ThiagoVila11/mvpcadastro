@@ -869,36 +869,30 @@ class CondominioKPIDashboard(TemplateView):
 
 
         #grafico preclientes aprovados
-        avaliacao_data = (PreCliente.objects
-        .values('preclienteAvaliacao')
-        .annotate(total=Count('preclienteAvaliacao'))
-        .order_by('preclienteAvaliacao')
-        )
         # Preparar os dados para o gráfico
         labels = []
         data = []
         colors = []
-        
-        for item in avaliacao_data:
-            # Determinar o label baseado no valor
-            if item['preclienteAvaliacao'] == 'A':
-                labels.append('Apto')
-                colors.append('#4CAF50')  # Verde
-            elif item['preclienteAvaliacao'] == 'N':
-                labels.append('Não Apto')
-                colors.append('#F44336')  # Vermelho
-            else:
-                labels.append('Não Avaliado')
-                colors.append('#FFC107')  # Amarelo
-                
-            data.append(item['total'])
-        
+
         # Adicionar contagem para valores nulos (não avaliados)
-        nao_avaliados = PreCliente.objects.filter(preclienteAvaliacao__isnull=True).count()
-        if nao_avaliados > 0:
-            labels.append('Não Avaliado')
-            data.append(nao_avaliados)
-            colors.append('#FFC107')  # Amarelo
+        nao_apto = PreCliente.objects.filter(preclienteScore__lte = 700
+                                             ).filter(
+                                                 ~Q(preclienteApontamentos='') & Q(preclienteApontamentos__isnull=False)
+                                             ).count()
+        if nao_apto > 0:
+            labels.append('Não Apto')
+            data.append(nao_apto)
+            colors.append('#F44336')  # Vermelho
+
+        apto = PreCliente.objects.filter(
+                                        preclienteScore__gte=700
+                                        ).filter(
+                                        Q(preclienteApontamentos='') | Q(preclienteApontamentos__isnull=True)
+                                        ).count()
+        if apto > 0:
+            labels.append('Apto')
+            data.append(apto)
+            colors.append('#4CAF50')  # Verde
         
         context['gr_precliente'] = {
             'labels': labels,
