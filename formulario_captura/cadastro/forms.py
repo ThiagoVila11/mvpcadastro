@@ -59,7 +59,7 @@ class PreClienteForm(forms.ModelForm):
         
         # Campos que não devem ser editáveis
         campos_nao_editaveis = ['preclienteNome', 'precoclienteEmail', 'preclienteRendaFamiliar', 'preclienteRendaPresumida',
-                                'preclienteScore', 'preclienteApontamentos', 'Consultor']
+                                'preclienteScore', 'preclienteApontamentos', 'preclienteCpf']
 
         for campo in campos_nao_editaveis:
             if campo in self.fields:
