@@ -877,7 +877,7 @@ class CondominioKPIDashboard(TemplateView):
         # Adicionar contagem para valores nulos (não avaliados)
         nao_apto = PreCliente.objects.filter(preclienteScore__lte = 700
                                              ).filter(
-                                                 ~Q(preclienteApontamentos='') & Q(preclienteApontamentos__isnull=False)
+                                                 ~Q(preclienteApontamentos='') | Q(preclienteApontamentos__isnull=False)
                                              ).count()
         if nao_apto > 0:
             labels.append('Não Apto')
