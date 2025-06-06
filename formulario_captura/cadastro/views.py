@@ -69,7 +69,7 @@ def valida_consultor(view_func):
         return response
     return _wrapped_view
 
-@login_required
+@login_required(login_url='/login/')
 def cadastro_cliente(request):
     if request.method == 'POST':
         form = ClienteForm(request.POST, request.FILES)
@@ -85,7 +85,7 @@ def cadastro_cliente(request):
 def sucesso(request):
     return render(request, 'cadastro/sucesso.html')
 
-@login_required 
+@login_required(login_url='/login/') 
 def consulta_clientes(request):
     # Obtém todos os clientes inicialmente
     clientes = Cliente.objects.all().order_by('-data_cadastro')
@@ -116,12 +116,12 @@ def consulta_clientes(request):
     
     return render(request, 'consulta_clientes.html', context)
 
-@login_required 
+@login_required(login_url='/login/') 
 def detalhes_cliente(request, id):
     cliente = get_object_or_404(Cliente, id=id)
     return render(request, 'detalhes_cliente.html', {'cliente': cliente})
 
-@login_required 
+@login_required(login_url='/login/') 
 def editar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id=id)
     condominios = Condominio.objects.all()
@@ -155,7 +155,7 @@ def editar_cliente(request, id):
         'is_consultor': request.session.get('api_funcao') == 'CONSULTOR'
     })
 
-@login_required 
+@login_required(login_url='/login/') 
 def excluir_cliente(request, id):
     cliente = get_object_or_404(Cliente, id=id)
     
@@ -171,7 +171,7 @@ def excluir_cliente(request, id):
     # Se não for POST, mostra página de confirmação
     return render(request, 'confirmar_exclusao.html', {'cliente': cliente})
 
-@login_required 
+@login_required(login_url='/login/') 
 @requer_consultor
 def cadastro_condominio(request):
     if request.method == 'POST':
@@ -185,7 +185,7 @@ def cadastro_condominio(request):
     
     return render(request, 'cadastro/formulariocondominio.html', {'form': form})
 
-@login_required 
+@login_required(login_url='/login/') 
 def consulta_condominios(request):
     # Obtém todos os clientes inicialmente
     condominios = Condominio.objects.all().order_by('condominionome')
@@ -207,13 +207,13 @@ def consulta_condominios(request):
     #print(context)
     return render(request, 'consulta_condominios.html', context)
 
-@login_required 
+@login_required(login_url='/login/') 
 @requer_consultor
 def detalhes_condominio(request, id):
     condominio = get_object_or_404(Condominio, id=id)
     return render(request, 'detalhes_condominio.html', {'condominio': condominio})
 
-@login_required 
+@login_required(login_url='/login/') 
 @requer_consultor
 def editar_condominio(request, id):
     condominio = get_object_or_404(Condominio, id=id)
@@ -231,7 +231,7 @@ def editar_condominio(request, id):
         'condominio': condominio
     })
 
-@login_required 
+@login_required(login_url='/login/') 
 @requer_consultor
 def excluir_condominio(request, id):
     condominio = get_object_or_404(Condominio, id=id)
@@ -248,7 +248,7 @@ def excluir_condominio(request, id):
     # Se não for POST, mostra página de confirmação
     return render(request, 'confirmarexclusaocondominio.html', {'condominio': condominio})
 
-@login_required 
+@login_required(login_url='/login/') 
 @requer_consultor
 def cadastro_apartamento(request):
     if request.method == 'POST':
@@ -262,7 +262,7 @@ def cadastro_apartamento(request):
     
     return render(request, 'cadastro/formularioapartamento.html', {'form': form})
 
-@login_required 
+@login_required(login_url='/login/') 
 def consulta_apartamentos(request):
     apartamentos = Apartamento.objects.all().order_by('apartamentonro')
     
@@ -280,7 +280,7 @@ def consulta_apartamentos(request):
     #print(context)
     return render(request, 'consulta_apartamentos.html', context)
 
-@login_required 
+@login_required(login_url='/login/') 
 @requer_consultor
 def editar_apartamento(request, id):
     apartamento = get_object_or_404(Apartamento, id=id)
@@ -298,13 +298,13 @@ def editar_apartamento(request, id):
         'apartamento': apartamento
     })
 
-@login_required
+@login_required(login_url='/login/')
 @requer_consultor
 def detalhes_apartamento(request, id):
     apartamento = get_object_or_404(Apartamento, id=id)
     return render(request, 'detalhes_apartamento.html', {'apartamento': apartamento})
 
-@login_required 
+@login_required(login_url='/login/') 
 @requer_consultor
 def excluir_apartamento(request, id):
     apartamento = get_object_or_404(Apartamento, id=id)
@@ -321,7 +321,7 @@ def excluir_apartamento(request, id):
     # Se não for POST, mostra página de confirmação
     return render(request, 'confirmarexclusaoapartamento.html', {'apartamento': apartamento})
 
-@login_required 
+@login_required(login_url='/login/') 
 @requer_consultor
 def cadastro_consultor(request):
     if request.method == 'POST':
@@ -335,7 +335,7 @@ def cadastro_consultor(request):
     
     return render(request, 'cadastro/formularioconsultor.html', {'form': form})
 
-@login_required 
+@login_required(login_url='/login/') 
 @requer_consultor
 def consulta_consultores(request):
     consultores = Consultor.objects.all().order_by('consultorNome')
@@ -360,7 +360,7 @@ def consulta_consultores(request):
     
     return render(request, 'consulta_consultores.html', context)
 
-@login_required 
+@login_required(login_url='/login/') 
 @requer_consultor
 def excluir_consultor(request, id):
     consultor = get_object_or_404(Consultor, id=id)
@@ -377,13 +377,13 @@ def excluir_consultor(request, id):
     # Se não for POST, mostra página de confirmação
     return render(request, 'confirmarexclusaoconsultor.html', {'consultor': consultor})
 
-@login_required
+@login_required(login_url='/login/')
 @requer_consultor
 def detalhes_consultor(request, id):
     consultor = get_object_or_404(Consultor, id=id)
     return render(request, 'detalhes_consultor.html', {'consultor': consultor})
 
-@login_required 
+@login_required(login_url='/login/') 
 @requer_consultor
 def editar_consultor(request, id):
     consultor = get_object_or_404(Consultor, id=id)
@@ -401,7 +401,7 @@ def editar_consultor(request, id):
         'consultor': consultor
     })
 
-@login_required 
+@login_required(login_url='/login/') 
 def cadastro_precliente(request):
     if request.method == 'POST':
         form = PreClienteForm(request.POST, request.FILES)
@@ -414,7 +414,7 @@ def cadastro_precliente(request):
     
     return render(request, 'cadastro/formularioprecliente.html', {'form': form})
 
-@login_required 
+@login_required(login_url='/login/')
 def consulta_preclientes(request):
     # Obtém todos os clientes inicialmente
     preclientes = PreCliente.objects.all().order_by('preclienteNome')
@@ -440,13 +440,13 @@ def consulta_preclientes(request):
     
     return render(request, 'consulta_precliente.html', context)
 
-@login_required 
+@login_required(login_url='/login/')
 def detalhes_precliente(request, id):
     precliente = get_object_or_404(PreCliente, id=id)
     return render(request, 'detalhes_precliente.html', {'precliente': precliente})
 
 
-@login_required 
+@login_required(login_url='/login/')
 def editar_precliente(request, id):
     precliente = get_object_or_404(PreCliente, id=id)
     
@@ -463,7 +463,7 @@ def editar_precliente(request, id):
         'precliente': precliente
     })
 
-@login_required 
+@login_required(login_url='/login/') 
 def excluir_precliente(request, id):
     precliente = get_object_or_404(PreCliente, id=id)
     
