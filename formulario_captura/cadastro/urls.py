@@ -59,7 +59,7 @@ urlpatterns = [
     path('ajax/notificacoes/', views.notificacoes_ajax, name='notificacoes_ajax'),
     path('ajax/marcar_lida/', views.marcar_notificacao_lida, name='marcar_notificacao_lida'),
 
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
