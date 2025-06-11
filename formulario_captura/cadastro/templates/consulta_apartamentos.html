@@ -46,10 +46,17 @@
                             <td>{{ apartamento.apartamentovagas }}</td>
                             <td>
                                 
-                                <a href="{% url 'editar_apartamento' apartamento.id %}" class="btn btn-sm btn-primary">Editar</a>
-                                <a href="{% url 'detalhes_apartamento' apartamento.id %}" class="btn btn-sm btn-info">Detalhes</a>
-                                <a href="{% url 'excluir_apartamento' apartamento.id %}" class="btn btn-danger">Excluir</a>
-                            
+                                <a href="{% url 'editar_apartamento' apartamento.id %}" title="Editar">
+                                    <i class="fas fa-pen text-primary me-2"></i>
+                                </a>
+                                
+                                <a href="{% url 'detalhes_apartamento' apartamento.id %}" title="Detalhes">
+                                    <i class="fas fa-file-alt text-info me-2"></i>
+                                </a>
+
+                                <a href="{% url 'excluir_apartamento' apartamento.id %}" title="Excluir">
+                                    <i class="fas fa-trash text-danger me-2"></i>
+                                </a>
                             </td>
                         </tr>
                         {% empty %}

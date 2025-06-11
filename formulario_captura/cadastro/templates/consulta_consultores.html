@@ -52,11 +52,19 @@
                             <td>{{ consultor.consultorEmail }}</td>
                             <td>{{ consultor.consultorAtivoInativo }}</td>
                             <td>
-                                
-                                <a href="{% url 'editar_consultor' consultor.id %}" class="btn btn-sm btn-primary">Editar</a>
-                                <a href="{% url 'detalhes_consultor' consultor.id %}" class="btn btn-sm btn-info">Detalhes</a>
-                                <a href="{% url 'excluir_consultor' consultor.id %}" class="btn btn-sm btn-danger">Excluir</a>
+
+                                <a href="{% url 'editar_consultor' consultor.id %}" title="Editar">
+                                    <i class="fas fa-pen text-primary me-2"></i>
+                                </a>
                             
+                                <a href="{% url 'detalhes_consultor' consultor.id %}" title="Detalhes">
+                                    <i class="fas fa-file-alt text-info me-2"></i>
+                                </a>
+                            
+                                <a href="{% url 'excluir_consultor' consultor.id %}" title="Excluir">
+                                    <i class="fas fa-trash text-danger me-2"></i>
+                                </a>
+                                
                             </td>
                         </tr>
                         {% empty %}
