@@ -188,8 +188,9 @@ STATIC_URL = '/static/'
 
 # Durante o desenvolvimento, você pode usar:
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'cadastro/static'),
 ]
+
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
