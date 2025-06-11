@@ -9,29 +9,36 @@
     </h2>
 
     <!-- Formulário de Filtros -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="get">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="nome">Nome</label>
-                            <input type="text" class="form-control" id="nome" name="nome" value="{{ filtros.nome }}">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="cpf">CPF</label>
-                            <input type="text" class="form-control" id="cpf" name="cpf" value="{{ filtros.cpf }}">
-                        </div>
-                    </div>
-
+    <form method="get">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="nome">Nome</label>
+                    <input type="text" class="form-control" id="nome" name="nome" value="{{ filtros.nome }}">
                 </div>
-                <button type="submit" class="btn btn-primary">Filtrar</button>
-                <a href="{% url 'consulta_clientes' %}" class="btn btn-secondary">Limpar</a>
-            </form>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="cpf">CPF</label>
+                    <input type="text" class="form-control" id="cpf" name="cpf" value="{{ filtros.cpf }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="finalizado">Processo Finalizado</label>
+                    <select class="form-control" id="finalizado" name="finalizado">
+                        <option value="">Todos</option>
+                        <option value="1" {% if filtros.finalizado == '1' %}selected{% endif %}>Sim</option>
+                        <option value="0" {% if filtros.finalizado == '0' %}selected{% endif %}>Não</option>
+                    </select>
+                </div>
+            </div>
         </div>
-    </div>
+    
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+        <a href="{% url 'consulta_clientes' %}" class="btn btn-secondary">Limpar</a>
+    </form>
+    
     
     <!-- Tabela de Resultados -->
     <div class="card">

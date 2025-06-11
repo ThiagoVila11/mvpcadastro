@@ -87,37 +87,34 @@ def sucesso(request):
 
 @login_required(login_url='/login/') 
 def consulta_clientes(request):
-    # Obtém todos os clientes inicialmente
-    consultor_id = request.session.get('consultor_id')
-    if consultor_id:
-        clientes = Cliente.objects.all().filter(Consultor=consultor_id).order_by('-data_cadastro')
-    else:
-        clientes = Cliente.objects.all().order_by('-data_cadastro')
-    # Filtros
-    nome = request.GET.get('nome')
-    cpf = request.GET.get('cpf')
-    #unidade = request.GET.get('unidade')
-    #apto = request.GET.get('apto')
-    
+    nome = request.GET.get('nome', '')
+    cpf = request.GET.get('cpf', '')
+    finalizado = request.GET.get('finalizado', '')
+
+    clientes = Cliente.objects.all()
+
     if nome:
-        clientes = clientes.filter(Q(nome__icontains=nome))
+        clientes = clientes.filter(nome__icontains=nome)
+
     if cpf:
-        clientes = clientes.filter(Q(cpf__icontains=cpf))
-    
-    # Obter opções para os selects
-    unidades = Cliente.unidades
-    
+        clientes = clientes.filter(cpf__icontains=cpf)
+
+    if finalizado == '1':
+        clientes = clientes.filter(processofinalizado=True)
+    elif finalizado == '0':
+        clientes = clientes.filter(processofinalizado=False)
+
     context = {
         'clientes': clientes,
-        'unidades': unidades,
         'filtros': {
-            'nome': nome or '',
-            'cpf': cpf or '',
+            'nome': nome,
+            'cpf': cpf,
+            'finalizado': finalizado,
         },
-        'is_consultor': request.session.get('api_funcao') == 'CONSULTOR'
+        'is_consultor': request.user.groups.filter(name='Consultores').exists()
     }
-    
     return render(request, 'consulta_clientes.html', context)
+
 
 @login_required(login_url='/login/') 
 def detalhes_cliente(request, id):

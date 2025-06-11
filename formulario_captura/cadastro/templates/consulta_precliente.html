@@ -55,11 +55,22 @@
                             <td>{{ precliente.preclienteRendaPresumida }}</td>
                             <td>
                                 
-                                <a href="{% url 'detalhes_precliente' precliente.id %}" class="btn btn-sm btn-info">Detalhes</a>
+                                <a href="{% url 'detalhes_precliente' precliente.id %}" title="Editar">
+                                    <i class="fas fa-pen text-primary me-2"></i>
+                                </a>
+                                
                                 {% if not is_consultor %}
-                                <a href="{% url 'editar_precliente' precliente.id %}" class="btn btn-sm btn-info">Editar</a>
-                                <a href="{% url 'excluir_precliente' precliente.id %}" class="btn btn-danger">Excluir</a>
-                                <a href="{% url 'converter_precliente' precliente.id %}" class="btn btn-success">Converter para Cliente</a>
+                                <a href="{% url 'editar_precliente' precliente.id %}" title="Detalhes">
+                                    <i class="fas fa-file-alt text-info me-2"></i>
+                                </a>
+                                
+                                <a href="{% url 'excluir_precliente' precliente.id %}" title="Excluir">
+                                    <i class="fas fa-trash text-danger me-2"></i>
+                                </a>
+                                
+                                <a href="{% url 'converter_precliente' precliente.id %}" title="Converter para Cliente">
+                                    <i class="fas fa-right-left"></i>
+                                </a>
                                 {% endif %}
                             </td>
                         </tr>
