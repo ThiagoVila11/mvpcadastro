@@ -88,8 +88,11 @@ def sucesso(request):
 @login_required(login_url='/login/') 
 def consulta_clientes(request):
     # Obtém todos os clientes inicialmente
-    clientes = Cliente.objects.all().order_by('-data_cadastro')
-    
+    consultor_id = request.session.get('consultor_id')
+    if consultor_id:
+        clientes = Cliente.objects.all().filter(Consultor=consultor_id).order_by('-data_cadastro')
+    else:
+        clientes = Cliente.objects.all().order_by('-data_cadastro')
     # Filtros
     nome = request.GET.get('nome')
     cpf = request.GET.get('cpf')
@@ -170,6 +173,21 @@ def excluir_cliente(request, id):
     
     # Se não for POST, mostra página de confirmação
     return render(request, 'confirmar_exclusao.html', {'cliente': cliente})
+
+@csrf_exempt
+def finalizar_atendimento(request, cliente_id):
+    if request.method == "POST":
+        observacao = request.POST.get('observacao')
+        try:
+            cliente = Cliente.objects.get(id=cliente_id)
+            cliente.visitarealizada = True  
+            cliente.processofinalizado = True  
+            cliente.observacoes = observacao
+            cliente.save()
+            return JsonResponse({'success': True})
+        except Cliente.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Cliente não encontrado'})
+    return JsonResponse({'success': False, 'error': 'Requisição inválida'})
 
 @login_required(login_url='/login/') 
 @requer_consultor
@@ -417,8 +435,12 @@ def cadastro_precliente(request):
 @login_required(login_url='/login/')
 def consulta_preclientes(request):
     # Obtém todos os clientes inicialmente
-    preclientes = PreCliente.objects.all().order_by('preclienteNome')
-    
+    consultor_id = request.session.get('consultor_id')
+    if consultor_id:
+        preclientes = PreCliente.objects.filter(Consultor = consultor_id).all().order_by('preclienteNome')
+    else:
+        preclientes = PreCliente.objects.all().order_by('preclienteNome')
+
     # Filtros
     nome = request.GET.get('nome')
     cpf = request.GET.get('cpf')

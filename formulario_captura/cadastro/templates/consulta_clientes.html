@@ -66,20 +66,35 @@
                             <td class="d-none">{{cliente.enderecowebhook}}</td>
 
                             <td>
-                                <a href="{% url 'editar_cliente' cliente.id %}" class="btn btn-sm btn-primary">Editar</a>
-                                <a href="{% url 'detalhes_cliente' cliente.id %}" class="btn btn-sm btn-info">Detalhes</a>
+                                <a href="{% url 'editar_cliente' cliente.id %}" title="Editar">
+                                    <img src="{% static 'icons/edit.png' %}" alt="Editar" width="24">
+                                </a>
+
+                                <a href="{% url 'detalhes_cliente' cliente.id %}" title="Detalhes">
+                                    <img src="{% static 'icons/details.png' %}" alt="Detalhes" width="24">
+                                </a>
+
                                 {% if not is_consultor %}
-                                <a href="{% url 'excluir_cliente' cliente.id %}" class="btn btn-danger">Excluir</a>
-                                {% endif %}
-                                <a href="{% url 'assinar_contrato' cliente.id %}" class="btn btn-sm btn-info">Gerar Contrato</a>
-                                {% if cliente.enderecowebhook %}
-                                <a href="{{cliente.enderecowebhook}}" 
-                                    class="btn btn-sm btn-info"
-                                    target="_blank"
-                                    rel="noopener noreferrer">  <!-- Segurança contra phishing -->
-                                    Assinar Contrato
+                                <a href="{% url 'excluir_cliente' cliente.id %}" title="Excluir">
+                                    <img src="{% static 'icons/delete.png' %}" alt="Excluir" width="24">
                                 </a>
                                 {% endif %}
+                                
+                                <a href="{% url 'assinar_contrato' cliente.id %}" title="Gerar Contrato">
+                                    <img src="{% static 'icons/generate_contract.png' %}" alt="Gerar Contrato" width="24">
+                                </a>
+                                {% if cliente.enderecowebhook %}
+                                <a href="{{cliente.enderecowebhook}}" title="Assinar Contrato" target="_blank" rel="noopener noreferrer">
+                                    <img src="{% static 'icons/sign_contract.png' %}" alt="Assinar Contrato" width="24">
+                                </a>
+                                {% endif %}
+                                
+                                <a href="#" 
+                                class="finalizar-btn" 
+                                data-cliente-id="{{ cliente.id }}" 
+                                title="Finalizar Atendimento">
+                                <img src="{% static 'icons/finalizar.png' %}" alt="Finalizar Atendimento" width="24">
+                                </a>
                             </td>
                         </tr>
                         {% empty %}
@@ -93,4 +108,73 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="finalizarModal" tabindex="-1" aria-labelledby="finalizarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form id="finalizarForm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="finalizarModalLabel">Finalizar Atendimento</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="cliente_id" id="clienteIdInput">
+            <div class="mb-3">
+              <label for="observacao" class="form-label">Observação</label>
+              <textarea class="form-control" id="observacaoInput" name="observacao" rows="4" required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const finalizarBtns = document.querySelectorAll(".finalizar-btn");
+      const finalizarModal = new bootstrap.Modal(document.getElementById("finalizarModal"));
+      const clienteIdInput = document.getElementById("clienteIdInput");
+      const observacaoInput = document.getElementById("observacaoInput");
+  
+      finalizarBtns.forEach(btn => {
+        btn.addEventListener("click", function(e) {
+          e.preventDefault();
+          const clienteId = this.getAttribute("data-cliente-id");
+          clienteIdInput.value = clienteId;
+          observacaoInput.value = '';
+          finalizarModal.show();
+        });
+      });
+  
+      document.getElementById("finalizarForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const clienteId = clienteIdInput.value;
+        const observacao = observacaoInput.value;
+  
+        fetch(`/finalizar_atendimento/${clienteId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: `observacao=${encodeURIComponent(observacao)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            finalizarModal.hide();
+            alert("Atendimento finalizado com sucesso.");
+            location.reload();  // ou atualizar só a linha, se quiser
+          } else {
+            alert("Erro ao finalizar atendimento.");
+          }
+        });
+      });
+    });
+  </script>
+  
 {% endblock %}

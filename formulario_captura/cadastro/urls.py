@@ -19,6 +19,7 @@ urlpatterns = [
     path('assinar_contrato/<int:cliente_id>/', views.assinar_contrato, name='assinar_contrato'),
     path('documentos/<int:cliente_id>/', views.visualizar_documento, name='visualizar_documento'),
     path('webhook/', views.webhook_receiver, name='webhook_receiver'),
+    path('finalizar_atendimento/<int:cliente_id>/', views.finalizar_atendimento, name='finalizar_atendimento'),
     #condominio
     path('cadastro_condominio/', views.cadastro_condominio, name='cadastro_condominio'),
     path('consulta_condominios/', views.consulta_condominios, name='consulta_condominios'),

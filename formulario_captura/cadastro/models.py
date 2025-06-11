@@ -207,6 +207,7 @@ class Cliente(models.Model):
     documentacaoassinada = models.BooleanField(verbose_name='Documentação assinada', default=False, null=True, blank=True)  
     datahoraassinatura = models.DateTimeField(verbose_name='Data e hora da assinatura', null=True, blank=True)
     statusassinatura = models.CharField(verbose_name='Status da assinatura', max_length=30, null=True, blank=True, default='Pendente')  
+    processofinalizado = models.BooleanField(verbose_name='Processo finalizado', default=False, null=True, blank=True)
 
     def __str__(self):
         return self.nome
