@@ -3,6 +3,8 @@ from . import views
 from . import api
 from cadastro.views import CondominioKPIDashboard
 from .api import get_consultor_id_by_email
+from django.conf.urls.static import static
+from django.conf import settings
 
 
 urlpatterns = [
@@ -58,3 +60,6 @@ urlpatterns = [
     path('ajax/marcar_lida/', views.marcar_notificacao_lida, name='marcar_notificacao_lida'),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
