@@ -5,6 +5,8 @@ from cadastro.views import CondominioKPIDashboard
 from .api import get_consultor_id_by_email
 from django.conf.urls.static import static
 from django.conf import settings
+from .views import ClienteListView
+
 
 
 urlpatterns = [
@@ -54,6 +56,7 @@ urlpatterns = [
     path('condominios/kpi/', CondominioKPIDashboard.as_view(), name='kpi-condominios'),
     #API´s
     path('api/consultor/', get_consultor_id_by_email, name='get_consultor_id_by_email'),
+    path('api/clientes/', ClienteListView.as_view(), name='lista-clientes'),
     # notificações
     path('notificacoes/', views.notificacoes_view, name='notificacoes'),
     path('ajax/notificacoes/', views.notificacoes_ajax, name='notificacoes_ajax'),

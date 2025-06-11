@@ -41,6 +41,8 @@ from rest_framework.response import Response  # Este import é crucial
 from django.views.decorators.http import require_http_methods
 from decimal import Decimal
 from django.core.files.base import ContentFile
+from .serializers import ClienteSerializer
+from rest_framework import generics
 
 
 def requer_consultor(view_func):
@@ -1251,3 +1253,7 @@ def criar_cadastro(request):
         form = PreCliente()
 
     return render(request, 'consulta_preclientes.html', {'form': form})
+
+class ClienteListView(generics.ListAPIView):
+    queryset = Cliente.objects.all()
+    serializer_class = ClienteSerializer
