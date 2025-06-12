@@ -58,7 +58,7 @@ class PreClienteForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         
         # Campos que não devem ser editáveis
-        campos_nao_editaveis = ['preclienteNome', 'precoclienteEmail', 'preclienteRendaFamiliar', 'preclienteRendaPresumida',
+        campos_nao_editaveis = ['preclienteNome',  'preclienteRendaFamiliar', 'preclienteRendaPresumida',
                                 'preclienteScore', 'preclienteApontamentos']
 
         for campo in campos_nao_editaveis:
