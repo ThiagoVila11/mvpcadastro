@@ -59,7 +59,7 @@ class PreCliente(models.Model):
     preclienteCpf = models.CharField(verbose_name="CPF", max_length=14, unique=True)
     precoclienteEmail = models.EmailField(verbose_name="E-mail",
                                     max_length=255,
-                                    unique=True,  # Opcional: para garantir emails únicos
+                                    unique=False,  
                                     validators=[EmailValidator(message="Digite um e-mail válido")],
                                     help_text="Exemplo: usuario@provedor.com",
                                     null=True, blank=True)
