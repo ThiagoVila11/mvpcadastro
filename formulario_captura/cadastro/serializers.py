@@ -12,6 +12,11 @@ class ClienteSerializer(serializers.ModelSerializer):
         fields = ['id', 'nome', 'cpf', 'email', 'Condominio', 'apto', 'score', 'Consultor', 
                   'processoassinaturaid', 'enderecowebhook']  
         
+class ClienteCrudSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cliente
+        fields = '__all__'
+        
 class NotificacaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notificacao

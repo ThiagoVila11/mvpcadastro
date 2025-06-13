@@ -41,8 +41,8 @@ from rest_framework.response import Response  # Este import é crucial
 from django.views.decorators.http import require_http_methods
 from decimal import Decimal
 from django.core.files.base import ContentFile
-from .serializers import ClienteSerializer, NotificacaoSerializer
-from rest_framework import generics
+from .serializers import ClienteSerializer, NotificacaoSerializer, ClienteCrudSerializer
+from rest_framework import generics, viewsets
 
 
 def requer_consultor(view_func):
@@ -1261,3 +1261,7 @@ class ClienteListView(generics.ListAPIView):
 class NotificacaoListView(generics.ListAPIView):
     queryset = Notificacao.objects.all()
     serializer_class = NotificacaoSerializer
+
+class ClienteCrudViewSet(viewsets.ModelViewSet):
+    queryset = Cliente.objects.all()
+    serializer_class = ClienteCrudSerializer

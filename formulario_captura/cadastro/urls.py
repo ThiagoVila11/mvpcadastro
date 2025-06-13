@@ -1,13 +1,15 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 from . import api
 from cadastro.views import CondominioKPIDashboard
 from .api import get_consultor_id_by_email
 from django.conf.urls.static import static
+from rest_framework.routers import DefaultRouter
 from django.conf import settings
-from .views import ClienteListView, NotificacaoListView
+from .views import ClienteListView, NotificacaoListView, ClienteCrudViewSet
 
-
+router = DefaultRouter()
+router.register(r'crudclientes', ClienteCrudViewSet, basename='crud-clientes')
 
 urlpatterns = [
     path('', CondominioKPIDashboard.as_view(), name='cadastro'),
@@ -57,6 +59,8 @@ urlpatterns = [
     #API´s
     path('api/consultor/', get_consultor_id_by_email, name='get_consultor_id_by_email'),
     path('api/clientes/', ClienteListView.as_view(), name='lista-clientes'),
+    path('api/', include(router.urls)),
+    #path('api/crudclientes/', ClienteCrudViewSet, name='crud-clientes'),
     path('api/notificacoes/', NotificacaoListView.as_view(), name='notificacoes-list'),
     # notificações
     path('notificacoes/', views.notificacoes_view, name='notificacoes'),
