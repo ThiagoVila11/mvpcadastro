@@ -41,7 +41,7 @@ from rest_framework.response import Response  # Este import é crucial
 from django.views.decorators.http import require_http_methods
 from decimal import Decimal
 from django.core.files.base import ContentFile
-from .serializers import ClienteSerializer
+from .serializers import ClienteSerializer, NotificacaoSerializer
 from rest_framework import generics
 
 
@@ -1257,3 +1257,7 @@ def criar_cadastro(request):
 class ClienteListView(generics.ListAPIView):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
+
+class NotificacaoListView(generics.ListAPIView):
+    queryset = Notificacao.objects.all()
+    serializer_class = NotificacaoSerializer
