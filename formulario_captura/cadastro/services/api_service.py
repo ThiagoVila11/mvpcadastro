@@ -47,10 +47,10 @@ class APIDataBuscaService:
             "Token": f"{token}"            
         }
         #print(headers)
-        print(f"Enviando requisição para {data_url} com headers: {headers}")
+        #print(f"Enviando requisição para {data_url} com headers: {headers}")
               
         response = requests.post(data_url, json=request_body, headers=headers)
-        print(f"Resposta: {response.status_code} - {response.text}")      
+        #print(f"Resposta: {response.status_code} - {response.text}")      
         if response.status_code == 200:
             return response.json()
         raise Exception(f"Erro na requisição: {response.status_code} - {response.text}")
