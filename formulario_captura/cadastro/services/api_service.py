@@ -46,7 +46,7 @@ class APIDataBuscaService:
             "Content-Type": "application/json",
             "Token": f"{token}"            
         }
-        print(headers)
+        #print(headers)
         print(f"Enviando requisição para {data_url} com headers: {headers}")
               
         response = requests.post(data_url, json=request_body, headers=headers)
