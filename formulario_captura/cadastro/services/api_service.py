@@ -24,17 +24,17 @@ class APIDataBuscaService:
         }
         
         response = requests.post(login_url, json=payload, headers=headers)
-        print(response.status_code)
+        #print(response.status_code)
         if response.status_code == 200:
             response_data = response.json()
             if response_data.get("success"):
-                print(response_data["data"]["Token"])
+                #print(response_data["data"]["Token"])
                 return response_data["data"]["Token"]
         raise Exception("Falha ao obter token de autenticação")
 
     @staticmethod
     def get_api_data(cpf):
-        print(f"Obtendo dados para CPF: {cpf}")
+        #print(f"Obtendo dados para CPF: {cpf}")
         token = APIDataBuscaService.get_auth_token()
         data_url = "https://api.ph3a.com.br/DataBusca/data"
         
